@@ -78,7 +78,7 @@
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
                 <mxCell id="51" value="&lt;font color=&quot;#000000&quot;&gt;Запрос на ввод пароля&lt;/font&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=none;strokeColor=#000000;" vertex="1" parent="1">
-                    <mxGeometry x="180" y="240" width="120" height="60" as="geometry"/>
+                    <mxGeometry x="180" y="180" width="120" height="60" as="geometry"/>
                 </mxCell>
                 <mxCell id="54" style="edgeStyle=none;html=1;fontColor=#000000;strokeColor=#000000;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeWidth=2;" edge="1" parent="1" target="57">
                     <mxGeometry relative="1" as="geometry">
@@ -178,8 +178,8 @@
                     <mxGeometry relative="1" as="geometry">
                         <mxPoint x="590" y="210" as="targetPoint"/>
                         <Array as="points">
-                            <mxPoint x="240" y="500"/>
-                            <mxPoint x="330" y="500"/>
+                            <mxPoint x="240" y="420"/>
+                            <mxPoint x="330" y="420"/>
                             <mxPoint x="330" y="350"/>
                             <mxPoint x="330" y="270"/>
                             <mxPoint x="330" y="210"/>
@@ -190,10 +190,10 @@
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
                 <mxCell id="76" value="Закрепляется беседа для партнёров" style="rounded=0;whiteSpace=wrap;html=1;strokeColor=#000000;fontColor=#000000;fillColor=none;" vertex="1" parent="1">
-                    <mxGeometry x="180" y="320" width="120" height="60" as="geometry"/>
+                    <mxGeometry x="180" y="260" width="120" height="60" as="geometry"/>
                 </mxCell>
                 <mxCell id="80" value="Вывод ссылки на систему бронирования" style="rounded=0;whiteSpace=wrap;html=1;strokeColor=#000000;fontColor=#000000;fillColor=none;" vertex="1" parent="1">
-                    <mxGeometry x="180" y="400" width="120" height="60" as="geometry"/>
+                    <mxGeometry x="180" y="340" width="120" height="60" as="geometry"/>
                 </mxCell>
                 <mxCell id="91" style="edgeStyle=none;rounded=0;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeColor=#000000;fontColor=#000000;strokeWidth=2;" edge="1" parent="1" source="82" target="84">
                     <mxGeometry relative="1" as="geometry"/>
