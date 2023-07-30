@@ -6,6 +6,12 @@
   <component name="ChangeListManager">
     <list default="true" id="383f0ded-b5ec-47d2-89a5-998a7e07bcb7" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/TravelBot/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/TravelBot/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/TravelBot/bot/bot/__init__.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TravelBot/bot/bot/asgi.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TravelBot/bot/bot/settings.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TravelBot/bot/bot/urls.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TravelBot/bot/bot/wsgi.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/TravelBot/bot/manage.py" beforeDir="false" afterPath="$PROJECT_DIR$/TravelBot/bot/manage.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
