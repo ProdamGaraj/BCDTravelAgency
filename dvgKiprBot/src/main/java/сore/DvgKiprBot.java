@@ -15,7 +15,6 @@ import сore.models.Filter;
 import сore.services.ActivityService;
 import сore.services.CustomToursService;
 import сore.services.ResortService;
-import utils.UtilClass;
 
 import java.util.Optional;
 
@@ -32,7 +31,6 @@ public class DvgKiprBot extends TelegramLongPollingBot {
     private String botName;
     @Value("${bot.token}")
     private String botToken;
-    private UtilClass utilClass;
 
     @Override
     @SneakyThrows
@@ -95,6 +93,7 @@ public class DvgKiprBot extends TelegramLongPollingBot {
                                         "/autorization \n")
                                 .chatId(message.getChatId())
                                 .build());
+                        break;
                 }
             }
         }
