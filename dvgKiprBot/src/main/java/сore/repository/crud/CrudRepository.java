@@ -6,7 +6,7 @@ import java.io.Serializable;
 public interface CrudRepository<T, ID extends Serializable>
         extends Repository<T, ID> {
     <S extends T> S save (S entity);
-    T findOne (ID primaryKey);
+    T find_first(ID primaryKey);
     Iterable<T> findAll();
     void delete (T entity);
     boolean exists(ID primaryKey);

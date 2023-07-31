@@ -11,6 +11,7 @@ import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.MessageEntity;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
+import сore.bl.MessageFactory;
 import сore.models.Activity;
 import сore.models.Filter;
 import сore.services.ActivityService;
@@ -22,6 +23,8 @@ import java.util.Optional;
 @Log4j
 public class DvgKiprBot extends TelegramLongPollingBot {
 
+    @Autowired
+    private MessageFactory messageFactory;
     @Autowired
     private CustomToursService customToursService;
     @Autowired
