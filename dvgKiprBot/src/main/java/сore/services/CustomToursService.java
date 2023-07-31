@@ -3,8 +3,9 @@ package сore.services;
 import org.jvnet.hk2.annotations.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 import сore.models.CustomTour;
-import сore.models.StateMachine;
 import сore.repository.CustomToursRepository;
+
+import java.util.Optional;
 
 @Service
 public class CustomToursService {
@@ -16,26 +17,23 @@ public class CustomToursService {
     }
 
 
-    public CustomTour get_by_id(Long id) {
-        return repository.find_first(id);
+    public Optional<CustomTour> get_by_id(Long id) {
+        return repository.findById(id);
     }
 
-    public CustomTour get_next(Long id) {
-        return repository.find_first(++id);
+    public Optional<CustomTour> get_next(Long id) {
+        return repository.findById(++id);}
+    public Optional<CustomTour> get_prev(Long id) {
+        return repository.findById(--id);
     }
-    public CustomTour get_prev(Long id) {
-        return repository.find_first(--id);
-    }
+
     //TODO: clean up this shit
-    public CustomTour get_first(){
-        return repository.find_first(Long.parseLong("0"));
+    public Optional<CustomTour> get_first(){
+        return repository.findById(Long.parseLong("0"));
     }
 
-    public CustomTour get_last(){
-        return repository.find_first(Long.parseLong("-1"));
-    }
 
-    public void add_custom_tour_to_filter(CustomTour customTour, StateMachine stateMachine) {
-        stateMachine.customTour = customTour;
+    public Optional<CustomTour> get_last(){
+        return repository.findById(Long.parseLong("-1"));
     }
 }

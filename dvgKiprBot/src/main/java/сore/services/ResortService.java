@@ -6,6 +6,8 @@ import сore.models.StateMachine;
 import сore.models.Resort;
 import сore.repository.ResortRepository;
 
+import java.util.Optional;
+
 @Service
 public class ResortService {
     @Autowired
@@ -14,23 +16,23 @@ public class ResortService {
         return repository.findAll();
     }
 
-    public Resort get_by_id(long id) {
-        return repository.find_first(id);
+    public Optional<Resort> get_by_id(long id) {
+        return repository.findById(id);
     }
 
-    public Resort get_next(Long id) {
-        return repository.find_first(++id);
+    public Optional<Resort> get_next(Long id) {
+        return repository.findById(++id);
     } //генерацию сообщения (текста + медиа)
-    public Resort get_prev(Long id) {
-        return repository.find_first(--id);
+    public Optional<Resort> get_prev(Long id) {
+        return repository.findById(--id);
     }
     //TODO: clean up this shit
-    public Resort get_first(){
-        return repository.find_first(Long.parseLong("0"));
+    public Optional<Resort> get_first(){
+        return repository.findById(Long.parseLong("0"));
     }
 
-    public Resort get_last(){
-        return repository.find_first(Long.parseLong("-1"));
+    public Optional<Resort> get_last(){
+        return repository.findById(Long.parseLong("-1"));
     }
     public void add_resort_to_filter(Resort resort, StateMachine stateMachine) {
         stateMachine.resort = resort;

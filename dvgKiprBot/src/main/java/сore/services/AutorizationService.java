@@ -16,7 +16,7 @@ public class AutorizationService {
         if (user.getPassword()=="admin"){//TODO: refactor
             user.setRole(UserRole.admin);
         }else if (user.getPassword()!=null){
-            if (user.getPassword().hashCode()==repository.find_first(user.getId()).getPassword().hashCode()){
+            if (user.getPassword().hashCode()==repository.findById(user.getId()).hashCode()){
                 user.setRole(UserRole.partner);
             }
         } else {
