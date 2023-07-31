@@ -20,4 +20,14 @@ public class Resort {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     public String name;
+    public String description;
+    public String geo;
+    public enum type{
+        beach,
+        elite,
+        fancy,
+        youth, //molodej`niy
+        family,
+
+    }
 }

@@ -11,8 +11,6 @@ import org.telegram.telegrambots.meta.api.objects.MessageEntity;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
-import сore.bl.MessageFactory;
-import сore.models.Activity;
 import сore.models.StateMachine;
 import сore.services.ActivityService;
 import сore.services.CustomToursService;
@@ -24,7 +22,6 @@ import java.util.Optional;
 @Log4j
 public class DvgKiprBot extends TelegramLongPollingBot {
 
-    private final MessageFactory messageFactory;
     private final CustomToursService customToursService;
     private final ResortService resortService;
     private final ActivityService activityService;
@@ -34,7 +31,6 @@ public class DvgKiprBot extends TelegramLongPollingBot {
     private String botToken;
 
     public DvgKiprBot() {
-        this.messageFactory = new MessageFactory();
         this.customToursService = new CustomToursService();
         this.resortService = new ResortService();
         this.activityService = new ActivityService();
@@ -84,7 +80,6 @@ public class DvgKiprBot extends TelegramLongPollingBot {
                             m.setChat(message.getChat());
                             response.add(m);
                         }
-                        //messageFactory.convertToursMessages(customToursService.get_all_custom_tours()).forEach(item -> {
                          response.forEach(item -> {
                             try {
                                 execute(SendMessage.builder()
@@ -111,7 +106,6 @@ public class DvgKiprBot extends TelegramLongPollingBot {
                                 .text("This our activities for u")
                                 .chatId(message.getChatId())
                                 .build());
-                        stateMachine.activity = new Activity();
                         //TODO: output list of activities, saving progress
                         break;
                     default:

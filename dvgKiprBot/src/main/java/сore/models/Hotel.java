@@ -17,4 +17,24 @@ public class Hotel {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+
+    public String name;
+    public String description;
+    public Iterable<HotelFeature> features;
+    public Resort resort;
+
+    public enum stars {
+        nullstar,
+        onestar,
+        twostar,
+        threestar,
+        fourstar,
+        fivestar
+    }
+    public enum food {
+        BB,
+        HB,
+        FB,
+        AllInclusive
+    }
 }

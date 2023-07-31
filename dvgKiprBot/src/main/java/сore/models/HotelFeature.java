@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.annotation.Nullable;
 import javax.persistence.*;
 
 @Entity
@@ -13,12 +14,14 @@ import javax.persistence.*;
 @AllArgsConstructor
 @Builder
 @Table
-public class CustomTour {
+public class HotelFeature {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+    private  Long id;
     public String name;
-    public String description;
-    public String media_path;
+    public  String description;
+    
+    @Nullable
+    public Boolean free;
 }
