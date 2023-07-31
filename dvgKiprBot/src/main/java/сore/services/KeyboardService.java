@@ -26,4 +26,16 @@ public class KeyboardService {
                         .build()))
                 .build();
     }
+
+    public InlineKeyboardMarkup getActivitiesKeyboard() {
+        return InlineKeyboardMarkup.builder().build();
+    }
+
+    public InlineKeyboardMarkup getResortsKeyboard() {
+        return InlineKeyboardMarkup.builder().build();
+    }
+
+    public InlineKeyboardMarkup getPersonalToursKeyboard() {
+        return InlineKeyboardMarkup.builder().build();
+    }
 }
