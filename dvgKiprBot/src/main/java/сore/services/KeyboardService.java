@@ -5,27 +5,28 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMa
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 @Service
 public class KeyboardService {
-
-    private int selectedIndex = 0;
+    static final Map<Long, Integer> selectedActivity = new HashMap<>();
 
     public InlineKeyboardMarkup getTourChoosingKeyboard() {
         return InlineKeyboardMarkup.builder()
                 .keyboardRow(List.of(InlineKeyboardButton.builder()
-                                .text("Активности")
-                                .callbackData("activities")
+                        .text("Активности")
+                        .callbackData("activities")
                         .build()))
                 .keyboardRow(List.of(InlineKeyboardButton.builder()
-                                .text("Курорты")
-                                .callbackData("resorts")
+                        .text("Курорты")
+                        .callbackData("resorts")
                         .build()))
                 .keyboardRow(List.of(InlineKeyboardButton.builder()
-                                .text("Авторские туры")
-                                .callbackData("personal_tours")
+                        .text("Авторские туры")
+                        .callbackData("personal_tours")
                         .build()))
                 .build();
     }
@@ -40,24 +41,12 @@ public class KeyboardService {
         activities.add("Ещё один текст");
         activities.add("Описание");
 
-        String currentActivity = activities.get(selectedIndex);
+        InlineKeyboardMarkup.InlineKeyboardMarkupBuilder builder = InlineKeyboardMarkup.builder();
 
-        return InlineKeyboardMarkup.builder()
-                .keyboardRow(List.of(
-                        InlineKeyboardButton.builder()
-                                .text("<-")
-                                .callbackData("activity_left")
-                                .build(),
-                        InlineKeyboardButton.builder()
-                                .text(currentActivity)
-                                .callbackData("activity_select")
-                                .build(),
-                        InlineKeyboardButton.builder()
-                                .text("->")
-                                .callbackData("activity_right")
-                                .build()
-                ))
-                .build();
+
+        return builder.keyboardRow(List.of(InlineKeyboardButton.builder()
+                        .text("В начало").callbackData("restart")
+                .build())).build();
     }
 
     public InlineKeyboardMarkup getResortsKeyboard() {
@@ -69,7 +58,7 @@ public class KeyboardService {
         resorts.add("Оно");
         resorts.add("Они");
 
-        String currentResort = resorts.get(selectedIndex);
+        String currentResort = resorts.get(0);
 
         return InlineKeyboardMarkup.builder()
                 .keyboardRow(List.of(
@@ -99,7 +88,7 @@ public class KeyboardService {
         personalTours.add("now");
         personalTours.add("!");
 
-        String currentPersonalTours = personalTours.get(selectedIndex);
+        String currentPersonalTours = personalTours.get(0);
 
         return InlineKeyboardMarkup.builder()
                 .keyboardRow(List.of(
@@ -130,7 +119,7 @@ public class KeyboardService {
         hotels.add("CAVO MARIS BEACH");
         hotels.add("CRYSTAL SPRINGS");
 
-        String currentHotel = hotels.get(selectedIndex);
+        String currentHotel = hotels.get(0);
 
         return InlineKeyboardMarkup.builder()
                 .keyboardRow(List.of(

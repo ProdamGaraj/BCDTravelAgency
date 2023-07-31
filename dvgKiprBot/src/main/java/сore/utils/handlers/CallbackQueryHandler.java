@@ -1,15 +1,23 @@
 package сore.utils.handlers;
 
 import lombok.SneakyThrows;
+import org.springframework.data.util.Pair;
 import org.telegram.telegrambots.meta.api.methods.AnswerCallbackQuery;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import org.telegram.telegrambots.meta.bots.AbsSender;
 import сore.services.KeyboardService;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 public class CallbackQueryHandler {
     private final AbsSender bot;
     static final KeyboardService keyboardService = new KeyboardService();
+
+    static final Map<Long, List<Pair<Integer, String>>> activity_lists = new HashMap<>();
 
     public CallbackQueryHandler(AbsSender bot) {
         this.bot = bot;
@@ -32,6 +40,10 @@ public class CallbackQueryHandler {
                 personalToursChooseHandler(callbackQuery);
                 break;
             default:
+                if (callback_data.startsWith("activity:")) {
+                    activityAddHandler(callbackQuery);
+                }
+
                 bot.execute(AnswerCallbackQuery.builder()
                         .callbackQueryId(callbackQuery.getId())
                         .text("Что-то пошло не так")
@@ -39,6 +51,26 @@ public class CallbackQueryHandler {
                         .build());
                 break;
         }
+    }
+
+    @SneakyThrows
+    private void activityAddHandler(CallbackQuery callbackQuery) {
+        List<String> args = List.of(callbackQuery.getData().split(":"));
+        Integer index = Integer.getInteger(args.get(2));
+        String name = args.get(1);
+        activity_lists.get(callbackQuery.getFrom().getId()).add(Pair.of(index, name));
+
+        List<Pair<Integer, String>> cur_list = activity_lists.get(callbackQuery.getFrom().getId());
+        bot.execute(EditMessageText.builder()
+                .chatId(callbackQuery.getMessage().getChatId())
+                .messageId(callbackQuery.getMessage().getMessageId())
+                .text(args.toString() + "\nCписок типов активностей:\n" + cur_list.toString())
+                .replyMarkup(keyboardService.getActivitiesKeyboard())
+                .build());
+
+        bot.execute(AnswerCallbackQuery.builder()
+                .callbackQueryId(callbackQuery.getId()).build());
+
     }
 
     @SneakyThrows
@@ -56,10 +88,15 @@ public class CallbackQueryHandler {
 
     @SneakyThrows
     private void activitiesChooseHandler(CallbackQuery callbackQuery) {
+        if (!activity_lists.containsKey(callbackQuery.getFrom().getId())) {
+            activity_lists.put(callbackQuery.getFrom().getId(), new ArrayList<>());
+        }
+        List<Pair<Integer, String>> cur_list = activity_lists.get(callbackQuery.getFrom().getId());
         bot.execute(EditMessageText.builder()
                 .chatId(callbackQuery.getMessage().getChatId())
                 .messageId(callbackQuery.getMessage().getMessageId())
-                .text("Cписок типов активностей:")
+                .text("Cписок типов активностей:\n" + cur_list.toString())
+                .replyMarkup(keyboardService.getActivitiesKeyboard())
                 .build());
 
         bot.execute(AnswerCallbackQuery.builder()
