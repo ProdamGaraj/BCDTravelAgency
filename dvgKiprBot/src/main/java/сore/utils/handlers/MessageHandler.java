@@ -8,6 +8,7 @@ import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageTe
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.MessageEntity;
 import org.telegram.telegrambots.meta.bots.AbsSender;
+import сore.services.KeyboardService;
 
 
 import java.util.HashMap;
@@ -17,6 +18,7 @@ import java.util.Optional;
 public class MessageHandler {
     private final AbsSender bot;
     private final Map<Long, Pair<Boolean, Optional<Message>>> is_password = new HashMap<>();
+    static final KeyboardService keyboardService = new KeyboardService();
 
     public MessageHandler(AbsSender bot) {
         this.bot = bot;
@@ -101,7 +103,8 @@ public class MessageHandler {
 //        TODO: add message text
         bot.execute(SendMessage.builder()
                 .chatId(message.getChatId())
-                .text("Подбор тура")
+                .text("Выберите, от чего хотите отталкиваться при выборе тура")
+                .replyMarkup(keyboardService.getTourChoosingKeyboard())
                 .build());
     }
 }
