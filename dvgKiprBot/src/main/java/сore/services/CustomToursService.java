@@ -3,7 +3,7 @@ package сore.services;
 import org.jvnet.hk2.annotations.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 import сore.models.CustomTour;
-import сore.models.Filter;
+import сore.models.StateMachine;
 import сore.repository.CustomToursRepository;
 
 @Service
@@ -35,7 +35,7 @@ public class CustomToursService {
         return repository.find_first(Long.parseLong("-1"));
     }
 
-    public void add_custom_tour_to_filter(CustomTour customTour, Filter filter) {
-        filter.customTour = customTour;
+    public void add_custom_tour_to_filter(CustomTour customTour, StateMachine stateMachine) {
+        stateMachine.customTour = customTour;
     }
 }

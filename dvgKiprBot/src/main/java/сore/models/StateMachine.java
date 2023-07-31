@@ -13,13 +13,14 @@ import javax.persistence.*;
 @AllArgsConstructor
 @Builder
 @Table
-public class Filter {
+public class StateMachine {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-
-    public Activity activity;
+    public User user;
+    public Iterable<Activity> activities;
     public Resort resort;
     public Hotel hotel;
     public CustomTour customTour;
+    public boolean authorized;
 }

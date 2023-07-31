@@ -10,4 +10,5 @@ public interface CrudRepository<T, ID extends Serializable>
     Iterable<T> findAll();
     void delete (T entity);
     boolean exists(ID primaryKey);
+
 }

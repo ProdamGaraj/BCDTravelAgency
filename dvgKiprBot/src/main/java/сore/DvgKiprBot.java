@@ -2,7 +2,6 @@ package сore;
 
 import lombok.SneakyThrows;
 import lombok.extern.log4j.Log4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
@@ -14,7 +13,7 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 import сore.bl.MessageFactory;
 import сore.models.Activity;
-import сore.models.Filter;
+import сore.models.StateMachine;
 import сore.services.ActivityService;
 import сore.services.CustomToursService;
 import сore.services.ResortService;
@@ -25,18 +24,22 @@ import java.util.Optional;
 @Log4j
 public class DvgKiprBot extends TelegramLongPollingBot {
 
-    @Autowired
-    private MessageFactory messageFactory;
-    @Autowired
-    private CustomToursService customToursService;
-    @Autowired
-    private ResortService resortService;
-    @Autowired
-    private ActivityService activityService;
+    private final MessageFactory messageFactory;
+    private final CustomToursService customToursService;
+    private final ResortService resortService;
+    private final ActivityService activityService;
     @Value("${bot.name}")
     private String botName;
     @Value("${bot.token}")
     private String botToken;
+
+    public DvgKiprBot() {
+        this.messageFactory = new MessageFactory();
+        this.customToursService = new CustomToursService();
+        this.resortService = new ResortService();
+        this.activityService = new ActivityService();
+    }
+
 
     @Override
     @SneakyThrows
@@ -53,7 +56,7 @@ public class DvgKiprBot extends TelegramLongPollingBot {
     @SneakyThrows
     private void handleMessage(Message message) {
         //handling commands
-        Filter filter = new Filter();
+        StateMachine stateMachine = new StateMachine();
 
         if (message.hasText() && message.hasEntities()) {
             Optional<MessageEntity> commandEntity =
@@ -108,7 +111,7 @@ public class DvgKiprBot extends TelegramLongPollingBot {
                                 .text("This our activities for u")
                                 .chatId(message.getChatId())
                                 .build());
-                        filter.activity = new Activity();
+                        stateMachine.activity = new Activity();
                         //TODO: output list of activities, saving progress
                         break;
                     default:
@@ -127,7 +130,7 @@ public class DvgKiprBot extends TelegramLongPollingBot {
 
     @Override
     public String getBotUsername() {
-        return "dvgKiprBotBot_bot";
+        return "dvgKiprbot";
     }
 
     @Override
@@ -139,6 +142,8 @@ public class DvgKiprBot extends TelegramLongPollingBot {
     @SneakyThrows
     public static void main(String[] args) {
         DvgKiprBot bot = new DvgKiprBot();
+        bot.botName="dvgKiprbot";
+        bot.botToken="6460979142:AAHV4_8sKXuKmWwCZUBCBt7Rln_ZyYKxh9Y";
         TelegramBotsApi telegramBotsApi = new TelegramBotsApi(DefaultBotSession.class);
         telegramBotsApi.registerBot(bot);
     }

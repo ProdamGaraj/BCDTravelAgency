@@ -2,7 +2,7 @@ package сore.services;
 
 import org.jvnet.hk2.annotations.Service;
 import org.springframework.beans.factory.annotation.Autowired;
-import сore.models.Filter;
+import сore.models.StateMachine;
 import сore.models.Resort;
 import сore.repository.ResortRepository;
 
@@ -32,7 +32,7 @@ public class ResortService {
     public Resort get_last(){
         return repository.find_first(Long.parseLong("-1"));
     }
-    public void add_resort_to_filter(Resort resort, Filter filter) {
-        filter.resort = resort;
+    public void add_resort_to_filter(Resort resort, StateMachine stateMachine) {
+        stateMachine.resort = resort;
     }
 }
