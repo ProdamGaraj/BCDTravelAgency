@@ -12,18 +12,15 @@ import java.util.Optional;
 public class ResortService {
     @Autowired
     private ResortRepository repository;
-
     public Iterable<Resort> get_all_resorts() {
-        Iterable<Resort> list = repository.findAll();
-        return list;
+        return repository.findAll();
     }
 
     public Resort get_by_id(long id) {
-        Resort temp = repository.findOne(id);
         return repository.findOne(id);
     }
 
     public void add_resort_to_filter(Resort resort, Filter filter) {
-        filter.resort = resort.name;
+        filter.resort = resort;
     }
 }

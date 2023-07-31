@@ -11,6 +11,7 @@ import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.MessageEntity;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
+import сore.models.Activity;
 import сore.models.Filter;
 import сore.services.ActivityService;
 import сore.services.CustomToursService;
@@ -82,7 +83,7 @@ public class DvgKiprBot extends TelegramLongPollingBot {
                                 .text("This our activities for u")
                                 .chatId(message.getChatId())
                                 .build());
-                        filter.activity= new String();
+                        filter.activity= new Activity();
                         //TODO: output list of activities, saving progress
                         break;
                     default:
