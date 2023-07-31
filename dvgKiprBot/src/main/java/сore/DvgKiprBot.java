@@ -10,6 +10,7 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.MessageEntity;
 import org.telegram.telegrambots.meta.api.objects.Update;
+import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 import сore.bl.MessageFactory;
 import сore.models.Activity;
@@ -52,6 +53,7 @@ public class DvgKiprBot extends TelegramLongPollingBot {
     private void handleMessage(Message message) {
         //handling commands
         Filter filter = new Filter();
+
         if (message.hasText() && message.hasEntities()) {
             Optional<MessageEntity> commandEntity =
                     message.getEntities().stream().filter(e -> "bot_command".equals(e.getType())).findFirst();
@@ -70,6 +72,18 @@ public class DvgKiprBot extends TelegramLongPollingBot {
                                 .text("This our best tours for u")
                                 .chatId(message.getChatId())
                                 .build());
+                        customToursService.get_all_custom_tours();
+
+                        messageFactory.convertToursMessages(customToursService.get_all_custom_tours()).forEach(item -> {
+                            try {
+                                execute(SendMessage.builder()
+                                        .text(item.getText())
+                                        .chatId(item.getChatId())
+                                        .build());
+                            } catch (TelegramApiException e) {
+                                throw new RuntimeException(e);
+                            }
+                        });
                         //TODO: output list of customtours, saving progress
 
                         break;
@@ -86,14 +100,14 @@ public class DvgKiprBot extends TelegramLongPollingBot {
                                 .text("This our activities for u")
                                 .chatId(message.getChatId())
                                 .build());
-                        filter.activity= new Activity();
+                        filter.activity = new Activity();
                         //TODO: output list of activities, saving progress
                         break;
                     default:
                         execute(SendMessage.builder()
                                 .text("/activities \n" +
-                                        "/resorts \n"+
-                                        "/customtours \n"+
+                                        "/resorts \n" +
+                                        "/customtours \n" +
                                         "/autorization \n")
                                 .chatId(message.getChatId())
                                 .build());

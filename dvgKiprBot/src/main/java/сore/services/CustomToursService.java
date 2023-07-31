@@ -10,7 +10,6 @@ import сore.repository.CustomToursRepository;
 public class CustomToursService {
     @Autowired
     private static CustomToursRepository repository;
-    public static Iterable<CustomTour> list = repository.findAll();
 
     public Iterable<CustomTour> get_all_custom_tours() {
         return repository.findAll();
