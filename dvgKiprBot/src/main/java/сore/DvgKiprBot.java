@@ -19,6 +19,7 @@ import сore.services.ActivityService;
 import сore.services.CustomToursService;
 import сore.services.ResortService;
 
+import java.util.ArrayList;
 import java.util.Optional;
 
 @Log4j
@@ -72,9 +73,16 @@ public class DvgKiprBot extends TelegramLongPollingBot {
                                 .text("This our best tours for u")
                                 .chatId(message.getChatId())
                                 .build());
-                        customToursService.get_all_custom_tours();
-
-                        messageFactory.convertToursMessages(customToursService.get_all_custom_tours()).forEach(item -> {
+                        ArrayList<Message> response = new ArrayList<>();
+                        for (Integer i = 0; i < 5; i++) {
+                            //MOCK data
+                            Message m = new Message(){};
+                            m.setText(i.toString());
+                            m.setChat(message.getChat());
+                            response.add(m);
+                        }
+                        //messageFactory.convertToursMessages(customToursService.get_all_custom_tours()).forEach(item -> {
+                         response.forEach(item -> {
                             try {
                                 execute(SendMessage.builder()
                                         .text(item.getText())
