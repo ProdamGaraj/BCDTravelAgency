@@ -1,5 +1,9 @@
 package core.utils.handlers;
 
+import core.repository.TemporaryRepos.ActivityRepo;
+import core.repository.TemporaryRepos.CustomTourRepo;
+import core.repository.TemporaryRepos.HotelRepo;
+import core.repository.TemporaryRepos.ResortRepo;
 import lombok.SneakyThrows;
 import org.springframework.data.util.Pair;
 import org.telegram.telegrambots.meta.api.methods.AnswerCallbackQuery;
@@ -20,17 +24,20 @@ import java.util.List;
 import java.util.Map;
 
 public class CallbackQueryHandler {
-
-    private static final int ODIN = 1;
-
-    private static final int NOL = 0;
-
     private final AbsSender bot;
 
+    //Services
     static final KeyboardService keyboardService = new KeyboardService();
     static final MediaService mediaService = new MediaService();
-    static final Map<Long, List<Pair<Integer, String>>> activity_lists = new HashMap<>();
 
+    //Repositories
+    private final ActivityRepo activityRepo = new ActivityRepo();
+    private final ResortRepo resortRepo = new ResortRepo();
+    private final CustomTourRepo customTourRepo = new CustomTourRepo();
+    private final HotelRepo hotelRepo = new HotelRepo();
+
+    //Maps
+    static final Map<Long, List<Pair<Integer, String>>> activity_lists = new HashMap<>();
     static final Map<Long, Integer> selectedActivity = new HashMap<>();
 
 
@@ -97,7 +104,7 @@ public class CallbackQueryHandler {
                 .chatId(callbackQuery.getMessage().getChatId())
                 .messageId(callbackQuery.getMessage().getMessageId())
                 .caption(args.toString() + "\nCписок типов активностей:\n" + cur_list.toString())
-                .replyMarkup(keyboardService.getActivitiesKeyboard(NOL))
+                .replyMarkup(keyboardService.getActivitiesKeyboard(0))
                 .build());
         bot.execute(AnswerCallbackQuery.builder()
                 .callbackQueryId(callbackQuery.getId()).build());
@@ -131,7 +138,7 @@ public class CallbackQueryHandler {
                 .chatId(callbackQuery.getMessage().getChatId())
                 .messageId(callbackQuery.getMessage().getMessageId())
                 .caption("Cписок типов активностей:\n" + cur_list.toString())
-                .replyMarkup(keyboardService.getActivitiesKeyboard(NOL))
+                .replyMarkup(keyboardService.getActivitiesKeyboard(0))
                 .build());
         bot.execute(AnswerCallbackQuery.builder()
                 .callbackQueryId(callbackQuery.getId()).build());
@@ -144,7 +151,12 @@ public class CallbackQueryHandler {
 
         selectedActivity.putIfAbsent(ID, 0);
         Integer index = selectedActivity.get(ID);
-        index -= ODIN;
+        index -= 1;
+
+        if (index < 0 || index >=  selectedActivity.size()) {
+            index = 0;
+        }//TODO: think about  mod(currentIndex:size)
+
 
         bot.execute(EditMessageReplyMarkup.builder()
                 .chatId(callbackQuery.getMessage().getChatId())
@@ -162,7 +174,12 @@ public class CallbackQueryHandler {
 
         selectedActivity.putIfAbsent(ID, 0);
         Integer index = selectedActivity.get(ID);
-        index += ODIN;
+        index += 1;
+
+        if (index < 0 || index >=  selectedActivity.size()) {
+            index = 0;
+        }//TODO: think about  mod(currentIndex:size)
+
 
         bot.execute(EditMessageReplyMarkup.builder()
                 .chatId(callbackQuery.getMessage().getChatId())
@@ -184,7 +201,7 @@ public class CallbackQueryHandler {
                 .chatId(callbackQuery.getMessage().getChatId())
                 .messageId(callbackQuery.getMessage().getMessageId())
                 .caption("Cписок курортов:")
-                .replyMarkup(keyboardService.getResortsKeyboard(NOL))
+                .replyMarkup(keyboardService.getResortsKeyboard(0))
                 .build());
         bot.execute(AnswerCallbackQuery.builder()
                 .callbackQueryId(callbackQuery.getId()).build());
@@ -197,7 +214,11 @@ public class CallbackQueryHandler {
 
         selectedActivity.putIfAbsent(ID, 0);
         Integer index = selectedActivity.get(ID);
-        index -= ODIN;
+        index -= 1;
+
+        if (index < 0 || index >=  selectedActivity.size()) {
+            index = 0;
+        }//TODO: think about  mod(currentIndex:size)
 
         bot.execute(EditMessageReplyMarkup.builder()
                 .chatId(callbackQuery.getMessage().getChatId())
@@ -215,7 +236,11 @@ public class CallbackQueryHandler {
 
         selectedActivity.putIfAbsent(ID, 0);
         Integer index = selectedActivity.get(ID);
-        index += ODIN;
+        index += 1;
+
+        if (index < 0 || index >=  selectedActivity.size()) {
+            index = 0;
+        }//TODO: think about  mod(currentIndex:size)
 
         bot.execute(EditMessageReplyMarkup.builder()
                 .chatId(callbackQuery.getMessage().getChatId())
@@ -238,7 +263,7 @@ public class CallbackQueryHandler {
                 .chatId(callbackQuery.getMessage().getChatId())
                 .messageId(callbackQuery.getMessage().getMessageId())
                 .caption("Cписок авторских туров:")
-                .replyMarkup(keyboardService.getPersonalToursKeyboard(NOL))
+                .replyMarkup(keyboardService.getPersonalToursKeyboard(0))
                 .build());
         bot.execute(AnswerCallbackQuery.builder()
                 .callbackQueryId(callbackQuery.getId()).build());
@@ -251,7 +276,12 @@ public class CallbackQueryHandler {
 
         selectedActivity.putIfAbsent(ID, 0);
         Integer index = selectedActivity.get(ID);
-        index -= ODIN;
+        index -= 1;
+
+        if (index < 0 || index >=  selectedActivity.size()) {
+            index = 0;
+        }//TODO: think about  mod(currentIndex:size)
+
 
         bot.execute(EditMessageReplyMarkup.builder()
                 .chatId(callbackQuery.getMessage().getChatId())
@@ -269,7 +299,11 @@ public class CallbackQueryHandler {
 
         selectedActivity.putIfAbsent(ID, 0);
         Integer index = selectedActivity.get(ID);
-        index += ODIN;
+        index += 1;
+
+        if (index < 0 || index >=  selectedActivity.size()) {
+            index = 0;
+        }
 
         bot.execute(EditMessageReplyMarkup.builder()
                 .chatId(callbackQuery.getMessage().getChatId())

@@ -52,10 +52,6 @@ public class KeyboardService {
 
         List<Activity> activities = activityRepo.activityList();
 
-        if (index < 0 || index >= activities.size()) {
-            index = 0;
-        }
-
         Activity acurrentActivity = activities.get(index);
 
         return InlineKeyboardMarkup.builder()
@@ -85,10 +81,6 @@ public class KeyboardService {
     public InlineKeyboardMarkup getResortsKeyboard(Integer index) {
 
         List<Resort> resorts = resortRepo.resortList();
-
-        if (index < 0 || index >= resorts.size()) {
-            index = 0;
-        }
 
         Resort currentResort =  resorts.get(index);
 
@@ -120,9 +112,6 @@ public class KeyboardService {
 
         List<CustomTour> customTours = customTourRepo.customTourList();
 
-        if (index < 0 || index >= customTours.size()) {
-            index = 0;
-        }
 
         CustomTour currentCustomTour = customTours.get(index);
 
