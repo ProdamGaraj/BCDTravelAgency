@@ -27,8 +27,6 @@ public class KeyboardService {
 
     private final HotelRepo hotelRepo = new HotelRepo();
 
-    static final Map<Long, Integer> selectedActivity = new HashMap<>();
-
     public KeyboardService() {
     }
 
@@ -50,23 +48,49 @@ public class KeyboardService {
                 .build();
     }
 
-    public InlineKeyboardMarkup getActivitiesKeyboard() {
+    public InlineKeyboardMarkup getActivitiesKeyboard(Integer index) {
 
         List<Activity> activities = activityRepo.activityList();
 
-        InlineKeyboardMarkup.InlineKeyboardMarkupBuilder builder = InlineKeyboardMarkup.builder();
+        if (index < 0 || index >= activities.size()) {
+            index = 0;
+        }
 
+        Activity acurrentActivity = activities.get(index);
 
-        return builder.keyboardRow(List.of(InlineKeyboardButton.builder()
-                        .text("В начало").callbackData("restart")
-                .build())).build();
+        return InlineKeyboardMarkup.builder()
+                .keyboardRow(List.of(
+                        InlineKeyboardButton.builder()
+                                .text("<-")
+                                .callbackData("activity_left")
+                                .build(),
+                        InlineKeyboardButton.builder()
+                                .text(acurrentActivity.name)
+                                .callbackData("activity_select")
+                                .build(),
+                        InlineKeyboardButton.builder()
+                                .text("->")
+                                .callbackData("activity_right")
+                                .build()
+                ))
+                .keyboardRow(List.of(
+                        InlineKeyboardButton.builder()
+                                .text("Home")
+                                .callbackData("restart")
+                                .build()
+                ))
+                .build();
     }
 
-    public InlineKeyboardMarkup getResortsKeyboard() {
+    public InlineKeyboardMarkup getResortsKeyboard(Integer index) {
 
         List<Resort> resorts = resortRepo.resortList();
 
-        Resort currentResort =  resorts.get(0);
+        if (index < 0 || index >= resorts.size()) {
+            index = 0;
+        }
+
+        Resort currentResort =  resorts.get(index);
 
         return InlineKeyboardMarkup.builder()
                 .keyboardRow(List.of(
@@ -92,11 +116,15 @@ public class KeyboardService {
                 .build();
     }
 
-    public InlineKeyboardMarkup getPersonalToursKeyboard() {
+    public InlineKeyboardMarkup getPersonalToursKeyboard(Integer index) {
 
         List<CustomTour> customTours = customTourRepo.customTourList();
 
-        CustomTour currentCustomTour = customTours.get(0);
+        if (index < 0 || index >= customTours.size()) {
+            index = 0;
+        }
+
+        CustomTour currentCustomTour = customTours.get(index);
 
         return InlineKeyboardMarkup.builder()
                 .keyboardRow(List.of(

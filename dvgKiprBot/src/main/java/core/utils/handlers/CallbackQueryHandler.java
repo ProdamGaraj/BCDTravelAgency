@@ -5,7 +5,9 @@ import org.springframework.data.util.Pair;
 import org.telegram.telegrambots.meta.api.methods.AnswerCallbackQuery;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageCaption;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageMedia;
+import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageReplyMarkup;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.bots.AbsSender;
 import core.models.CustomTour;
 import core.models.Resort;
@@ -19,11 +21,18 @@ import java.util.Map;
 
 public class CallbackQueryHandler {
 
+    private static final int ODIN = 1;
+
+    private static final int NOL = 0;
+
     private final AbsSender bot;
 
     static final KeyboardService keyboardService = new KeyboardService();
     static final MediaService mediaService = new MediaService();
     static final Map<Long, List<Pair<Integer, String>>> activity_lists = new HashMap<>();
+
+    static final Map<Long, Integer> selectedActivity = new HashMap<>();
+
 
     public CallbackQueryHandler(AbsSender bot) {
         this.bot = bot;
@@ -42,8 +51,26 @@ public class CallbackQueryHandler {
             case "resorts":
                 resortsChooseHandler(callbackQuery);
                 break;
+            case "resort_left":
+                resort_leftHandler(callbackQuery);
+                break;
+            case "resort_right":
+                resort_rightHandler(callbackQuery);
+                break;
             case "personal_tours":
                 personalToursChooseHandler(callbackQuery);
+                break;
+            case "personalTour_left":
+                personalTour_leftHandler(callbackQuery);
+                break;
+            case "personalTour_right":
+                personalTour_rightHandler(callbackQuery);
+                break;
+            case "activity_left":
+                activity_leftHandler(callbackQuery);
+                break;
+            case "activity_right":
+                activity_rightHandler(callbackQuery);
                 break;
             default:
                 if (callback_data.startsWith("activity:")) {
@@ -70,7 +97,7 @@ public class CallbackQueryHandler {
                 .chatId(callbackQuery.getMessage().getChatId())
                 .messageId(callbackQuery.getMessage().getMessageId())
                 .caption(args.toString() + "\nCписок типов активностей:\n" + cur_list.toString())
-                .replyMarkup(keyboardService.getActivitiesKeyboard())
+                .replyMarkup(keyboardService.getActivitiesKeyboard(NOL))
                 .build());
         bot.execute(AnswerCallbackQuery.builder()
                 .callbackQueryId(callbackQuery.getId()).build());
@@ -104,7 +131,43 @@ public class CallbackQueryHandler {
                 .chatId(callbackQuery.getMessage().getChatId())
                 .messageId(callbackQuery.getMessage().getMessageId())
                 .caption("Cписок типов активностей:\n" + cur_list.toString())
-                .replyMarkup(keyboardService.getActivitiesKeyboard())
+                .replyMarkup(keyboardService.getActivitiesKeyboard(NOL))
+                .build());
+        bot.execute(AnswerCallbackQuery.builder()
+                .callbackQueryId(callbackQuery.getId()).build());
+    }
+
+    @SneakyThrows
+    private void activity_leftHandler(CallbackQuery callbackQuery) {
+
+        Long ID = callbackQuery.getMessage().getChatId();
+
+        selectedActivity.putIfAbsent(ID, 0);
+        Integer index = selectedActivity.get(ID);
+        index -= ODIN;
+
+        bot.execute(EditMessageReplyMarkup.builder()
+                .chatId(callbackQuery.getMessage().getChatId())
+                .messageId(callbackQuery.getMessage().getMessageId())
+                .replyMarkup(keyboardService.getActivitiesKeyboard(index))
+                .build());
+        bot.execute(AnswerCallbackQuery.builder()
+                .callbackQueryId(callbackQuery.getId()).build());
+    }
+
+    @SneakyThrows
+    private void activity_rightHandler(CallbackQuery callbackQuery) {
+
+        Long ID = callbackQuery.getMessage().getChatId();
+
+        selectedActivity.putIfAbsent(ID, 0);
+        Integer index = selectedActivity.get(ID);
+        index += ODIN;
+
+        bot.execute(EditMessageReplyMarkup.builder()
+                .chatId(callbackQuery.getMessage().getChatId())
+                .messageId(callbackQuery.getMessage().getMessageId())
+                .replyMarkup(keyboardService.getActivitiesKeyboard(index))
                 .build());
         bot.execute(AnswerCallbackQuery.builder()
                 .callbackQueryId(callbackQuery.getId()).build());
@@ -121,7 +184,43 @@ public class CallbackQueryHandler {
                 .chatId(callbackQuery.getMessage().getChatId())
                 .messageId(callbackQuery.getMessage().getMessageId())
                 .caption("Cписок курортов:")
-                .replyMarkup(keyboardService.getResortsKeyboard())
+                .replyMarkup(keyboardService.getResortsKeyboard(NOL))
+                .build());
+        bot.execute(AnswerCallbackQuery.builder()
+                .callbackQueryId(callbackQuery.getId()).build());
+    }
+
+    @SneakyThrows
+    private void resort_leftHandler(CallbackQuery callbackQuery) {
+
+        Long ID = callbackQuery.getMessage().getChatId();
+
+        selectedActivity.putIfAbsent(ID, 0);
+        Integer index = selectedActivity.get(ID);
+        index -= ODIN;
+
+        bot.execute(EditMessageReplyMarkup.builder()
+                .chatId(callbackQuery.getMessage().getChatId())
+                .messageId(callbackQuery.getMessage().getMessageId())
+                .replyMarkup(keyboardService.getResortsKeyboard(index))
+                .build());
+        bot.execute(AnswerCallbackQuery.builder()
+                .callbackQueryId(callbackQuery.getId()).build());
+    }
+
+    @SneakyThrows
+    private void resort_rightHandler(CallbackQuery callbackQuery) {
+
+        Long ID = callbackQuery.getMessage().getChatId();
+
+        selectedActivity.putIfAbsent(ID, 0);
+        Integer index = selectedActivity.get(ID);
+        index += ODIN;
+
+        bot.execute(EditMessageReplyMarkup.builder()
+                .chatId(callbackQuery.getMessage().getChatId())
+                .messageId(callbackQuery.getMessage().getMessageId())
+                .replyMarkup(keyboardService.getResortsKeyboard(index))
                 .build());
         bot.execute(AnswerCallbackQuery.builder()
                 .callbackQueryId(callbackQuery.getId()).build());
@@ -129,6 +228,7 @@ public class CallbackQueryHandler {
 
     @SneakyThrows
     private void personalToursChooseHandler(CallbackQuery callbackQuery) {
+
         bot.execute(EditMessageMedia.builder()
                 .chatId(callbackQuery.getMessage().getChatId())
                 .messageId(callbackQuery.getMessage().getMessageId())
@@ -138,7 +238,43 @@ public class CallbackQueryHandler {
                 .chatId(callbackQuery.getMessage().getChatId())
                 .messageId(callbackQuery.getMessage().getMessageId())
                 .caption("Cписок авторских туров:")
-                .replyMarkup(keyboardService.getPersonalToursKeyboard())
+                .replyMarkup(keyboardService.getPersonalToursKeyboard(NOL))
+                .build());
+        bot.execute(AnswerCallbackQuery.builder()
+                .callbackQueryId(callbackQuery.getId()).build());
+    }
+
+    @SneakyThrows
+    private void personalTour_leftHandler(CallbackQuery callbackQuery) {
+
+        Long ID = callbackQuery.getMessage().getChatId();
+
+        selectedActivity.putIfAbsent(ID, 0);
+        Integer index = selectedActivity.get(ID);
+        index -= ODIN;
+
+        bot.execute(EditMessageReplyMarkup.builder()
+                .chatId(callbackQuery.getMessage().getChatId())
+                .messageId(callbackQuery.getMessage().getMessageId())
+                .replyMarkup(keyboardService.getPersonalToursKeyboard(index))
+                .build());
+        bot.execute(AnswerCallbackQuery.builder()
+                .callbackQueryId(callbackQuery.getId()).build());
+    }
+
+    @SneakyThrows
+    private void personalTour_rightHandler(CallbackQuery callbackQuery) {
+
+        Long ID = callbackQuery.getMessage().getChatId();
+
+        selectedActivity.putIfAbsent(ID, 0);
+        Integer index = selectedActivity.get(ID);
+        index += ODIN;
+
+        bot.execute(EditMessageReplyMarkup.builder()
+                .chatId(callbackQuery.getMessage().getChatId())
+                .messageId(callbackQuery.getMessage().getMessageId())
+                .replyMarkup(keyboardService.getPersonalToursKeyboard(index))
                 .build());
         bot.execute(AnswerCallbackQuery.builder()
                 .callbackQueryId(callbackQuery.getId()).build());
