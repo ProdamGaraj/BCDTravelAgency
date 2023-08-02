@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Data
@@ -23,5 +24,6 @@ public class Resort {
     public String description;
     public String geo;
     public String media;
-    public ActivityType type;
+    @OneToMany
+    public List<Activity> activities;
 }

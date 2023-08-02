@@ -19,9 +19,11 @@ public class HotelFeature {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private  Long id;
+
     public String name;
+
     public  String description;
-    
+
     @Nullable
     public Boolean free;
 }

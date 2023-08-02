@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Data
@@ -19,22 +20,13 @@ public class Hotel {
     private Long id;
     public String name;
     public String description;
-    public Iterable<HotelFeature> features;
+
+    @OneToMany
+    public List<HotelFeature> features;
+    @OneToOne
     public Resort resort;
     public String media;
 
-    public enum stars {
-        nullstar,
-        onestar,
-        twostar,
-        threestar,
-        fourstar,
-        fivestar
-    }
-    public enum food {
-        BB,
-        HB,
-        FB,
-        AllInclusive
-    }
+    public Stars stars;
+    public List<Food> food;
 }
