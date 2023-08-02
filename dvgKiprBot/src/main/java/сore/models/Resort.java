@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Data
@@ -19,9 +20,11 @@ public class Resort {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+
     public String name;
     public String description;
     public String geo;
     public String image_src;
-    public ActivityType type;
+    @OneToMany
+    public List<Activity> activities;
 }

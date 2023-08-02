@@ -14,7 +14,9 @@ import java.util.List;
 import java.util.Map;
 
 public class CallbackQueryHandler {
+
     private final AbsSender bot;
+
     static final KeyboardService keyboardService = new KeyboardService();
 
     static final Map<Long, List<Pair<Integer, String>>> activity_lists = new HashMap<>();

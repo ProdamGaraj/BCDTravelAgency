@@ -3,16 +3,34 @@ package сore.services;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
+import сore.models.Activity;
+import сore.models.CustomTour;
+import сore.models.Hotel;
+import сore.models.Resort;
+import сore.repository.TemporaryRepos.ActivityRepo;
+import сore.repository.TemporaryRepos.CustomTourRepo;
+import сore.repository.TemporaryRepos.HotelRepo;
+import сore.repository.TemporaryRepos.ResortRepo;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-
 @Service
 public class KeyboardService {
+
+    private final ActivityRepo activityRepo = new ActivityRepo();
+
+    private final ResortRepo resortRepo = new ResortRepo();
+
+    private final CustomTourRepo customTourRepo = new CustomTourRepo();
+
+    private final HotelRepo hotelRepo = new HotelRepo();
+
     static final Map<Long, Integer> selectedActivity = new HashMap<>();
+
+    public KeyboardService() {
+    }
 
     public InlineKeyboardMarkup getTourChoosingKeyboard() {
         return InlineKeyboardMarkup.builder()
@@ -33,13 +51,7 @@ public class KeyboardService {
 
     public InlineKeyboardMarkup getActivitiesKeyboard() {
 
-        List<String> activities = new ArrayList<>();
-        activities.add("Пиво");
-        activities.add("Водка");
-        activities.add("Раки");
-        activities.add("Текст");
-        activities.add("Ещё один текст");
-        activities.add("Описание");
+        List<Activity> activities = activityRepo.activityList();
 
         InlineKeyboardMarkup.InlineKeyboardMarkupBuilder builder = InlineKeyboardMarkup.builder();
 
@@ -50,15 +62,10 @@ public class KeyboardService {
     }
 
     public InlineKeyboardMarkup getResortsKeyboard() {
-        List<String> resorts = new ArrayList<>();
-        resorts.add("Я");
-        resorts.add("Ты");
-        resorts.add("Он");
-        resorts.add("Она");
-        resorts.add("Оно");
-        resorts.add("Они");
 
-        String currentResort = resorts.get(0);
+        List<Resort> resorts = resortRepo.resortList();
+
+        Resort currentResort =  resorts.get(0);
 
         return InlineKeyboardMarkup.builder()
                 .keyboardRow(List.of(
@@ -67,7 +74,7 @@ public class KeyboardService {
                                 .callbackData("resort_left")
                                 .build(),
                         InlineKeyboardButton.builder()
-                                .text(currentResort)
+                                .text(currentResort.name)
                                 .callbackData("resort_select")
                                 .build(),
                         InlineKeyboardButton.builder()
@@ -80,15 +87,9 @@ public class KeyboardService {
 
     public InlineKeyboardMarkup getPersonalToursKeyboard() {
 
-        List<String> personalTours = new ArrayList<>();
-        personalTours.add("I");
-        personalTours.add("am");
-        personalTours.add("liking");
-        personalTours.add("banana");
-        personalTours.add("now");
-        personalTours.add("!");
+        List<CustomTour> customTours = customTourRepo.customTourList();
 
-        String currentPersonalTours = personalTours.get(0);
+        CustomTour currentCustomTour = customTours.get(0);
 
         return InlineKeyboardMarkup.builder()
                 .keyboardRow(List.of(
@@ -97,7 +98,7 @@ public class KeyboardService {
                                 .callbackData("personalTour_left")
                                 .build(),
                         InlineKeyboardButton.builder()
-                                .text(currentPersonalTours)
+                                .text(currentCustomTour.name)
                                 .callbackData("personalTour_select")
                                 .build(),
                         InlineKeyboardButton.builder()
@@ -110,16 +111,9 @@ public class KeyboardService {
 
     public InlineKeyboardMarkup getHotelChoosingKeyboard() {
 
-        List<String> hotels = new ArrayList<>();
-        hotels.add("ADELAIS HOTEL");
-        hotels.add("MANDALI");
-        hotels.add("TOXOTIS");
-        hotels.add("ATLANTICA AQUA BLUE");
-        hotels.add("BOHEMIAN GARDENS");
-        hotels.add("CAVO MARIS BEACH");
-        hotels.add("CRYSTAL SPRINGS");
+        List<Hotel> hotels = hotelRepo.hotelList();
 
-        String currentHotel = hotels.get(0);
+        Hotel currentHotel = hotels.get(0);
 
         return InlineKeyboardMarkup.builder()
                 .keyboardRow(List.of(
@@ -128,7 +122,7 @@ public class KeyboardService {
                                 .callbackData("hotel_left")
                                 .build(),
                         InlineKeyboardButton.builder()
-                                .text(currentHotel)
+                                .text(currentHotel.name)
                                 .callbackData("hotel_select")
                                 .build(),
                         InlineKeyboardButton.builder()
