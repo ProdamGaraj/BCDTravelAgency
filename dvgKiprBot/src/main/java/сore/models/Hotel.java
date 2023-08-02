@@ -20,13 +20,11 @@ public class Hotel {
     private Long id;
     public String name;
     public String description;
-
     @OneToMany
     public List<HotelFeature> features;
     @OneToOne
     public Resort resort;
-    public String media;
-
     public Stars stars;
     public List<Food> food;
+    public String media;
 }

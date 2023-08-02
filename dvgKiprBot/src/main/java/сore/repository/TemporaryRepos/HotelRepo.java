@@ -28,7 +28,11 @@ public class HotelRepo {
                 " Рестораны, бары, пабы, ночные клубы и магазины в шаговой доступности от отеля." +
                 " До Парка скульптур под открытым небом 1 км, до Луна-парка 1,5 км, до международного аэропорта Ларнака 58 км",
                 hotelFeatureRepo.hotelFeatures("GRECIAN BAY"),
-                resortRepo.resortList().get(0), Stars.fivestar, foods));
+                resortRepo.resortList().get(0),
+                Stars.fivestar,
+                foods,
+                "pathToFile"
+                ));
         hotels.add(new Hotel(2L,
                 "Park Beach Hotel",
                 "Капитальная реновация отеля проведена зимой 2018-2019 г. Отель состоит из главного 2-этажного здания и семи 2-х этажных корпусов. " +
@@ -36,7 +40,11 @@ public class HotelRepo {
                         " в шаговой доступности от магазинов, ресторанов и баров. Отель подходит для семейных пар и отдыха с детьми.\n" +
                         "Расположен в 60 км от аэропорта г. Ларнака, в 4 км от центра города.\n",
                 hotelFeatureRepo.hotelFeatures("Park Beach Hotel"),
-                resortRepo.resortList().get(0), Stars.threestar, foods));
+                resortRepo.resortList().get(0), Stars.threestar,
+                foods,
+                "pathToFile"
+
+        ));
         hotels.add(new Hotel(3L,
                 "Cavo Maris Beach",
                 "Расположен в 2 км от Пляжа залива Фигового дерева и в 2,4 км от Пляжа Коннос-Бэй," +
@@ -44,7 +52,11 @@ public class HotelRepo {
                         " Прогулка в центр Протараса займет 20 минут. Дойти до песчаного пляжа можно без особых усилий." +
                         " Расположен недалеко от нескольких известных достопримечательностей, среди которых Cavo Maris Beach.",
                 hotelFeatureRepo.hotelFeatures("GRECIAN BAY"),
-                resortRepo.resortList().get(0), Stars.fourstar, foods));
+                resortRepo.resortList().get(0),
+                Stars.fourstar,
+                foods,
+                "pathToFile"
+        ));
 
         return hotels;
     }
