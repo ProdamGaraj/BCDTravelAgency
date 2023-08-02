@@ -27,7 +27,8 @@ public class KeyboardService {
                 .keyboardRow(List.of(InlineKeyboardButton.builder()
                         .text("Авторские туры")
                         .callbackData("personal_tours")
-                        .build()))
+                        .build()
+                ))
                 .build();
     }
 
@@ -75,6 +76,12 @@ public class KeyboardService {
                                 .callbackData("resort_right")
                                 .build()
                 ))
+                .keyboardRow( List.of(
+                        InlineKeyboardButton.builder()
+                                .text("Home")
+                                .callbackData("restart")
+                                .build()
+                ))
                 .build();
     }
 
@@ -103,6 +110,12 @@ public class KeyboardService {
                         InlineKeyboardButton.builder()
                                 .text("->")
                                 .callbackData("personalTour_right")
+                                .build()
+                ))
+                .keyboardRow(List.of(
+                        InlineKeyboardButton.builder()
+                                .text("Home")
+                                .callbackData("restart")
                                 .build()
                 ))
                 .build();
@@ -134,6 +147,12 @@ public class KeyboardService {
                         InlineKeyboardButton.builder()
                                 .text("->")
                                 .callbackData("hotel_right")
+                                .build()
+                ))
+                .keyboardRow( List.of(
+                        InlineKeyboardButton.builder()
+                                .text("Home")
+                                .callbackData("restart")
                                 .build()
                 ))
                 .build();

@@ -93,7 +93,7 @@ public class MessageHandler {
     @SneakyThrows
     private void startCommandHandler(Message message) {
 //        TODO: add start command message text
-
+//        TODO: fix start image to some image of Kipr
         bot.execute(SendPhoto.builder()
                 .chatId(message.getChatId())
                 .photo(mediaService.getStartMessageMedia())

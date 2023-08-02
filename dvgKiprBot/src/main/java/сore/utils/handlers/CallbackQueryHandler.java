@@ -10,6 +10,7 @@ import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import org.telegram.telegrambots.meta.bots.AbsSender;
 import сore.models.Activity;
 import сore.models.CustomTour;
+import сore.models.Resort;
 import сore.services.KeyboardService;
 import сore.services.MediaService;
 
@@ -48,7 +49,6 @@ public class CallbackQueryHandler {
                 if (callback_data.startsWith("activity:")) {
                     activityAddHandler(callbackQuery);
                 }
-
                 bot.execute(AnswerCallbackQuery.builder()
                         .callbackQueryId(callbackQuery.getId())
                         .text("Что-то пошло не так")
@@ -79,6 +79,11 @@ public class CallbackQueryHandler {
 
     @SneakyThrows
     private void restartHandler(CallbackQuery callbackQuery) {
+        bot.execute(EditMessageMedia.builder()
+                .chatId(callbackQuery.getMessage().getChatId())
+                .messageId(callbackQuery.getMessage().getMessageId())
+                .media(mediaService.updateMediaForStart())
+                .build());
         bot.execute(EditMessageCaption.builder()
                 .chatId(callbackQuery.getMessage().getChatId())
                 .messageId(callbackQuery.getMessage().getMessageId())
@@ -101,20 +106,23 @@ public class CallbackQueryHandler {
                 .caption("Cписок типов активностей:\n" + cur_list.toString())
                 .replyMarkup(keyboardService.getActivitiesKeyboard())
                 .build());
-
         bot.execute(AnswerCallbackQuery.builder()
                 .callbackQueryId(callbackQuery.getId()).build());
     }
 
     @SneakyThrows
     private void resortsChooseHandler(CallbackQuery callbackQuery) {
+        bot.execute(EditMessageMedia.builder()
+                .chatId(callbackQuery.getMessage().getChatId())
+                .messageId(callbackQuery.getMessage().getMessageId())
+                .media(mediaService.updateMediaForResort(new Resort()))
+                .build());
         bot.execute(EditMessageCaption.builder()
                 .chatId(callbackQuery.getMessage().getChatId())
                 .messageId(callbackQuery.getMessage().getMessageId())
                 .caption("Cписок курортов:")
                 .replyMarkup(keyboardService.getResortsKeyboard())
                 .build());
-
         bot.execute(AnswerCallbackQuery.builder()
                 .callbackQueryId(callbackQuery.getId()).build());
     }
@@ -130,6 +138,7 @@ public class CallbackQueryHandler {
                 .chatId(callbackQuery.getMessage().getChatId())
                 .messageId(callbackQuery.getMessage().getMessageId())
                 .caption("Cписок авторских туров:")
+                .replyMarkup(keyboardService.getPersonalToursKeyboard())
                 .build());
         bot.execute(AnswerCallbackQuery.builder()
                 .callbackQueryId(callbackQuery.getId()).build());

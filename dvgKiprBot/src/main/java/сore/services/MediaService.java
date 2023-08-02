@@ -27,7 +27,6 @@ public class MediaService {
         file.setMedia("https://picsum.photos/id/237/200/300");
         return file;
     };
-
     public InputFile getMediaForActivity(Activity activity){
         InputFile file = new InputFile();
         file.setMedia("https://picsum.photos/id/10/200/300");
@@ -77,5 +76,10 @@ public class MediaService {
         //TODO logic
         return file;
     }
-
+    public InputMedia updateMediaForStart(){
+        InputMedia file = new InputMediaPhoto();
+        file.setMedia("https://picsum.photos/id/237/200/300");
+        //TODO logic
+        return file;
+    }
 }
