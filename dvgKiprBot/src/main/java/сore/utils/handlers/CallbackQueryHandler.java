@@ -8,6 +8,8 @@ import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageMe
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageCaption;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import org.telegram.telegrambots.meta.bots.AbsSender;
+import сore.models.Activity;
+import сore.models.CustomTour;
 import сore.services.KeyboardService;
 import сore.services.MediaService;
 
@@ -70,7 +72,6 @@ public class CallbackQueryHandler {
                 .caption(args.toString() + "\nCписок типов активностей:\n" + cur_list.toString())
                 .replyMarkup(keyboardService.getActivitiesKeyboard())
                 .build());
-
         bot.execute(AnswerCallbackQuery.builder()
                 .callbackQueryId(callbackQuery.getId()).build());
 
@@ -120,6 +121,11 @@ public class CallbackQueryHandler {
 
     @SneakyThrows
     private void personalToursChooseHandler(CallbackQuery callbackQuery) {
+        bot.execute(EditMessageMedia.builder()
+                .chatId(callbackQuery.getMessage().getChatId())
+                .messageId(callbackQuery.getMessage().getMessageId())
+                .media(mediaService.updateMediaForCustomTour(new CustomTour()))
+                .build());
         bot.execute(EditMessageCaption.builder()
                 .chatId(callbackQuery.getMessage().getChatId())
                 .messageId(callbackQuery.getMessage().getMessageId())

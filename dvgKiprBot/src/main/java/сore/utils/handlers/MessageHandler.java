@@ -7,9 +7,13 @@ import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.DeleteMessage;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageCaption;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageCaption;
+import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageMedia;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.MessageEntity;
+import org.telegram.telegrambots.meta.api.objects.media.InputMedia;
+import org.telegram.telegrambots.meta.api.objects.media.InputMediaPhoto;
 import org.telegram.telegrambots.meta.bots.AbsSender;
+import сore.models.CustomTour;
 import сore.services.KeyboardService;
 import сore.services.MediaService;
 
@@ -92,7 +96,7 @@ public class MessageHandler {
 
         bot.execute(SendPhoto.builder()
                 .chatId(message.getChatId())
-                .photo(mediaService.getMessageMedia())
+                .photo(mediaService.getStartMessageMedia())
                 .caption("Доступные комманды:\n/start\n/customtours\n/authorization")
                 .replyMarkup(keyboardService.getTourChoosingKeyboard())
                 .build());
@@ -113,6 +117,7 @@ public class MessageHandler {
 //        TODO: add message text
         bot.execute(SendPhoto.builder()
                 .chatId(message.getChatId())
+                .photo(mediaService.getMediaForCustomTour(new CustomTour()))
                 .caption("Выберите, от чего хотите отталкиваться при выборе тура")
                 .replyMarkup(keyboardService.getTourChoosingKeyboard())
                 .build());
@@ -123,7 +128,7 @@ public class MessageHandler {
 //        TODO: add message text
         bot.execute(SendPhoto.builder()
                 .chatId(message.getChatId())
-                .photo(mediaService.getMessageMedia())
+                .photo(mediaService.getStartMessageMedia())
                 .caption("тестовый вывод фото")
                 .replyMarkup(keyboardService.getTourChoosingKeyboard())
                 .build());

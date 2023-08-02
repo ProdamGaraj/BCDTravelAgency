@@ -22,6 +22,6 @@ public class Resort {
     public String name;
     public String description;
     public String geo;
-    public String image_src;
+    public String media;
     public ActivityType type;
 }

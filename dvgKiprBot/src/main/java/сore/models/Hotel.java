@@ -17,11 +17,11 @@ public class Hotel {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-
     public String name;
     public String description;
     public Iterable<HotelFeature> features;
     public Resort resort;
+    public String media;
 
     public enum stars {
         nullstar,

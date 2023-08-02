@@ -24,4 +24,6 @@ public class Activity {
     public ActivityType activityType;
     @Nullable
     public Boolean free;
+    public String media;
+
 }
