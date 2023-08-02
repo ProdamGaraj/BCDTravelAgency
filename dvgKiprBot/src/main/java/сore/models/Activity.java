@@ -21,13 +21,7 @@ public class Activity {
     public String name;
     @Nullable
     public String description;
-    public enum type{
-        beach,
-        elite,
-        fancy,
-        youth,
-        family,
-    }
+    public ActivityType activityType;
     @Nullable
-    public Boolean  free;
+    public Boolean free;
 }

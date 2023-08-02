@@ -22,12 +22,6 @@ public class Resort {
     public String name;
     public String description;
     public String geo;
-    public enum type{
-        beach,
-        elite,
-        fancy,
-        youth, //molodej`niy
-        family,
-
-    }
+    public String image_src;
+    public ActivityType type;
 }
