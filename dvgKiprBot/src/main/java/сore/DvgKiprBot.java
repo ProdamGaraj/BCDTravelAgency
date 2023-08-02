@@ -40,7 +40,6 @@ public class DvgKiprBot extends TelegramLongPollingBot {
     public void onUpdateReceived(Update update) {
         if (update.hasMessage() && update.getMessage() != null) {
             Message message = update.getMessage();
-
             log.debug(message.getText());
             messageHandler.handleMessage(message);
             /*utilClass.logMessage(message);*/ //TODO: Надо пофиксить, утил класс - нулл, не понимаю как заинжектить
