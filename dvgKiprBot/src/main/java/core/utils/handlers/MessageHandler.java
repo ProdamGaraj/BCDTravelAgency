@@ -55,7 +55,7 @@ public class MessageHandler {
                 case "/media":
                     mediaCommandHandler(message);
                 default:
-                    bot.execute(SendPhoto.builder()
+                    bot.executeAsync(SendPhoto.builder()
                             .caption("Комманда не найдена")
                             .chatId(message.getChatId())
                             .build());
@@ -73,13 +73,13 @@ public class MessageHandler {
             return;
         }
 //        TODO: Auth logic
-        bot.execute(EditMessageCaption.builder()
+        bot.executeAsync(EditMessageCaption.builder()
                 .chatId(prevMessageOpt.get().getChatId())
                 .messageId(prevMessageOpt.get().getMessageId())
                 .caption("Пароль получен: " + password)
                 .build());
         is_password.put(message.getFrom().getId(), Pair.of(Boolean.FALSE, Optional.empty()));
-        bot.execute(DeleteMessage.builder()
+        bot.executeAsync(DeleteMessage.builder()
                 .chatId(message.getChatId())
                 .messageId(message.getMessageId())
                 .build());
@@ -89,7 +89,7 @@ public class MessageHandler {
     private void startCommandHandler(Message message) {
 //        TODO: add start command message text
 //        TODO: fix start image to some image of Kipr
-        bot.execute(SendPhoto.builder()
+        bot.executeAsync(SendPhoto.builder()
                 .chatId(message.getChatId())
                 .photo(mediaService.getStartMessageMedia())
                 .caption("Кипр - это островное государство в Средиземном море," +
@@ -106,7 +106,7 @@ public class MessageHandler {
     @SneakyThrows
     private void authorizationCommandHandler(Message message) {
 //        TODO: add message text
-        Message my_message = bot.execute(SendPhoto.builder()
+        Message my_message = bot.execute(SendPhoto.builder() //executeAsync
                 .chatId(message.getChatId())
                 .caption("Введите пароль")
                 .build());
@@ -116,7 +116,7 @@ public class MessageHandler {
     @SneakyThrows
     private void customTourCommandHandler(Message message) {
 //        TODO: add message text
-        bot.execute(SendPhoto.builder()
+        bot.executeAsync(SendPhoto.builder()
                 .chatId(message.getChatId())
                 .photo(mediaService.getMediaForCustomTour(new CustomTour()))
                 .caption("Выберите, от чего хотите отталкиваться при выборе тура")
@@ -127,7 +127,7 @@ public class MessageHandler {
     @SneakyThrows
     private void mediaCommandHandler(Message message) {
 //        TODO: add message text
-        bot.execute(SendPhoto.builder()
+        bot.executeAsync(SendPhoto.builder()
                 .chatId(message.getChatId())
                 .photo(mediaService.getStartMessageMedia())
                 .caption("тестовый вывод фото")
