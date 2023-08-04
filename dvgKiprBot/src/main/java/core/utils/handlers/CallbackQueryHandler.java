@@ -107,7 +107,6 @@ public class CallbackQueryHandler {
         }
     }
 
-    @Async
     @SneakyThrows
     private void activityAddHandler(CallbackQuery callbackQuery) {
         List<String> args = List.of(callbackQuery.getData().split(":"));

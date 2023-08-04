@@ -35,17 +35,25 @@ public class DvgKiprBot extends TelegramLongPollingBot {
 
 
     @Override
-    @SneakyThrows
     public void onUpdateReceived(Update update) {
         if (update.hasMessage() && update.getMessage() != null) {
             Message message = update.getMessage();
             log.debug(message.getText());
-            messageHandler.handleMessage(message);
+
+            // Create a new thread to handle the message asynchronously
+            Thread messageHandlerThread = new Thread(() -> {
+                messageHandler.handleMessage(message);
+            });
+            messageHandlerThread.start();
         }
         if (update.hasCallbackQuery() && update.getCallbackQuery() != null) {
             CallbackQuery callbackQuery = update.getCallbackQuery();
 
-            callbackQueryHandler.handleQuery(callbackQuery);
+            // Create a new thread to handle the callback query asynchronously
+            Thread callbackQueryHandlerThread = new Thread(() -> {
+                callbackQueryHandler.handleQuery(callbackQuery);
+            });
+            callbackQueryHandlerThread.start();
         }
     }
 
