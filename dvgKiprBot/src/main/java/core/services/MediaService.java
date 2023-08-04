@@ -23,6 +23,7 @@ public class MediaService {
     public static HotelRepository hotelRepository ;
     public static CustomToursRepository customToursRepository ;
 
+    //TODO: absolute path is piece of shit has to be rewrote quickly!
     @SneakyThrows
     public InputFile getStartMessageMedia() {
         InputFile file = new InputFile();

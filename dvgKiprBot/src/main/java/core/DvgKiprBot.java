@@ -4,6 +4,7 @@ import lombok.SneakyThrows;
 import lombok.extern.log4j.Log4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.scheduling.annotation.Async;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
@@ -36,6 +37,9 @@ public class DvgKiprBot extends TelegramLongPollingBot {
 
     @Override
     public void onUpdateReceived(Update update) {
+
+        //TODO check some issues with locks
+
         if (update.hasMessage() && update.getMessage() != null) {
             Message message = update.getMessage();
             log.debug(message.getText());

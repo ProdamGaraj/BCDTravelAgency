@@ -144,7 +144,6 @@ public class CallbackQueryHandler {
                 .callbackQueryId(callbackQuery.getId()).build());
     }
 
-
     @SneakyThrows
     private void activitiesChooseHandler(CallbackQuery callbackQuery) {
         if (!activity_lists.containsKey(callbackQuery.getFrom().getId())) {
