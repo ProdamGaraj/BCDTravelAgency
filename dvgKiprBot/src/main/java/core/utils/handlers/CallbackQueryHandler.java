@@ -1,5 +1,6 @@
 package core.utils.handlers;
 
+import core.models.Activity;
 import core.repository.TemporaryRepos.ActivityRepo;
 import core.repository.TemporaryRepos.CustomTourRepo;
 import core.repository.TemporaryRepos.HotelRepo;
@@ -39,11 +40,13 @@ public class CallbackQueryHandler {
     //Maps
     static final Map<Long, List<Pair<Integer, String>>> activity_lists = new HashMap<>();
     static final Map<Long, Integer> selectedActivity = new HashMap<>();
-
+    static final Map<Long, Integer> selectedResort = new HashMap<>();
+    static final Map<Long, Integer> selectedHotel = new HashMap<>();
 
     public CallbackQueryHandler(AbsSender bot) {
         this.bot = bot;
     }
+
 
     @SneakyThrows
     public void handleQuery(CallbackQuery callbackQuery) {
@@ -52,18 +55,20 @@ public class CallbackQueryHandler {
             case "restart":
                 restartHandler(callbackQuery);
                 break;
-            case "activities":
-                activitiesChooseHandler(callbackQuery);
-                break;
+
             case "resorts":
                 resortsChooseHandler(callbackQuery);
                 break;
-            case "resort_left":
+            case "resort_left/":
                 resort_leftHandler(callbackQuery);
                 break;
-            case "resort_right":
+            case "resort_right/":
                 resort_rightHandler(callbackQuery);
                 break;
+            case "resort_select/":
+                resort_select(callbackQuery);
+                break;
+
             case "personal_tours":
                 personalToursChooseHandler(callbackQuery);
                 break;
@@ -73,19 +78,28 @@ public class CallbackQueryHandler {
             case "personalTour_right":
                 personalTour_rightHandler(callbackQuery);
                 break;
+            //TODO: Uncomment this after showdown is over
+            //case "personalTour_select":
+            //    personalTour_select(callbackQuery);
+            //    break;
+
+            case "activities":
+                activitiesChooseHandler(callbackQuery);
+                break;
             case "activity_left":
                 activity_leftHandler(callbackQuery);
                 break;
             case "activity_right":
                 activity_rightHandler(callbackQuery);
                 break;
+            case "activity_select":
+                activity_select(callbackQuery);
+                break;
+
             default:
-                if (callback_data.startsWith("activity:")) {
-                    activityAddHandler(callbackQuery);
-                }
                 bot.execute(AnswerCallbackQuery.builder()
                         .callbackQueryId(callbackQuery.getId())
-                        .text("Что-то пошло не так")
+                        .text("Здесь пока что ничего нет, но очень скоро появится")
                         .showAlert(Boolean.TRUE)
                         .build());
                 break;
@@ -103,7 +117,7 @@ public class CallbackQueryHandler {
         bot.execute(EditMessageCaption.builder()
                 .chatId(callbackQuery.getMessage().getChatId())
                 .messageId(callbackQuery.getMessage().getMessageId())
-                .caption(args.toString() + "\nCписок типов активностей:\n" + cur_list.toString())
+                .caption(args.toString() + "\nЗдесь будет список типов активностей:\n")//TODO: uncomment this  + cur_list.toString())
                 .replyMarkup(keyboardService.getActivitiesKeyboard(0))
                 .build());
         bot.execute(AnswerCallbackQuery.builder()
@@ -134,10 +148,15 @@ public class CallbackQueryHandler {
             activity_lists.put(callbackQuery.getFrom().getId(), new ArrayList<>());
         }
         List<Pair<Integer, String>> cur_list = activity_lists.get(callbackQuery.getFrom().getId());
+        bot.execute(EditMessageMedia.builder()
+                .chatId(callbackQuery.getMessage().getChatId())
+                .messageId(callbackQuery.getMessage().getMessageId())
+                .media(mediaService.updateMediaForActivity(new Activity()))
+                .build());
         bot.execute(EditMessageCaption.builder()
                 .chatId(callbackQuery.getMessage().getChatId())
                 .messageId(callbackQuery.getMessage().getMessageId())
-                .caption("Cписок типов активностей:\n" + cur_list.toString())
+                .caption("Здесь будет список ваших активностей:\n" + cur_list.toString())
                 .replyMarkup(keyboardService.getActivitiesKeyboard(0))
                 .build());
         bot.execute(AnswerCallbackQuery.builder()
@@ -153,7 +172,7 @@ public class CallbackQueryHandler {
         Integer index = selectedActivity.get(ID);
         index -= 1;
 
-        if (index < 0 || index >=  selectedActivity.size()) {
+        if (index < 0 || index >= activityRepo.activityList().size()) {
             index = 0;
         }//TODO: think about  mod(currentIndex:size)
 
@@ -176,7 +195,7 @@ public class CallbackQueryHandler {
         Integer index = selectedActivity.get(ID);
         index += 1;
 
-        if (index < 0 || index >=  selectedActivity.size()) {
+        if (index < 0 || index >= activityRepo.activityList().size()) {
             index = 0;
         }//TODO: think about  mod(currentIndex:size)
 
@@ -190,6 +209,10 @@ public class CallbackQueryHandler {
                 .callbackQueryId(callbackQuery.getId()).build());
     }
 
+    private void activity_select(CallbackQuery callbackQuery) {
+
+    }
+
     @SneakyThrows
     private void resortsChooseHandler(CallbackQuery callbackQuery) {
         bot.execute(EditMessageMedia.builder()
@@ -200,7 +223,7 @@ public class CallbackQueryHandler {
         bot.execute(EditMessageCaption.builder()
                 .chatId(callbackQuery.getMessage().getChatId())
                 .messageId(callbackQuery.getMessage().getMessageId())
-                .caption("Cписок курортов:")
+                .caption("Здесь будет список курортов:")
                 .replyMarkup(keyboardService.getResortsKeyboard(0))
                 .build());
         bot.execute(AnswerCallbackQuery.builder()
@@ -216,7 +239,7 @@ public class CallbackQueryHandler {
         Integer index = selectedActivity.get(ID);
         index -= 1;
 
-        if (index < 0 || index >=  selectedActivity.size()) {
+        if (index < 0 || index >= selectedActivity.size()) {
             index = 0;
         }//TODO: think about  mod(currentIndex:size)
 
@@ -238,7 +261,7 @@ public class CallbackQueryHandler {
         Integer index = selectedActivity.get(ID);
         index += 1;
 
-        if (index < 0 || index >=  selectedActivity.size()) {
+        if (index < 0 || index >= resortRepo.resortList().size()) {
             index = 0;
         }//TODO: think about  mod(currentIndex:size)
 
@@ -252,6 +275,27 @@ public class CallbackQueryHandler {
     }
 
     @SneakyThrows
+    private void resort_select(CallbackQuery callbackQuery) {
+
+        //TODO: this code suck ass, so it has to be rewrited! I suppose we
+        // need some service wich will always give us needed id, and also we need to add some data
+        // to callback data, but not as i did it. This is disgusting! I hate myself.
+
+        String data = callbackQuery.getData();
+        Integer id = Integer.parseInt(data.substring(data.lastIndexOf("/")));
+        selectedResort.put(0L, id);
+        bot.execute(EditMessageReplyMarkup.builder()
+                .chatId(callbackQuery.getMessage().getChatId())
+                .messageId(callbackQuery.getMessage().getMessageId())
+                .build());
+        bot.execute(AnswerCallbackQuery.builder()
+                .callbackQueryId(callbackQuery.getId())
+                .text("Вы выбрали " + resortRepo.resortList().get(id).name)
+                .showAlert(Boolean.TRUE)
+                .build());
+    }
+
+    @SneakyThrows
     private void personalToursChooseHandler(CallbackQuery callbackQuery) {
 
         bot.execute(EditMessageMedia.builder()
@@ -262,7 +306,7 @@ public class CallbackQueryHandler {
         bot.execute(EditMessageCaption.builder()
                 .chatId(callbackQuery.getMessage().getChatId())
                 .messageId(callbackQuery.getMessage().getMessageId())
-                .caption("Cписок авторских туров:")
+                .caption("Здесь будет список авторских туров:")
                 .replyMarkup(keyboardService.getPersonalToursKeyboard(0))
                 .build());
         bot.execute(AnswerCallbackQuery.builder()
@@ -278,7 +322,7 @@ public class CallbackQueryHandler {
         Integer index = selectedActivity.get(ID);
         index -= 1;
 
-        if (index < 0 || index >=  selectedActivity.size()) {
+        if (index < 0 || index >= customTourRepo.customTourList().size()) {
             index = 0;
         }//TODO: think about  mod(currentIndex:size)
 
@@ -301,7 +345,7 @@ public class CallbackQueryHandler {
         Integer index = selectedActivity.get(ID);
         index += 1;
 
-        if (index < 0 || index >=  selectedActivity.size()) {
+        if (index < 0 || index >= customTourRepo.customTourList().size()) {
             index = 0;
         }
 
@@ -312,5 +356,8 @@ public class CallbackQueryHandler {
                 .build());
         bot.execute(AnswerCallbackQuery.builder()
                 .callbackQueryId(callbackQuery.getId()).build());
+    }
+
+    private void personalTour_select(CallbackQuery callbackQuery) {
     }
 }

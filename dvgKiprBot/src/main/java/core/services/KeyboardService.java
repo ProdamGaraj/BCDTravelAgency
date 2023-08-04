@@ -52,7 +52,7 @@ public class KeyboardService {
 
         List<Activity> activities = activityRepo.activityList();
 
-        Activity acurrentActivity = activities.get(index);
+        Activity currentActivity = activities.get(index);
 
         return InlineKeyboardMarkup.builder()
                 .keyboardRow(List.of(
@@ -61,8 +61,8 @@ public class KeyboardService {
                                 .callbackData("activity_left")
                                 .build(),
                         InlineKeyboardButton.builder()
-                                .text(acurrentActivity.name)
-                                .callbackData("activity_select")
+                                .text(currentActivity.name)
+                                .callbackData("activity_select"+currentActivity.getId())
                                 .build(),
                         InlineKeyboardButton.builder()
                                 .text("->")
@@ -88,15 +88,15 @@ public class KeyboardService {
                 .keyboardRow(List.of(
                         InlineKeyboardButton.builder()
                                 .text("<-")
-                                .callbackData("resort_left")
+                                .callbackData("resort_left/")
                                 .build(),
                         InlineKeyboardButton.builder()
                                 .text(currentResort.name)
-                                .callbackData("resort_select")
+                                .callbackData("resort_select/"+currentResort.getId())
                                 .build(),
                         InlineKeyboardButton.builder()
                                 .text("->")
-                                .callbackData("resort_right")
+                                .callbackData("resort_right/")
                                 .build()
                 ))
                 .keyboardRow( List.of(
@@ -111,7 +111,6 @@ public class KeyboardService {
     public InlineKeyboardMarkup getPersonalToursKeyboard(Integer index) {
 
         List<CustomTour> customTours = customTourRepo.customTourList();
-
 
         CustomTour currentCustomTour = customTours.get(index);
 

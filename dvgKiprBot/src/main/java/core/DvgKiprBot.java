@@ -41,7 +41,6 @@ public class DvgKiprBot extends TelegramLongPollingBot {
             Message message = update.getMessage();
             log.debug(message.getText());
             messageHandler.handleMessage(message);
-            /*utilClass.logMessage(message);*/ //TODO: Надо пофиксить, утил класс - нулл, не понимаю как заинжектить
         }
         if (update.hasCallbackQuery() && update.getCallbackQuery() != null) {
             CallbackQuery callbackQuery = update.getCallbackQuery();
@@ -59,7 +58,6 @@ public class DvgKiprBot extends TelegramLongPollingBot {
     public String getBotToken() {
         return "6460979142:AAHV4_8sKXuKmWwCZUBCBt7Rln_ZyYKxh9Y";
     }
-
 
     @SneakyThrows
     public static void main(String[] args) {
