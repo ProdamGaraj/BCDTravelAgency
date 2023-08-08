@@ -72,7 +72,7 @@ public class DvgKiprBot extends TelegramLongPollingBot {
 
     @SneakyThrows
     public static void main(String[] args){
-        SpringApplication.run(DvgKiprBotApplication.class, args);
+        SpringApplication.run(DvgKiprBot.class, args);
         DvgKiprBot bot = new DvgKiprBot();
         bot.botName="dvgKiprbot";
         bot.botToken="6460979142:AAHV4_8sKXuKmWwCZUBCBt7Rln_ZyYKxh9Y";

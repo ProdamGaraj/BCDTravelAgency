@@ -3,8 +3,7 @@ package bcd.solution.dvgKiprBot.core.models;
 import jakarta.persistence.Entity;
 
 
-@Entity
-public enum StarType {
+public enum Stars {
     nullstar,
     onestar,
     twostar,
