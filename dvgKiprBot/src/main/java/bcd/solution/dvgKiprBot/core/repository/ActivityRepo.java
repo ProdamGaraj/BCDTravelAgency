@@ -6,16 +6,22 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
-public class ActivityRepo{
-    public List<Activity> activityList() {
+public interface ActivityRepo extends JpaRepository<Activity, Long>{
 
-        List<Activity> activities = new ArrayList<>();
-        activities.add(new Activity(1L, "зал", "тренажерный", ActivityType.YOUTH, true, "pathToFile"));
-        activities.add(new Activity(2L, "теннис", "настольный", ActivityType.YOUTH, true, "pathToFile"));
-        activities.add(new Activity(3L, "бильярд", "бильярд", ActivityType.ELITE, false, "pathToFile"));
-        activities.add(new Activity(4L, "музыка", "живая", ActivityType.FANCY, true, "pathToFile"));
+    List<Activity> findAll();
 
-        return  activities;
-    }
+    Optional<Activity> findById(Long id);
+
+//    public List<Activity> activityList() {
+//
+//        List<Activity> activities = new ArrayList<>();
+//        activities.add(new Activity(1L, "зал", "тренажерный", ActivityType.YOUTH, true, "pathToFile"));
+//        activities.add(new Activity(2L, "теннис", "настольный", ActivityType.YOUTH, true, "pathToFile"));
+//        activities.add(new Activity(3L, "бильярд", "бильярд", ActivityType.ELITE, false, "pathToFile"));
+//        activities.add(new Activity(4L, "музыка", "живая", ActivityType.FANCY, true, "pathToFile"));
+//
+//        return  activities;
+//    }
 }
