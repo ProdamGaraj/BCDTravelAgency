@@ -14,7 +14,7 @@ import jakarta.persistence.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Table
+@Table(name = "users")
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -22,5 +22,6 @@ public class User {
     private String login; //TODO: phone number or username
     @Nullable
     private String password;
+    @Enumerated(EnumType.STRING)
     private UserRole role;
 }

@@ -20,6 +20,8 @@ public class CustomTour {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     public String name;
+    @Nullable
     public String description;
+    @Nullable
     public String media;
 }

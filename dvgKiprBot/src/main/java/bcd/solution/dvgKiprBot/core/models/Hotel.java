@@ -23,9 +23,12 @@ public class Hotel {
     public String description;
     @OneToMany
     public List<HotelFeature> features;
-    @OneToOne
+    @ManyToOne
     public Resort resort;
+    @Enumerated(EnumType.STRING)
     public Stars stars;
+    @ElementCollection(targetClass = Food.class, fetch = FetchType.EAGER)
+    @Enumerated(EnumType.STRING)
     public List<Food> food;
     public String media;
 }

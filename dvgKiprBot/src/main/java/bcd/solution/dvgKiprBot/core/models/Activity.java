@@ -22,6 +22,7 @@ public class Activity {
     public String name;
     @Nullable
     public String description;
+    @Enumerated(EnumType.STRING)
     public ActivityType activityType;
     @Nullable
     public Boolean free;
