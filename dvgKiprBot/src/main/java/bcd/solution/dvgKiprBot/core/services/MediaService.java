@@ -9,9 +9,7 @@ import bcd.solution.dvgKiprBot.core.models.Activity;
 import bcd.solution.dvgKiprBot.core.models.CustomTour;
 import bcd.solution.dvgKiprBot.core.models.Hotel;
 import bcd.solution.dvgKiprBot.core.models.Resort;
-import bcd.solution.dvgKiprBot.core.repository.*;
 
-import java.io.File;
 import java.io.FileInputStream;
 
 @Service

@@ -1,8 +1,8 @@
 package bcd.solution.dvgKiprBot.core.repository;;
 
-import bcd.solution.dvgKiprBot.core.models.Food;
+import bcd.solution.dvgKiprBot.core.models.FoodType;
 import bcd.solution.dvgKiprBot.core.models.Hotel;
-import bcd.solution.dvgKiprBot.core.models.Stars;
+import bcd.solution.dvgKiprBot.core.models.StarType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,10 +15,10 @@ public class HotelRepo {
 
     public List<Hotel> hotelList() {
 
-        List<Food> foods = new ArrayList<>();
-        foods.add(Food.BB);
-        foods.add(Food.HB);
-        foods.add(Food.FB);
+        List<FoodType> foods = new ArrayList<>();
+        foods.add(FoodType.BB);
+        foods.add(FoodType.HB);
+        foods.add(FoodType.FB);
 
         List<Hotel> hotels = new ArrayList<>();
         hotels.add(new Hotel(1L,
@@ -28,7 +28,7 @@ public class HotelRepo {
                 " До Парка скульптур под открытым небом 1 км, до Луна-парка 1,5 км, до международного аэропорта Ларнака 58 км",
                 hotelFeatureRepo.hotelFeatures("GRECIAN BAY"),
                 resortRepo.resortList().get(0),
-                Stars.fivestar,
+                StarType.fivestar,
                 foods,
                 "pathToFile"
                 ));
@@ -39,7 +39,7 @@ public class HotelRepo {
                         " в шаговой доступности от магазинов, ресторанов и баров. Отель подходит для семейных пар и отдыха с детьми.\n" +
                         "Расположен в 60 км от аэропорта г. Ларнака, в 4 км от центра города.\n",
                 hotelFeatureRepo.hotelFeatures("Park Beach Hotel"),
-                resortRepo.resortList().get(0), Stars.threestar,
+                resortRepo.resortList().get(0), StarType.threestar,
                 foods,
                 "pathToFile"
 
@@ -52,7 +52,7 @@ public class HotelRepo {
                         " Расположен недалеко от нескольких известных достопримечательностей, среди которых Cavo Maris Beach.",
                 hotelFeatureRepo.hotelFeatures("GRECIAN BAY"),
                 resortRepo.resortList().get(0),
-                Stars.fourstar,
+                StarType.fourstar,
                 foods,
                 "pathToFile"
         ));
