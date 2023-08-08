@@ -3,6 +3,7 @@ target/
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
+/src/main/resources/images/
 
 ### STS ###
 .apt_generated
@@ -18,11 +19,6 @@ target/
 *.iws
 *.iml
 *.ipr
-*.xml
-*.workspace.xml
-# |     не работает
-
-
 
 ### NetBeans ###
 /nbproject/private/
@@ -36,3 +32,4 @@ build/
 
 ### VS Code ###
 .vscode/
+
