@@ -3,7 +3,7 @@ target/
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
-/src/main/resources/images/
+/src/main/resources/images/hotels
 
 ### STS ###
 .apt_generated
