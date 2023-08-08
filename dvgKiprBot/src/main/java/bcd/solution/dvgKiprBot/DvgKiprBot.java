@@ -62,12 +62,12 @@ public class DvgKiprBot extends TelegramLongPollingBot {
 
     @Override
     public String getBotUsername() {
-        return "dvgKiprbot";
+        return this.botName;
     }
 
     @Override
     public String getBotToken() {
-        return "6460979142:AAHV4_8sKXuKmWwCZUBCBt7Rln_ZyYKxh9Y";
+        return this.botToken;
     }
 
     @SneakyThrows
@@ -75,7 +75,7 @@ public class DvgKiprBot extends TelegramLongPollingBot {
         SpringApplication.run(DvgKiprBot.class, args);
         DvgKiprBot bot = new DvgKiprBot();
         bot.botName="dvgKiprbot";
-        bot.botToken="6460979142:AAHV4_8sKXuKmWwCZUBCBt7Rln_ZyYKxh9Y";
+        bot.botToken="6495757627:AAHfu3cyhYU9KAky8DN96EDToHPsw28AIE4";
         TelegramBotsApi telegramBotsApi = new TelegramBotsApi(DefaultBotSession.class);
         telegramBotsApi.registerBot(bot);
     }

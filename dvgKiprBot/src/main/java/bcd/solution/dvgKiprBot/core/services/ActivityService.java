@@ -1,5 +1,6 @@
 package bcd.solution.dvgKiprBot.core.services;
 
+import bcd.solution.dvgKiprBot.DvgKiprBot;
 import bcd.solution.dvgKiprBot.core.models.Activity;
 import bcd.solution.dvgKiprBot.core.repository.ActivityRepo;
 import lombok.SneakyThrows;
@@ -25,7 +26,7 @@ public class ActivityService {
     static final Map<Long, Integer> selectedActivity = new HashMap<>();
     static final Map<Long, List<Pair<Integer, String>>> activity_lists = new HashMap<>();
     private final ActivityRepo activityRepo = new ActivityRepo();
-    public ActivityService(AbsSender bot) {
+    public ActivityService(DvgKiprBot bot) {
         this.bot = bot;
     }
 

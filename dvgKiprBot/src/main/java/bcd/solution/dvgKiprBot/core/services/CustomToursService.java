@@ -1,5 +1,6 @@
 package bcd.solution.dvgKiprBot.core.services;
 
+import bcd.solution.dvgKiprBot.DvgKiprBot;
 import lombok.SneakyThrows;
 import org.jvnet.hk2.annotations.Service;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +25,7 @@ public class CustomToursService {
     static final MediaService mediaService = new MediaService();
     private final CustomTourRepo customTourRepo = new CustomTourRepo();
     static final Map<Long, Integer> selectedActivity = new HashMap<>();
-    public CustomToursService(AbsSender bot) {
+    public CustomToursService(DvgKiprBot bot) {
         this.bot = bot;
     }
 

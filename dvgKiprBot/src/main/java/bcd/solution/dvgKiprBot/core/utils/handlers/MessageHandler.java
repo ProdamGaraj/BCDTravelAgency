@@ -1,5 +1,6 @@
 package bcd.solution.dvgKiprBot.core.utils.handlers;
 
+import bcd.solution.dvgKiprBot.DvgKiprBot;
 import lombok.SneakyThrows;
 import org.springframework.data.util.Pair;
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
@@ -24,7 +25,7 @@ public class MessageHandler {
 
     static final MediaService mediaService = new MediaService();
 
-    public MessageHandler(AbsSender bot) {
+    public MessageHandler(DvgKiprBot bot) {
         this.bot = bot;
     }
 

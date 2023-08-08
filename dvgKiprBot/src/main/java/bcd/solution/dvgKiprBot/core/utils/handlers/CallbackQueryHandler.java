@@ -1,5 +1,6 @@
 package bcd.solution.dvgKiprBot.core.utils.handlers;
 
+import bcd.solution.dvgKiprBot.DvgKiprBot;
 import bcd.solution.dvgKiprBot.core.repository.HotelRepo;
 import bcd.solution.dvgKiprBot.core.services.*;
 import lombok.SneakyThrows;
@@ -38,7 +39,7 @@ public class CallbackQueryHandler {
 
 
 
-    public CallbackQueryHandler(AbsSender bot) {
+    public CallbackQueryHandler(DvgKiprBot bot) {
         this.bot = bot;
         this.activityService = new ActivityService(bot);
         this.resortService = new  ResortService(bot);
@@ -58,69 +59,28 @@ public class CallbackQueryHandler {
         //As an idea we should use if else statements to go easier inside of our algorithm paths
         String callback_data = callbackQuery.getData();
         switch (callback_data) {
-            case "restart":
-                restartHandler(callbackQuery);
-                break;
-
-            case "resorts":
-                resortService.resortsChooseHandler(callbackQuery);
-                break;
-            case "resort_left/":
-                resortService.resort_leftHandler(callbackQuery);
-                break;
-            case "resort_right/":
-                resortService.resort_rightHandler(callbackQuery);
-                break;
-            case "resort_select/":
-                resortService.resort_select(callbackQuery);
-                break;
-
-            case "personal_tours":
-                customToursService.personalToursChooseHandler(callbackQuery);
-                break;
-            case "personalTour_left":
-                customToursService.personalTour_leftHandler(callbackQuery);
-                break;
-            case "personalTour_right":
-                customToursService.personalTour_rightHandler(callbackQuery);
-                break;
-            case "personalTour_select":
-                customToursService.personalTour_select(callbackQuery);
-                break;
-
-            case "activities":
-                activityService.activitiesChooseHandler(callbackQuery);
-                break;
-            case "activity_left":
-                activityService.activity_leftHandler(callbackQuery);
-                break;
-            case "activity_right":
-                activityService.activity_rightHandler(callbackQuery);
-                break;
-            case "activity_select":
-                activityService.activity_select(callbackQuery);
-                break;
-
-            case "hotels":
-                hotelService.hotelsChooseHandler(callbackQuery);
-                break;
-            case "hotel_left":
-                hotelService.hotels_leftHandler(callbackQuery);
-                break;
-            case "hotel_right":
-                hotelService.hotel_rightHandler(callbackQuery);
-                break;
-            case "hotel_select":
-                hotelService.hotel_select(callbackQuery);
-                break;
-
-            default:
-                bot.executeAsync(AnswerCallbackQuery.builder()
-                        .callbackQueryId(callbackQuery.getId())
-                        .text("Здесь пока что ничего нет, но очень скоро появится")
-                        .showAlert(Boolean.TRUE)
-                        .build());
-                break;
+            case "restart" -> restartHandler(callbackQuery);
+            case "resorts" -> resortService.resortsChooseHandler(callbackQuery);
+            case "resort_left/" -> resortService.resort_leftHandler(callbackQuery);
+            case "resort_right/" -> resortService.resort_rightHandler(callbackQuery);
+            case "resort_select/" -> resortService.resort_select(callbackQuery);
+            case "personal_tours" -> customToursService.personalToursChooseHandler(callbackQuery);
+            case "personalTour_left" -> customToursService.personalTour_leftHandler(callbackQuery);
+            case "personalTour_right" -> customToursService.personalTour_rightHandler(callbackQuery);
+            case "personalTour_select" -> customToursService.personalTour_select(callbackQuery);
+            case "activities" -> activityService.activitiesChooseHandler(callbackQuery);
+            case "activity_left" -> activityService.activity_leftHandler(callbackQuery);
+            case "activity_right" -> activityService.activity_rightHandler(callbackQuery);
+            case "activity_select" -> activityService.activity_select(callbackQuery);
+            case "hotels" -> hotelService.hotelsChooseHandler(callbackQuery);
+            case "hotel_left" -> hotelService.hotels_leftHandler(callbackQuery);
+            case "hotel_right" -> hotelService.hotel_rightHandler(callbackQuery);
+            case "hotel_select" -> hotelService.hotel_select(callbackQuery);
+            default -> bot.executeAsync(AnswerCallbackQuery.builder()
+                    .callbackQueryId(callbackQuery.getId())
+                    .text("Здесь пока что ничего нет, но очень скоро появится")
+                    .showAlert(Boolean.TRUE)
+                    .build());
         }
     }
     @SneakyThrows

@@ -1,12 +1,13 @@
 package bcd.solution.dvgKiprBot.core.services;
 
+import bcd.solution.dvgKiprBot.DvgKiprBot;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import org.telegram.telegrambots.meta.bots.AbsSender;
 
 public class HotelService {
     private final AbsSender bot;
 
-    public HotelService(AbsSender bot) {
+    public HotelService(DvgKiprBot bot) {
         this.bot = bot;
     }
 
