@@ -1,10 +1,10 @@
 package bcd.solution.dvgKiprBot.core.services;
 
-import org.jvnet.hk2.annotations.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 import bcd.solution.dvgKiprBot.core.models.User;
 import bcd.solution.dvgKiprBot.core.models.UserRole;
 import bcd.solution.dvgKiprBot.core.repository.UserRepository;
+import org.springframework.stereotype.Service;
 
 @Service
 public class AutorizationService {

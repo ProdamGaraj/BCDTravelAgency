@@ -2,7 +2,10 @@ package bcd.solution.dvgKiprBot.core.utils.handlers;
 
 import bcd.solution.dvgKiprBot.DvgKiprBot;
 import lombok.SneakyThrows;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.util.Pair;
+import org.springframework.stereotype.Component;
+import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.DeleteMessage;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageCaption;
@@ -15,27 +18,31 @@ import bcd.solution.dvgKiprBot.core.services.MediaService;
 
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+@Component
 public class MessageHandler {
-    private final AbsSender bot;
     private final Map<Long, Pair<Boolean, Optional<Message>>> is_password = new HashMap<>();
-    static final KeyboardService keyboardService = new KeyboardService();
+    private final KeyboardService keyboardService;
 
-    static final MediaService mediaService = new MediaService();
+    private final MediaService mediaService;
 
-    public MessageHandler(DvgKiprBot bot) {
-        this.bot = bot;
+    @Autowired
+    public MessageHandler(KeyboardService keyboardService,
+                          MediaService mediaService) {
+        this.keyboardService = keyboardService;
+        this.mediaService = mediaService;
     }
 
     @SneakyThrows
-    public void handleMessage(Message message) {
+    public void handleMessage(Message message, DvgKiprBot bot) {
         if (!message.hasText()) {
             return;
         }
         if (!message.hasEntities() && is_password.get(message.getFrom().getId()).getFirst()) {
-            passwordHandler(message);
+            passwordHandler(message, bot);
         }
         Optional<MessageEntity> commandEntity =
                 message.getEntities().stream().filter(e -> "bot_command".equals(e.getType())).findFirst();
@@ -45,16 +52,16 @@ public class MessageHandler {
                     commandEntity.get().getLength());
             switch (command) {
                 case "/start":
-                    startCommandHandler(message);
+                    startCommandHandler(message, bot);
                     break;
                 case "/customtours":
-                    customTourCommandHandler(message);
+                    customTourCommandHandler(message, bot);
                     break;
                 case "/authorization":
-                    authorizationCommandHandler(message);
+                    authorizationCommandHandler(message, bot);
                     break;
                 case "/media":
-                    mediaCommandHandler(message);
+                    mediaCommandHandler(message, bot);
                 default:
                     bot.executeAsync(SendPhoto.builder()
                             .caption("Комманда не найдена")
@@ -67,7 +74,7 @@ public class MessageHandler {
     }
 
     @SneakyThrows
-    private void passwordHandler(Message message) {
+    private void passwordHandler(Message message, DvgKiprBot bot) {
         String password = message.getText();
         Optional<Message> prevMessageOpt = is_password.get(message.getFrom().getId()).getSecond();
         if (prevMessageOpt.isEmpty()) {
@@ -87,7 +94,7 @@ public class MessageHandler {
     }
 
     @SneakyThrows
-    private void startCommandHandler(Message message) {
+    private void startCommandHandler(Message message, DvgKiprBot bot) {
 //        TODO: add start command message text
 //        TODO: fix start image to some image of Kipr
         bot.executeAsync(SendPhoto.builder()
@@ -105,7 +112,7 @@ public class MessageHandler {
     }
 
     @SneakyThrows
-    private void authorizationCommandHandler(Message message) {
+    private void authorizationCommandHandler(Message message, DvgKiprBot bot) {
 //        TODO: add message text
         Message my_message = bot.execute(SendPhoto.builder() //executeAsync
                 .chatId(message.getChatId())
@@ -115,7 +122,7 @@ public class MessageHandler {
     }
 
     @SneakyThrows
-    private void customTourCommandHandler(Message message) {
+    private void customTourCommandHandler(Message message, DvgKiprBot bot) {
 //        TODO: add message text
         bot.executeAsync(SendPhoto.builder()
                 .chatId(message.getChatId())
@@ -126,7 +133,7 @@ public class MessageHandler {
     }
 
     @SneakyThrows
-    private void mediaCommandHandler(Message message) {
+    private void mediaCommandHandler(Message message, DvgKiprBot bot) {
 //        TODO: add message text
         bot.executeAsync(SendPhoto.builder()
                 .chatId(message.getChatId())

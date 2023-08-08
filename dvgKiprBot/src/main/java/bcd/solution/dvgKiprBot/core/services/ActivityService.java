@@ -2,10 +2,13 @@ package bcd.solution.dvgKiprBot.core.services;
 
 import bcd.solution.dvgKiprBot.DvgKiprBot;
 import bcd.solution.dvgKiprBot.core.models.Activity;
+import bcd.solution.dvgKiprBot.core.models.ActivityType;
 import bcd.solution.dvgKiprBot.core.repository.ActivityRepo;
 import lombok.SneakyThrows;
-import org.jvnet.hk2.annotations.Service;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.util.Pair;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.AnswerCallbackQuery;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageCaption;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageMedia;
@@ -20,18 +23,28 @@ import java.util.Map;
 
 @Service
 public class ActivityService {
-    private final AbsSender bot;
-    static final KeyboardService keyboardService = new KeyboardService();
-    static final MediaService mediaService = new MediaService();
-    static final Map<Long, Integer> selectedActivity = new HashMap<>();
-    static final Map<Long, List<Pair<Integer, String>>> activity_lists = new HashMap<>();
-    private final ActivityRepo activityRepo = new ActivityRepo();
-    public ActivityService(DvgKiprBot bot) {
-        this.bot = bot;
+    private final KeyboardService keyboardService;
+    private final MediaService mediaService = new MediaService();
+    private final Map<Long, Integer> selectedActivity = new HashMap<>();
+    private final Map<Long, List<Pair<Integer, String>>> activity_lists = new HashMap<>();
+    private final ActivityRepo activityRepo;
+
+    @Autowired
+    public ActivityService(ActivityRepo activityRepo,
+                           KeyboardService keyboardService) {
+        this.keyboardService = keyboardService;
+        this.activityRepo = activityRepo;
     }
 
     @SneakyThrows
-    public void activitiesChooseHandler(CallbackQuery callbackQuery) {
+    public void activitiesChooseHandler(CallbackQuery callbackQuery, DvgKiprBot bot) {
+
+        activityRepo.save(new Activity(1L, "зал", "тренажерный", ActivityType.YOUTH, true, "pathToFile"));
+        activityRepo.save(new Activity(2L, "теннис", "настольный", ActivityType.YOUTH, true, "pathToFile"));
+        activityRepo.save(new Activity(3L, "бильярд", "бильярд", ActivityType.ELITE, false, "pathToFile"));
+        activityRepo.save(new Activity(4L, "музыка", "живая", ActivityType.FANCY, true, "pathToFile"));
+
+
         if (!activity_lists.containsKey(callbackQuery.getFrom().getId())) {
             activity_lists.put(callbackQuery.getFrom().getId(), new ArrayList<>());
         }
@@ -52,16 +65,16 @@ public class ActivityService {
     }
 
     @SneakyThrows
-    public void activity_leftHandler(CallbackQuery callbackQuery) {
+    public void activity_leftHandler(CallbackQuery callbackQuery, DvgKiprBot bot) {
 
         Long ID = callbackQuery.getMessage().getChatId();
         selectedActivity.putIfAbsent(ID, 0);
         Integer index = selectedActivity.get(ID);
         index -= 1;
 
-        if (index < 0 || index >= activityRepo.activityList().size()-1) {
-            index = 0;
-        }//TODO: think about  mod(currentIndex:size)
+//        if (index < 0 || index >= activityRepo.activityList().size()-1) {
+//            index = 0;
+//        }//TODO: think about  mod(currentIndex:size)
 
 
         bot.executeAsync(EditMessageReplyMarkup.builder()
@@ -75,7 +88,7 @@ public class ActivityService {
 
 
     @SneakyThrows
-    public void activity_rightHandler(CallbackQuery callbackQuery) {
+    public void activity_rightHandler(CallbackQuery callbackQuery, DvgKiprBot bot) {
 
         Long ID = callbackQuery.getMessage().getChatId();
 
@@ -83,9 +96,9 @@ public class ActivityService {
         Integer index = selectedActivity.get(ID);
         index += 1;
 
-        if (index < 0 || index >= activityRepo.activityList().size()) {
-            index = 0;
-        }//TODO: think about  mod(currentIndex:size)
+//        if (index < 0 || index >= activityRepo.activityList().size()) {
+//            index = 0;
+//        }//TODO: think about  mod(currentIndex:size)
 
 
         bot.executeAsync(EditMessageReplyMarkup.builder()
@@ -97,7 +110,7 @@ public class ActivityService {
                 .callbackQueryId(callbackQuery.getId()).build());
     }
 
-    public void activity_select(CallbackQuery callbackQuery) {
+    public void activity_select(CallbackQuery callbackQuery, DvgKiprBot bot) {
 
     }
 }

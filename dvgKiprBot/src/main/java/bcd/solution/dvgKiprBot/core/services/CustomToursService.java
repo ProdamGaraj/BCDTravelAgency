@@ -2,10 +2,11 @@ package bcd.solution.dvgKiprBot.core.services;
 
 import bcd.solution.dvgKiprBot.DvgKiprBot;
 import lombok.SneakyThrows;
-import org.jvnet.hk2.annotations.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 import bcd.solution.dvgKiprBot.core.models.CustomTour;
 import bcd.solution.dvgKiprBot.core.repository.CustomTourRepo;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.AnswerCallbackQuery;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageCaption;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageMedia;
@@ -19,19 +20,22 @@ import java.util.Optional;
 
 @Service
 public class CustomToursService {
-
-    private final AbsSender bot;
-    static final KeyboardService keyboardService = new KeyboardService();
-    static final MediaService mediaService = new MediaService();
-    private final CustomTourRepo customTourRepo = new CustomTourRepo();
-    static final Map<Long, Integer> selectedActivity = new HashMap<>();
-    public CustomToursService(DvgKiprBot bot) {
-        this.bot = bot;
+    private final KeyboardService keyboardService;
+    private final MediaService mediaService;
+    private final CustomTourRepo customTourRepo;
+    private final Map<Long, Integer> selectedActivity = new HashMap<>();
+    @Autowired
+    public CustomToursService(KeyboardService keyboardService,
+                              MediaService mediaService,
+                              CustomTourRepo customTourRepo) {
+        this.keyboardService = keyboardService;
+        this.customTourRepo = customTourRepo;
+        this.mediaService = mediaService;
     }
 
 
     @SneakyThrows
-    public void personalToursChooseHandler(CallbackQuery callbackQuery) {
+    public void personalToursChooseHandler(CallbackQuery callbackQuery, DvgKiprBot bot) {
 
         bot.executeAsync(EditMessageMedia.builder()
                 .chatId(callbackQuery.getMessage().getChatId())
@@ -49,7 +53,7 @@ public class CustomToursService {
     }
 
     @SneakyThrows
-    public void personalTour_leftHandler(CallbackQuery callbackQuery) {
+    public void personalTour_leftHandler(CallbackQuery callbackQuery, DvgKiprBot bot) {
 
         Long ID = callbackQuery.getMessage().getChatId();
 
@@ -57,9 +61,9 @@ public class CustomToursService {
         Integer index = selectedActivity.get(ID);
         index -= 1;
 
-        if (index < 0 || index >= customTourRepo.customTourList().size()) {
-            index = 0;
-        }//TODO: think about  mod(currentIndex:size)
+//        if (index < 0 || index >= customTourRepo.customTourList().size()) {
+//            index = 0;
+//        }//TODO: think about  mod(currentIndex:size)
 
 
         bot.executeAsync(EditMessageReplyMarkup.builder()
@@ -72,7 +76,7 @@ public class CustomToursService {
     }
 
     @SneakyThrows
-    public void personalTour_rightHandler(CallbackQuery callbackQuery) {
+    public void personalTour_rightHandler(CallbackQuery callbackQuery, DvgKiprBot bot) {
 
         Long ID = callbackQuery.getMessage().getChatId();
 
@@ -80,9 +84,9 @@ public class CustomToursService {
         Integer index = selectedActivity.get(ID);
         index += 1;
 
-        if (index < 0 || index >= customTourRepo.customTourList().size()) {
-            index = 0;
-        }
+//        if (index < 0 || index >= customTourRepo.customTourList().size()) {
+//            index = 0;
+//        }
 
         bot.executeAsync(EditMessageReplyMarkup.builder()
                 .chatId(callbackQuery.getMessage().getChatId())
@@ -93,6 +97,6 @@ public class CustomToursService {
                 .callbackQueryId(callbackQuery.getId()).build());
     }
 
-    public void personalTour_select(CallbackQuery callbackQuery) {
+    public void personalTour_select(CallbackQuery callbackQuery, DvgKiprBot bot) {
     }
 }

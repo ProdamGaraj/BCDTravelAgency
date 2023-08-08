@@ -1,11 +1,13 @@
 package bcd.solution.dvgKiprBot.core.services;
 
+import bcd.solution.dvgKiprBot.DvgKiprBot;
 import lombok.SneakyThrows;
-import org.jvnet.hk2.annotations.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 import bcd.solution.dvgKiprBot.core.models.StateMachine;
 import bcd.solution.dvgKiprBot.core.models.Resort;
 import bcd.solution.dvgKiprBot.core.repository.ResortRepo;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.AnswerCallbackQuery;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageCaption;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageMedia;
@@ -13,24 +15,34 @@ import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageRe
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import org.telegram.telegrambots.meta.bots.AbsSender;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class ResortService {
-    private final AbsSender bot;
-    static final KeyboardService keyboardService = new KeyboardService();
-    static final MediaService mediaService = new MediaService();
-    static final Map<Long, Integer> selectedResort = new HashMap<>();
-    static final Map<Long, Integer> selectedActivity = new HashMap<>();
-    private final ResortRepo resortRepo = new ResortRepo();
-    public ResortService(AbsSender bot) {
-        this.bot = bot;
+    private final KeyboardService keyboardService;
+    private final MediaService mediaService;
+    private final Map<Long, Integer> selectedResort = new HashMap<>();
+    private final Map<Long, Integer> selectedActivity = new HashMap<>();
+    private final ResortRepo resortRepo;
+
+    @Autowired
+    public ResortService(KeyboardService keyboardService,
+                         MediaService mediaService,
+                         ResortRepo resortRepo) {
+        this.keyboardService = keyboardService;
+        this.mediaService = mediaService;
+        this.resortRepo = resortRepo;
     }
 
     @SneakyThrows
-    public void resortsChooseHandler(CallbackQuery callbackQuery) {
+    public void resortsChooseHandler(CallbackQuery callbackQuery, DvgKiprBot bot) {
+//        List<Resort> resorts = new ArrayList<>();
+//        resorts.add(new Resort(1L, "PROTARAS", "desc", "geo", "image_src", activityRepo.activityList()));
+//        resorts.add(new Resort(1L, "AYIA NAPA", "desc", "geo", "image_src", activityRepo.activityList()));
+//        resorts.add(new Resort(1L, "LARNACA", "desc", "geo", "image_src", activityRepo.activityList()));
+//        resorts.add(new Resort(1L, "LIMASSOL", "desc", "geo", "image_src", activityRepo.activityList()));
+
+
         bot.executeAsync(EditMessageMedia.builder()
                 .chatId(callbackQuery.getMessage().getChatId())
                 .messageId(callbackQuery.getMessage().getMessageId())
@@ -47,7 +59,7 @@ public class ResortService {
     }
 
     @SneakyThrows
-    public void resort_leftHandler(CallbackQuery callbackQuery) {
+    public void resort_leftHandler(CallbackQuery callbackQuery, DvgKiprBot bot) {
 
         Long ID = callbackQuery.getMessage().getChatId();
 
@@ -69,7 +81,7 @@ public class ResortService {
     }
 
     @SneakyThrows
-    public void resort_rightHandler(CallbackQuery callbackQuery) {
+    public void resort_rightHandler(CallbackQuery callbackQuery, DvgKiprBot bot) {
 
         Long ID = callbackQuery.getMessage().getChatId();
 
@@ -77,9 +89,9 @@ public class ResortService {
         Integer index = selectedActivity.get(ID);
         index += 1;
 
-        if (index < 0 || index >= resortRepo.resortList().size()) {
-            index = 0;
-        }//TODO: think about  mod(currentIndex:size)
+//        if (index < 0 || index >= resortRepo.resortList().size()) {
+//            index = 0;
+//        }//TODO: think about  mod(currentIndex:size)
 
         bot.executeAsync(EditMessageReplyMarkup.builder()
                 .chatId(callbackQuery.getMessage().getChatId())
@@ -91,7 +103,7 @@ public class ResortService {
     }
 
     @SneakyThrows
-    public void resort_select(CallbackQuery callbackQuery) {
+    public void resort_select(CallbackQuery callbackQuery, DvgKiprBot bot) {
 
         //TODO: this code suck ass, so it has to be rewrited! I suppose we
         // need some service wich will always give us needed id, and also we need to add some data
@@ -106,7 +118,8 @@ public class ResortService {
                 .build());
         bot.executeAsync(AnswerCallbackQuery.builder()
                 .callbackQueryId(callbackQuery.getId())
-                .text("Вы выбрали " + resortRepo.resortList().get(id).name)
+//                .text("Вы выбрали " + resortRepo.resortList().get(id).name)
+                .text("Вы выбрали ")
                 .showAlert(Boolean.TRUE)
                 .build());
     }

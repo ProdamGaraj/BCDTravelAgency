@@ -1,11 +1,15 @@
 package bcd.solution.dvgKiprBot.core.utils.handlers;
 
 import bcd.solution.dvgKiprBot.DvgKiprBot;
+import bcd.solution.dvgKiprBot.core.repository.ActivityRepo;
 import bcd.solution.dvgKiprBot.core.repository.HotelRepo;
 import bcd.solution.dvgKiprBot.core.services.*;
 import lombok.SneakyThrows;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.util.Pair;
 import org.springframework.scheduling.annotation.Async;
+import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.AnswerCallbackQuery;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageCaption;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageMedia;
@@ -16,36 +20,34 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@Component
 public class CallbackQueryHandler {
-    private final AbsSender bot;
-
     //Services
-    private static final KeyboardService keyboardService = new KeyboardService();
-    private static final MediaService mediaService = new MediaService();
+    private final KeyboardService keyboardService;
+    private final MediaService mediaService;
     private final ActivityService activityService;
     private final ResortService resortService;
     private final CustomToursService customToursService;
     private final HotelService hotelService;
     //Repositories
 
-    private final HotelRepo hotelRepo = new HotelRepo();
-
     //Maps
     static final Map<Long, List<Pair<Integer, String>>> activity_lists = new HashMap<>();
-    static final Map<Long, Integer> selectedActivity = new HashMap<>();
-    static final Map<Long, Integer> selectedResort = new HashMap<>();
-    static final Map<Long, Integer> selectedHotel = new HashMap<>();
 
 
-
-
-    public CallbackQueryHandler(DvgKiprBot bot) {
-        this.bot = bot;
-        this.activityService = new ActivityService(bot);
-        this.resortService = new  ResortService(bot);
-        this.customToursService = new CustomToursService(bot);
-        this.hotelService = new HotelService(bot);
-
+    @Autowired
+    public CallbackQueryHandler(ActivityService activityService,
+                                ResortService resortService,
+                                CustomToursService customToursService,
+                                HotelService hotelService,
+                                KeyboardService keyboardService,
+                                MediaService mediaService) {
+        this.activityService = activityService;
+        this.resortService = resortService;
+        this.customToursService = customToursService;
+        this.hotelService = hotelService;
+        this.keyboardService = keyboardService;
+        this.mediaService = mediaService;
 
         //TODO: initialize sevices
     }
@@ -53,29 +55,29 @@ public class CallbackQueryHandler {
 
     @Async
     @SneakyThrows
-    public void handleQuery(CallbackQuery callbackQuery) {
+    public void handleQuery(CallbackQuery callbackQuery, DvgKiprBot bot) {
 
         //TODO: rewrite?
         //As an idea we should use if else statements to go easier inside of our algorithm paths
-        String callback_data = callbackQuery.getData();
-        switch (callback_data) {
-            case "restart" -> restartHandler(callbackQuery);
-            case "resorts" -> resortService.resortsChooseHandler(callbackQuery);
-            case "resort_left/" -> resortService.resort_leftHandler(callbackQuery);
-            case "resort_right/" -> resortService.resort_rightHandler(callbackQuery);
-            case "resort_select/" -> resortService.resort_select(callbackQuery);
-            case "personal_tours" -> customToursService.personalToursChooseHandler(callbackQuery);
-            case "personalTour_left" -> customToursService.personalTour_leftHandler(callbackQuery);
-            case "personalTour_right" -> customToursService.personalTour_rightHandler(callbackQuery);
-            case "personalTour_select" -> customToursService.personalTour_select(callbackQuery);
-            case "activities" -> activityService.activitiesChooseHandler(callbackQuery);
-            case "activity_left" -> activityService.activity_leftHandler(callbackQuery);
-            case "activity_right" -> activityService.activity_rightHandler(callbackQuery);
-            case "activity_select" -> activityService.activity_select(callbackQuery);
-            case "hotels" -> hotelService.hotelsChooseHandler(callbackQuery);
-            case "hotel_left" -> hotelService.hotels_leftHandler(callbackQuery);
-            case "hotel_right" -> hotelService.hotel_rightHandler(callbackQuery);
-            case "hotel_select" -> hotelService.hotel_select(callbackQuery);
+        String callback_action = callbackQuery.getData().split("/")[0];
+        switch (callback_action) {
+            case "restart" -> restartHandler(callbackQuery, bot);
+            case "resorts" -> resortService.resortsChooseHandler(callbackQuery, bot);
+            case "resort_left/" -> resortService.resort_leftHandler(callbackQuery, bot);
+            case "resort_right/" -> resortService.resort_rightHandler(callbackQuery, bot);
+            case "resort_select/" -> resortService.resort_select(callbackQuery, bot);
+            case "personal_tours" -> customToursService.personalToursChooseHandler(callbackQuery, bot);
+            case "personalTour_left" -> customToursService.personalTour_leftHandler(callbackQuery, bot);
+            case "personalTour_right" -> customToursService.personalTour_rightHandler(callbackQuery, bot);
+            case "personalTour_select" -> customToursService.personalTour_select(callbackQuery, bot);
+            case "activities" -> activityService.activitiesChooseHandler(callbackQuery, bot);
+            case "activity_left" -> activityService.activity_leftHandler(callbackQuery, bot);
+            case "activity_right" -> activityService.activity_rightHandler(callbackQuery, bot);
+            case "activity_select" -> activityService.activity_select(callbackQuery, bot);
+            case "hotels" -> hotelService.hotelsChooseHandler(callbackQuery, bot);
+            case "hotel_left" -> hotelService.hotels_leftHandler(callbackQuery, bot);
+            case "hotel_right" -> hotelService.hotel_rightHandler(callbackQuery, bot);
+            case "hotel_select" -> hotelService.hotel_select(callbackQuery, bot);
             default -> bot.executeAsync(AnswerCallbackQuery.builder()
                     .callbackQueryId(callbackQuery.getId())
                     .text("Здесь пока что ничего нет, но очень скоро появится")
@@ -83,8 +85,9 @@ public class CallbackQueryHandler {
                     .build());
         }
     }
+
     @SneakyThrows
-    private void restartHandler(CallbackQuery callbackQuery) {
+    private void restartHandler(CallbackQuery callbackQuery, DvgKiprBot bot) {
         bot.executeAsync(EditMessageMedia.builder()
                 .chatId(callbackQuery.getMessage().getChatId())
                 .messageId(callbackQuery.getMessage().getMessageId())
@@ -101,7 +104,7 @@ public class CallbackQueryHandler {
     }
 
     @SneakyThrows
-    private void activityAddHandler(CallbackQuery callbackQuery) {
+    private void activityAddHandler(CallbackQuery callbackQuery, DvgKiprBot bot) {
         List<String> args = List.of(callbackQuery.getData().split(":"));
         Integer index = Integer.getInteger(args.get(2));
         String name = args.get(1);

@@ -1,5 +1,6 @@
 package bcd.solution.dvgKiprBot.core.services;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
@@ -12,20 +13,29 @@ import bcd.solution.dvgKiprBot.core.repository.CustomTourRepo;
 import bcd.solution.dvgKiprBot.core.repository.HotelRepo;
 import bcd.solution.dvgKiprBot.core.repository.ResortRepo;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class KeyboardService {
 
-    private final ActivityRepo activityRepo = new ActivityRepo();
+    private final ActivityRepo activityRepo;
 
-    private final ResortRepo resortRepo = new ResortRepo();
+    private final ResortRepo resortRepo;
 
-    private final CustomTourRepo customTourRepo = new CustomTourRepo();
+    private final CustomTourRepo customTourRepo;
 
-    private final HotelRepo hotelRepo = new HotelRepo();
+    private final HotelRepo hotelRepo;
 
-    public KeyboardService() {
+    @Autowired
+    public KeyboardService(ActivityRepo activityRepo,
+                           ResortRepo resortRepo,
+                           CustomTourRepo customTourRepo,
+                           HotelRepo hotelRepo) {
+        this.activityRepo = activityRepo;
+        this.resortRepo = resortRepo;
+        this.customTourRepo = customTourRepo;
+        this.hotelRepo = hotelRepo;
     }
 
     public InlineKeyboardMarkup getTourChoosingKeyboard() {
@@ -48,7 +58,8 @@ public class KeyboardService {
 
     public InlineKeyboardMarkup getActivitiesKeyboard(Integer index) {
 
-        List<Activity> activities = activityRepo.activityList();
+        List<Activity> activities = new ArrayList<>();
+//        List<Activity> activities = activityRepo.activityList();
 
         Activity currentActivity = activities.get(index);
 
@@ -78,7 +89,8 @@ public class KeyboardService {
 
     public InlineKeyboardMarkup getResortsKeyboard(Integer index) {
 
-        List<Resort> resorts = resortRepo.resortList();
+        List<Resort> resorts = new ArrayList<>();
+//        List<Resort> resorts = resortRepo.resortList();
 
         Resort currentResort =  resorts.get(index);
 
@@ -108,7 +120,8 @@ public class KeyboardService {
 
     public InlineKeyboardMarkup getPersonalToursKeyboard(Integer index) {
 
-        List<CustomTour> customTours = customTourRepo.customTourList();
+        List<CustomTour> customTours = new ArrayList<>();
+//        List<CustomTour> customTours = customTourRepo.customTourList();
 
         CustomTour currentCustomTour = customTours.get(index);
 
@@ -138,7 +151,8 @@ public class KeyboardService {
 
     public InlineKeyboardMarkup getHotelChoosingKeyboard() {
 
-        List<Hotel> hotels = hotelRepo.hotelList();
+        List<Hotel> hotels = new ArrayList<>();
+//        List<Hotel> hotels = hotelRepo.hotelList();
 
         Hotel currentHotel = hotels.get(0);
 
