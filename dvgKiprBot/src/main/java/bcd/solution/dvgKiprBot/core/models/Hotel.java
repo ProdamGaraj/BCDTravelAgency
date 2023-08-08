@@ -5,7 +5,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import java.util.List;
 
@@ -25,7 +24,10 @@ public class Hotel {
     public List<HotelFeature> features;
     @OneToOne
     public Resort resort;
-    public Stars stars;
-    public List<Food> food;
+    @Enumerated(EnumType.STRING)
+    public StarType stars;
+    @Enumerated(EnumType.STRING)
+    @OneToMany
+    public List<FoodType> food;
     public String media;
 }

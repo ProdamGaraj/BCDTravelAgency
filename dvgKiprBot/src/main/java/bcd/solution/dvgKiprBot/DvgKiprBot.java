@@ -6,6 +6,7 @@ import jakarta.inject.Singleton;
 import lombok.SneakyThrows;
 import lombok.extern.log4j.Log4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
@@ -72,6 +73,7 @@ public class DvgKiprBot extends TelegramLongPollingBot {
 
     @SneakyThrows
     public static void main(String[] args){
+        SpringApplication.run(DvgKiprBot.class, args);
         DvgKiprBot bot = new DvgKiprBot();
         bot.botName="dvgKiprbot";
         bot.botToken="6460979142:AAHV4_8sKXuKmWwCZUBCBt7Rln_ZyYKxh9Y";

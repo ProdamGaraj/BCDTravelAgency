@@ -5,8 +5,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
+
+import java.util.List;
 
 @Entity
 @Data
@@ -19,7 +20,7 @@ public class StateMachine {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     public User user;
-    public Iterable<Activity> activities;
+    public List<Activity> activities;
     public Resort resort;
     public Hotel hotel;
     public CustomTour customTour;

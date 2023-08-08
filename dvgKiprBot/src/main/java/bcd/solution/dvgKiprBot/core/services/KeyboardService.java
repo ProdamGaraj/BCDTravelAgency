@@ -12,9 +12,7 @@ import bcd.solution.dvgKiprBot.core.repository.CustomTourRepo;
 import bcd.solution.dvgKiprBot.core.repository.HotelRepo;
 import bcd.solution.dvgKiprBot.core.repository.ResortRepo;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Service
 public class KeyboardService {

@@ -4,8 +4,9 @@ import jakarta.persistence.Entity;
 
 
 @Entity
-public enum UserRole {
-    admin,
-    partner,
-    client,
+public enum FoodType {
+    BB,
+    HB,
+    FB,
+    AllInclusive
 }
