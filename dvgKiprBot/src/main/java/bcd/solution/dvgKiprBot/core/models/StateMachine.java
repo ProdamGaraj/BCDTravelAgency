@@ -22,7 +22,7 @@ public class StateMachine {
     private Long id;
     @ManyToOne
     public User user;
-    @OneToMany
+    @ManyToMany
     public List<Activity> activities;
     @ManyToOne
     public Resort resort;

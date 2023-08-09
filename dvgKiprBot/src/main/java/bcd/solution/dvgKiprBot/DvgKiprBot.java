@@ -8,6 +8,7 @@ import lombok.extern.log4j.Log4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
@@ -43,7 +44,7 @@ public class DvgKiprBot extends TelegramLongPollingBot {
         telegramBotsApi.registerBot(this);
     }
 
-
+    @Async
     @Override
     public void onUpdateReceived(Update update) {
 
@@ -54,19 +55,19 @@ public class DvgKiprBot extends TelegramLongPollingBot {
             //log.debug(message.getText());
 
             // Create a new thread to handle the message asynchronously
-            Thread messageHandlerThread = new Thread(() -> {
+//            Thread messageHandlerThread = new Thread(() -> {
                 messageHandler.handleMessage(message, this);
-            });
-            messageHandlerThread.start();
+//            });
+//            messageHandlerThread.start();
         }
         if (update.hasCallbackQuery() && update.getCallbackQuery() != null) {
             CallbackQuery callbackQuery = update.getCallbackQuery();
 
             // Create a new thread to handle the callback query asynchronously
-            Thread callbackQueryHandlerThread = new Thread(() -> {
+//            Thread callbackQueryHandlerThread = new Thread(() -> {
                 callbackQueryHandler.handleQuery(callbackQuery, this);
-            });
-            callbackQueryHandlerThread.start();
+//            });
+//            callbackQueryHandlerThread.start();
         }
     }
 

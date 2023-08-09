@@ -4,6 +4,7 @@ import bcd.solution.dvgKiprBot.DvgKiprBot;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.util.Pair;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
@@ -21,6 +22,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 
 @Component
 public class MessageHandler {
@@ -29,20 +31,30 @@ public class MessageHandler {
 
     private final MediaService mediaService;
 
+    private final CommandsHandler commandsHandler;
+
+    private final AuthHandler authHandler;
+
     @Autowired
     public MessageHandler(KeyboardService keyboardService,
-                          MediaService mediaService) {
+                          MediaService mediaService,
+                          CommandsHandler commandsHandler,
+                          AuthHandler authHandler) {
         this.keyboardService = keyboardService;
         this.mediaService = mediaService;
+        this.commandsHandler = commandsHandler;
+        this.authHandler = authHandler;
     }
 
+    @Async
     @SneakyThrows
     public void handleMessage(Message message, DvgKiprBot bot) {
         if (!message.hasText()) {
             return;
         }
         if (!message.hasEntities() && is_password.get(message.getFrom().getId()).getFirst()) {
-            passwordHandler(message, bot);
+            authHandler.passwordHandler(message, bot);
+//            passwordHandler(message, bot);
         }
         Optional<MessageEntity> commandEntity =
                 message.getEntities().stream().filter(e -> "bot_command".equals(e.getType())).findFirst();
@@ -52,19 +64,23 @@ public class MessageHandler {
                     commandEntity.get().getLength());
             switch (command) {
                 case "/start":
-                    startCommandHandler(message, bot);
+                    commandsHandler.startHandler(message, bot);
+//                    startCommandHandler(message, bot);
                     break;
                 case "/customtours":
-                    customTourCommandHandler(message, bot);
+                    commandsHandler.tourChoosingHandler(message, bot);
+//                    customTourCommandHandler(message, bot);
                     break;
                 case "/authorization":
-                    authorizationCommandHandler(message, bot);
+                    authHandler.authCommandHandler(message, bot);
+//                    authorizationCommandHandler(message, bot);
                     break;
                 case "/media":
-                    mediaCommandHandler(message, bot);
+                    commandsHandler.mediaHandler(message, bot);
+//                    mediaCommandHandler(message, bot);
                 default:
                     bot.executeAsync(SendPhoto.builder()
-                            .caption("Комманда не найдена")
+                            .caption("Команда не найдена")
                             .chatId(message.getChatId())
                             .build());
                     break;
@@ -95,8 +111,6 @@ public class MessageHandler {
 
     @SneakyThrows
     private void startCommandHandler(Message message, DvgKiprBot bot) {
-//        TODO: add start command message text
-//        TODO: fix start image to some image of Kipr
         bot.executeAsync(SendPhoto.builder()
                 .chatId(message.getChatId())
                 .photo(mediaService.getStartMessageMedia())
@@ -114,11 +128,11 @@ public class MessageHandler {
     @SneakyThrows
     private void authorizationCommandHandler(Message message, DvgKiprBot bot) {
 //        TODO: add message text
-        Message my_message = bot.execute(SendPhoto.builder() //executeAsync
+        CompletableFuture<Message> my_message = bot.executeAsync(SendPhoto.builder() //executeAsync
                 .chatId(message.getChatId())
                 .caption("Введите пароль")
                 .build());
-        is_password.put(message.getFrom().getId(), Pair.of(Boolean.TRUE, Optional.of(my_message)));
+        is_password.put(message.getFrom().getId(), Pair.of(Boolean.TRUE, Optional.of(my_message.join())));
     }
 
     @SneakyThrows

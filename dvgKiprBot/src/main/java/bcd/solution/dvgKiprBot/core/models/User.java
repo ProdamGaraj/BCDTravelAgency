@@ -17,7 +17,6 @@ import jakarta.persistence.*;
 @Table(name = "users")
 public class User {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private String login; //TODO: phone number or username
     @Nullable

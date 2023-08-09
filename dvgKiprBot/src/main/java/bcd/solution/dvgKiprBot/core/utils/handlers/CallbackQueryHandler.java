@@ -86,6 +86,7 @@ public class CallbackQueryHandler {
         }
     }
 
+    @Async
     @SneakyThrows
     private void restartHandler(CallbackQuery callbackQuery, DvgKiprBot bot) {
         bot.executeAsync(EditMessageMedia.builder()
@@ -103,6 +104,7 @@ public class CallbackQueryHandler {
                 .callbackQueryId(callbackQuery.getId()).build());
     }
 
+    @Async
     @SneakyThrows
     private void activityAddHandler(CallbackQuery callbackQuery, DvgKiprBot bot) {
         List<String> args = List.of(callbackQuery.getData().split(":"));
