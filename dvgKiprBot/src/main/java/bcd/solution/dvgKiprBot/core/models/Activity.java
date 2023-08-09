@@ -28,4 +28,10 @@ public class Activity {
     public Boolean free;
     public String media;
 
+    public String toString() {
+        return this.name + "\n\n"
+                + this.description + "\n\n"
+                + (Boolean.TRUE.equals(this.free) ? "Бесплатно" : "Платно");
+    }
+
 }

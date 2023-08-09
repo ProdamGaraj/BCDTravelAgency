@@ -4,8 +4,11 @@ import lombok.*;
 
 import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Data
@@ -17,15 +20,15 @@ public class StateMachine {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    @OneToOne
+    @OneToOne(fetch = FetchType.EAGER)
     public User user;
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     public List<Activity> activities;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     public Resort resort;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     public Hotel hotel;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     public CustomTour customTour;
     public boolean authorized;
     public boolean wait_password;

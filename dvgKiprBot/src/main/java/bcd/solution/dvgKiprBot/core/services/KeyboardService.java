@@ -1,5 +1,6 @@
 package bcd.solution.dvgKiprBot.core.services;
 
+import org.checkerframework.checker.units.qual.A;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -68,31 +69,38 @@ public class KeyboardService {
     }
 
     @Async
-    public InlineKeyboardMarkup getActivitiesKeyboard(Integer index) {
+    public InlineKeyboardMarkup getActivitiesKeyboard(Integer index, Long activity_id) {
+        long size = activityRepo.count();
 
-        List<Activity> activities = new ArrayList<>();
-//        List<Activity> activities = activityRepo.activityList();
-
-        Activity currentActivity = activities.get(index);
+        List<InlineKeyboardButton> navigation_row = new ArrayList<>();
+        if (index > 0) {
+            navigation_row.add(InlineKeyboardButton.builder()
+                    .text("<-")
+                    .callbackData("activities_change/" + (index - 1))
+                    .build());
+        }
+        navigation_row.add(InlineKeyboardButton.builder()
+                .text("Добавить")
+                .callbackData("activities_add/"+(index) + "/" + (activity_id))
+                .build());
+        if (index < size - 1) {
+            navigation_row.add(InlineKeyboardButton.builder()
+                    .text("->")
+                    .callbackData("activities_change/" + (index + 1))
+                    .build());
+        }
 
         return InlineKeyboardMarkup.builder()
+                .keyboardRow(navigation_row)
                 .keyboardRow(List.of(
                         InlineKeyboardButton.builder()
-                                .text("<-")
-                                .callbackData("activity_left")
-                                .build(),
-                        InlineKeyboardButton.builder()
-                                .text(currentActivity.name)
-                                .callbackData("activity_select"+currentActivity.getId())
-                                .build(),
-                        InlineKeyboardButton.builder()
-                                .text("->")
-                                .callbackData("activity_right")
+                                .text("Выбрать")
+                                .callbackData("activities_select")
                                 .build()
                 ))
                 .keyboardRow(List.of(
                         InlineKeyboardButton.builder()
-                                .text("Home")
+                                .text("В начало")
                                 .callbackData("restart")
                                 .build()
                 ))

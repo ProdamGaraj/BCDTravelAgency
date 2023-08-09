@@ -132,24 +132,4 @@ public class CallbackQueryHandler {
         bot.executeAsync(AnswerCallbackQuery.builder()
                 .callbackQueryId(callbackQuery.getId()).build());
     }
-
-    @Async
-    @SneakyThrows
-    private void activityAddHandler(CallbackQuery callbackQuery, DvgKiprBot bot) {
-        List<String> args = List.of(callbackQuery.getData().split(":"));
-        Integer index = Integer.getInteger(args.get(2));
-        String name = args.get(1);
-        activity_lists.get(callbackQuery.getFrom().getId()).add(Pair.of(index, name));
-
-        List<Pair<Integer, String>> cur_list = activity_lists.get(callbackQuery.getFrom().getId());
-        bot.executeAsync(EditMessageCaption.builder()
-                .chatId(callbackQuery.getMessage().getChatId())
-                .messageId(callbackQuery.getMessage().getMessageId())
-                .caption(args.toString() + "\nЗдесь будет список типов активностей:\n")//TODO: uncomment this  + cur_list.toString())
-                .replyMarkup(keyboardService.getActivitiesKeyboard(0))
-                .build());
-        bot.executeAsync(AnswerCallbackQuery.builder()
-                .callbackQueryId(callbackQuery.getId()).build());
-
-    }
 }

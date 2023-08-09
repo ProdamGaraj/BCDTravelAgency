@@ -21,9 +21,9 @@ public class Hotel {
     private Long id;
     public String name;
     public String description;
-    @OneToMany
+    @OneToMany(fetch = FetchType.EAGER)
     public List<HotelFeature> features;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     public Resort resort;
     @Enumerated(EnumType.STRING)
     public Stars stars;
