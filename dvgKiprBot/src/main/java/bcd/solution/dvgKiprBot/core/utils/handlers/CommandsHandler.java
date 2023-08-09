@@ -1,6 +1,8 @@
 package bcd.solution.dvgKiprBot.core.utils.handlers;
 
 import bcd.solution.dvgKiprBot.DvgKiprBot;
+import bcd.solution.dvgKiprBot.core.models.CustomTour;
+import bcd.solution.dvgKiprBot.core.models.User;
 import bcd.solution.dvgKiprBot.core.services.KeyboardService;
 import bcd.solution.dvgKiprBot.core.services.MediaService;
 import bcd.solution.dvgKiprBot.core.services.UserService;
@@ -47,7 +49,12 @@ public class CommandsHandler {
     @Async
     @SneakyThrows
     public void tourChoosingHandler(Message message, DvgKiprBot bot) {
-
+        bot.executeAsync(SendPhoto.builder()
+                .chatId(message.getChatId())
+                .photo(mediaService.getMediaForCustomTour(new CustomTour()))
+                .caption("Выберите, от чего хотите отталкиваться при выборе тура")
+                .replyMarkup(keyboardService.getTourChoosingKeyboard())
+                .build());
     }
 
     @Async

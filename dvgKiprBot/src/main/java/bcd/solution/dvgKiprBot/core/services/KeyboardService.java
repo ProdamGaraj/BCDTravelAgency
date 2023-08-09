@@ -38,6 +38,15 @@ public class KeyboardService {
         this.hotelRepo = hotelRepo;
     }
 
+    public InlineKeyboardMarkup getAuthCancelKeyboard() {
+        return InlineKeyboardMarkup.builder()
+                .keyboardRow(List.of(InlineKeyboardButton.builder()
+                        .text("Отмена")
+                        .callbackData("auth_cancel")
+                        .build()))
+                .build();
+    }
+
     public InlineKeyboardMarkup getTourChoosingKeyboard() {
         return InlineKeyboardMarkup.builder()
                 .keyboardRow(List.of(InlineKeyboardButton.builder()

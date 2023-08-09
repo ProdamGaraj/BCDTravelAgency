@@ -9,4 +9,7 @@ import java.util.Optional;
 public interface StateMachineRepo extends JpaRepository<StateMachine, Long> {
     Optional<StateMachine> findByUser(User user);
 
+    boolean existsByUser(User user);
+
+
 }

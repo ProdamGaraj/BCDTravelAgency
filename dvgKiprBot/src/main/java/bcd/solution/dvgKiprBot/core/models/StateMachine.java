@@ -1,9 +1,6 @@
 package bcd.solution.dvgKiprBot.core.models;;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
@@ -20,7 +17,7 @@ public class StateMachine {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
-    @ManyToOne
+    @OneToOne
     public User user;
     @ManyToMany
     public List<Activity> activities;
@@ -31,4 +28,7 @@ public class StateMachine {
     @ManyToOne
     public CustomTour customTour;
     public boolean authorized;
+    public boolean wait_password;
+    public Integer auth_message_id;
+
 }

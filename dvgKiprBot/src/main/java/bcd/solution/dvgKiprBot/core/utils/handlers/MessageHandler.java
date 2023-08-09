@@ -1,6 +1,8 @@
 package bcd.solution.dvgKiprBot.core.utils.handlers;
 
 import bcd.solution.dvgKiprBot.DvgKiprBot;
+import bcd.solution.dvgKiprBot.core.models.StateMachine;
+import bcd.solution.dvgKiprBot.core.services.StateMachineService;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.util.Pair;
@@ -34,27 +36,34 @@ public class MessageHandler {
     private final CommandsHandler commandsHandler;
 
     private final AuthHandler authHandler;
+    private final StateMachineService stateMachineService;
 
     @Autowired
     public MessageHandler(KeyboardService keyboardService,
                           MediaService mediaService,
                           CommandsHandler commandsHandler,
-                          AuthHandler authHandler) {
+                          AuthHandler authHandler,
+                          StateMachineService stateMachineService) {
         this.keyboardService = keyboardService;
         this.mediaService = mediaService;
         this.commandsHandler = commandsHandler;
         this.authHandler = authHandler;
+        this.stateMachineService = stateMachineService;
     }
 
     @Async
     @SneakyThrows
     public void handleMessage(Message message, DvgKiprBot bot) {
+
         if (!message.hasText()) {
             return;
         }
-        if (!message.hasEntities() && is_password.get(message.getFrom().getId()).getFirst()) {
-            authHandler.passwordHandler(message, bot);
-//            passwordHandler(message, bot);
+        if (!message.hasEntities()) {
+            StateMachine stateMachine = stateMachineService.getByUserId(message.getFrom().getId());
+            if (stateMachine.wait_password) {
+                authHandler.passwordHandler(message, bot, stateMachine);
+            }
+            return;
         }
         Optional<MessageEntity> commandEntity =
                 message.getEntities().stream().filter(e -> "bot_command".equals(e.getType())).findFirst();
