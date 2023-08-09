@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import bcd.solution.dvgKiprBot.core.models.StateMachine;
 import bcd.solution.dvgKiprBot.core.models.Resort;
 import bcd.solution.dvgKiprBot.core.repository.ResortRepo;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.AnswerCallbackQuery;
@@ -34,6 +35,11 @@ public class ResortService {
         this.resortRepo = resortRepo;
     }
 
+    @Async
+    public Resort getResortByIndex(Integer index) {
+        return resortRepo.findAll().get(index);
+    }
+
     @SneakyThrows
     public void resortsChooseHandler(CallbackQuery callbackQuery, DvgKiprBot bot) {
 //        List<Resort> resorts = new ArrayList<>();
@@ -43,41 +49,42 @@ public class ResortService {
 //        resorts.add(new Resort(1L, "LIMASSOL", "desc", "geo", "image_src", activityRepo.activityList()));
 
 
-        bot.executeAsync(EditMessageMedia.builder()
-                .chatId(callbackQuery.getMessage().getChatId())
-                .messageId(callbackQuery.getMessage().getMessageId())
-                .media(mediaService.updateMediaForResort(new Resort()))
-                .build());
-        bot.executeAsync(EditMessageCaption.builder()
-                .chatId(callbackQuery.getMessage().getChatId())
-                .messageId(callbackQuery.getMessage().getMessageId())
-                .caption("Здесь будет список курортов:")
-                .replyMarkup(keyboardService.getResortsKeyboard(0))
-                .build());
-        bot.executeAsync(AnswerCallbackQuery.builder()
-                .callbackQueryId(callbackQuery.getId()).build());
+//        bot.executeAsync(EditMessageMedia.builder()
+//                .chatId(callbackQuery.getMessage().getChatId())
+//                .messageId(callbackQuery.getMessage().getMessageId())
+//                .media(mediaService.updateMediaForResort(new Resort()))
+//                .build());
+//        bot.executeAsync(EditMessageCaption.builder()
+//                .chatId(callbackQuery.getMessage().getChatId())
+//                .messageId(callbackQuery.getMessage().getMessageId())
+//                .caption("Здесь будет список курортов:")
+//                .replyMarkup(keyboardService.getResortsKeyboard(0))
+//                .build());
+//        bot.executeAsync(AnswerCallbackQuery.builder()
+//                .callbackQueryId(callbackQuery.getId()).build());
     }
+
 
     @SneakyThrows
     public void resort_leftHandler(CallbackQuery callbackQuery, DvgKiprBot bot) {
-
-        Long ID = callbackQuery.getMessage().getChatId();
-
-        selectedActivity.putIfAbsent(ID, 0);
-        Integer index = selectedActivity.get(ID);
-        index -= 1;
-
-        if (index < 0 || index >= selectedActivity.size()) {
-            index = 0;
-        }//TODO: think about  mod(currentIndex:size)
-
-        bot.executeAsync(EditMessageReplyMarkup.builder()
-                .chatId(callbackQuery.getMessage().getChatId())
-                .messageId(callbackQuery.getMessage().getMessageId())
-                .replyMarkup(keyboardService.getResortsKeyboard(index))
-                .build());
-        bot.executeAsync(AnswerCallbackQuery.builder()
-                .callbackQueryId(callbackQuery.getId()).build());
+//
+//        Long ID = callbackQuery.getMessage().getChatId();
+//
+//        selectedActivity.putIfAbsent(ID, 0);
+//        Integer index = selectedActivity.get(ID);
+//        index -= 1;
+//
+//        if (index < 0 || index >= selectedActivity.size()) {
+//            index = 0;
+//        }//TODO: think about  mod(currentIndex:size)
+//
+//        bot.executeAsync(EditMessageReplyMarkup.builder()
+//                .chatId(callbackQuery.getMessage().getChatId())
+//                .messageId(callbackQuery.getMessage().getMessageId())
+//                .replyMarkup(keyboardService.getResortsKeyboard(index))
+//                .build());
+//        bot.executeAsync(AnswerCallbackQuery.builder()
+//                .callbackQueryId(callbackQuery.getId()).build());
     }
 
     @SneakyThrows
@@ -93,13 +100,13 @@ public class ResortService {
 //            index = 0;
 //        }//TODO: think about  mod(currentIndex:size)
 
-        bot.executeAsync(EditMessageReplyMarkup.builder()
-                .chatId(callbackQuery.getMessage().getChatId())
-                .messageId(callbackQuery.getMessage().getMessageId())
-                .replyMarkup(keyboardService.getResortsKeyboard(index))
-                .build());
-        bot.executeAsync(AnswerCallbackQuery.builder()
-                .callbackQueryId(callbackQuery.getId()).build());
+//        bot.executeAsync(EditMessageReplyMarkup.builder()
+//                .chatId(callbackQuery.getMessage().getChatId())
+//                .messageId(callbackQuery.getMessage().getMessageId())
+//                .replyMarkup(keyboardService.getResortsKeyboard(index))
+//                .build());
+//        bot.executeAsync(AnswerCallbackQuery.builder()
+//                .callbackQueryId(callbackQuery.getId()).build());
     }
 
     @SneakyThrows

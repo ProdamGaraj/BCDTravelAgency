@@ -9,6 +9,7 @@ import org.springframework.data.util.Pair;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
+import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.DeleteMessage;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageCaption;
@@ -87,61 +88,16 @@ public class MessageHandler {
                 case "/media":
                     commandsHandler.mediaHandler(message, bot);
 //                    mediaCommandHandler(message, bot);
+                    break;
                 default:
-                    bot.executeAsync(SendPhoto.builder()
-                            .caption("Команда не найдена")
+                    bot.executeAsync(SendMessage.builder()
+                            .text("Команда не найдена")
                             .chatId(message.getChatId())
                             .build());
                     break;
             }
 
         }
-    }
-
-    @SneakyThrows
-    private void passwordHandler(Message message, DvgKiprBot bot) {
-        String password = message.getText();
-        Optional<Message> prevMessageOpt = is_password.get(message.getFrom().getId()).getSecond();
-        if (prevMessageOpt.isEmpty()) {
-            return;
-        }
-//        TODO: Auth logic
-        bot.executeAsync(EditMessageCaption.builder()
-                .chatId(prevMessageOpt.get().getChatId())
-                .messageId(prevMessageOpt.get().getMessageId())
-                .caption("Пароль получен: " + password)
-                .build());
-        is_password.put(message.getFrom().getId(), Pair.of(Boolean.FALSE, Optional.empty()));
-        bot.executeAsync(DeleteMessage.builder()
-                .chatId(message.getChatId())
-                .messageId(message.getMessageId())
-                .build());
-    }
-
-    @SneakyThrows
-    private void startCommandHandler(Message message, DvgKiprBot bot) {
-        bot.executeAsync(SendPhoto.builder()
-                .chatId(message.getChatId())
-                .photo(mediaService.getStartMessageMedia())
-                .caption("Кипр - это островное государство в Средиземном море," +
-                        "расположенное на перекрестке Европы, Азии и Африки. " +
-                        "Он является отличным туристическим направлением благодаря своим красивым пляжам, теплому климату и богатой истории." +
-                        "Кипр имеет богатое культурное наследие, которое отражается в его архитектуре, музеях и археологических раскопках." +
-                        "Столицей Кипра является Никосия, где можно посетить множество достопримечательностей, таких как Кипрский музей, " +
-                        "Собор Святого Иоанна и Кипрский национальный парк. Кипр также славится своими винами и кухней, в которой сочетаются греческие," +
-                        " турецкие и английские влияния. В целом, Кипр - это прекрасное место для отдыха и изучения культуры, истории и кухни Средиземноморья.\n")
-                .replyMarkup(keyboardService.getTourChoosingKeyboard())
-                .build());
-    }
-
-    @SneakyThrows
-    private void authorizationCommandHandler(Message message, DvgKiprBot bot) {
-//        TODO: add message text
-        CompletableFuture<Message> my_message = bot.executeAsync(SendPhoto.builder() //executeAsync
-                .chatId(message.getChatId())
-                .caption("Введите пароль")
-                .build());
-        is_password.put(message.getFrom().getId(), Pair.of(Boolean.TRUE, Optional.of(my_message.join())));
     }
 
     @SneakyThrows

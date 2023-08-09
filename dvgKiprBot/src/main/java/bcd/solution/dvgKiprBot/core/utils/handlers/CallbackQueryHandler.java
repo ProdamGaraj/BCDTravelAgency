@@ -92,7 +92,7 @@ public class CallbackQueryHandler {
 //            case "resort_left/" -> resortService.resort_leftHandler(callbackQuery, bot);
 //            case "resort_right/" -> resortService.resort_rightHandler(callbackQuery, bot);
 //            case "resort_select/" -> resortService.resort_select(callbackQuery, bot);
-            case "personal_tours" -> customTourHandler.handleCustomTourCallback(callbackQuery, bot);
+            case "customTours" -> customTourHandler.handleCustomTourCallback(callbackQuery, bot);
 //            case "personal_tours" -> customToursService.personalToursChooseHandler(callbackQuery, bot);
 //            case "personalTour_left" -> customToursService.personalTour_leftHandler(callbackQuery, bot);
 //            case "personalTour_right" -> customToursService.personalTour_rightHandler(callbackQuery, bot);

@@ -25,6 +25,19 @@ public class Resort {
     public String description;
     public String geo;
     public String media;
-    @OneToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     public List<Activity> activities;
+
+    public String toString() {
+        StringBuilder activity_list = new StringBuilder();
+        for (Activity activity : this.activities) {
+            activity_list.append("- ").append(activity.name).append("\n");
+        }
+
+        return this.name + "\n\n"
+                + this.description + "\n\n"
+                + this.geo + "\n\n"
+                + "Доступные развлечения:\n"
+                + activity_list;
+    }
 }
