@@ -1,33 +1,16 @@
 package bcd.solution.dvgKiprBot.core.services;
 
-import bcd.solution.dvgKiprBot.DvgKiprBot;
-import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import bcd.solution.dvgKiprBot.core.models.CustomTour;
 import bcd.solution.dvgKiprBot.core.repository.CustomTourRepo;
 import org.springframework.stereotype.Service;
-import org.telegram.telegrambots.meta.api.methods.AnswerCallbackQuery;
-import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageCaption;
-import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageMedia;
-import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageReplyMarkup;
-import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
-
-import java.util.HashMap;
-import java.util.Map;
 
 @Service
 public class CustomToursService {
-    private final KeyboardService keyboardService;
-    private final MediaService mediaService;
     private final CustomTourRepo customTourRepo;
-    private final Map<Long, Integer> selectedActivity = new HashMap<>();
     @Autowired
-    public CustomToursService(KeyboardService keyboardService,
-                              MediaService mediaService,
-                              CustomTourRepo customTourRepo) {
-        this.keyboardService = keyboardService;
+    public CustomToursService(CustomTourRepo customTourRepo) {
         this.customTourRepo = customTourRepo;
-        this.mediaService = mediaService;
     }
 
 
@@ -92,8 +75,5 @@ public class CustomToursService {
 //                .build());
         bot.executeAsync(AnswerCallbackQuery.builder()
                 .callbackQueryId(callbackQuery.getId()).build());
-    }
-
-    public void personalTour_select(CallbackQuery callbackQuery, DvgKiprBot bot) {
     }
 }
