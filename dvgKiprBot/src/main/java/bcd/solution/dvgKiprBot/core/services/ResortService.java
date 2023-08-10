@@ -9,13 +9,13 @@ import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 @Service
 public class ResortService {
     private final ResortRepo resortRepo;
 
-    @Autowired
     public ResortService(ResortRepo resortRepo) {
         this.resortRepo = resortRepo;
     }
@@ -38,5 +38,28 @@ public class ResortService {
         List<Resort> allResorts = resortRepo.findAll();
         return allResorts.stream()
                 .filter((resort) -> new HashSet<>(resort.activities).containsAll(activities)).toList();
+    }
+
+    @Async
+    public Optional<Resort> getById(Long resortId) {
+//        Resort resort = resortRepo.getReferenceById(resortId);
+//        return resort;
+        Optional<Resort> resort = resortRepo.findById(resortId);
+        return resort;
+
+    }
+
+    @Async
+    public String toString(Resort resort) {
+        StringBuilder activity_list = new StringBuilder();
+        for (Activity activity : resort.activities) {
+            activity_list.append("- ").append(activity.name).append("\n");
+        }
+
+        return resort.name + "\n\n"
+                + resort.description + "\n\n"
+                + resort.geo + "\n\n"
+                + "Доступные развлечения:\n"
+                + activity_list;
     }
 }

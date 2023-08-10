@@ -1,10 +1,7 @@
 package bcd.solution.dvgKiprBot.core.models;;
 
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
@@ -16,6 +13,7 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 @Table
+@ToString(exclude = "activities")
 public class Resort {
 
     @Id
@@ -27,18 +25,4 @@ public class Resort {
     public String media;
     @ManyToMany(fetch = FetchType.EAGER)
     public List<Activity> activities;
-
-    @Override
-    public String toString() {
-        StringBuilder activity_list = new StringBuilder();
-        for (Activity activity : this.activities) {
-            activity_list.append("- ").append(activity.name).append("\n");
-        }
-
-        return this.name + "\n\n"
-                + this.description + "\n\n"
-                + this.geo + "\n\n"
-                + "Доступные развлечения:\n"
-                + activity_list;
-    }
 }

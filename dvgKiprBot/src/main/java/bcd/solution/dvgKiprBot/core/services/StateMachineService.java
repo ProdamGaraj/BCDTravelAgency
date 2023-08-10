@@ -1,6 +1,7 @@
 package bcd.solution.dvgKiprBot.core.services;
 
 import bcd.solution.dvgKiprBot.core.models.Activity;
+import bcd.solution.dvgKiprBot.core.models.Resort;
 import bcd.solution.dvgKiprBot.core.models.StateMachine;
 import bcd.solution.dvgKiprBot.core.models.User;
 import bcd.solution.dvgKiprBot.core.repository.ActivityRepo;
@@ -73,5 +74,13 @@ public class StateMachineService {
     public void clearStateByUserId(Long userId) {
         StateMachine stateMachine = getOrAddIfNotExists(userId);
         stateMachineRepo.delete(stateMachine);
+    }
+
+    @Async
+    public StateMachine setResortByUserId(Resort resort, Long userId) {
+        StateMachine userState = getByUserId(userId);
+        userState.resort = resort;
+        stateMachineRepo.save(userState);
+        return userState;
     }
 }

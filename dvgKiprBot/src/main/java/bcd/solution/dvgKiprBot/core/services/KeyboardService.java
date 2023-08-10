@@ -170,9 +170,7 @@ public class KeyboardService {
                 .build();
     }
 
-    public InlineKeyboardMarkup getHotelsKeyboard(Integer index, Long hotelId) {
-
-        long size = hotelRepo.count();
+    public InlineKeyboardMarkup getHotelsKeyboard(Integer index, Long hotelId, long size) {
 
         List<InlineKeyboardButton> navigation_row = new ArrayList<>();
         if (index > 0) {

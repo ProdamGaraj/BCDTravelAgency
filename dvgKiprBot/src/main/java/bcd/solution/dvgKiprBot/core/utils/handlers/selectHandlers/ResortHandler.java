@@ -7,6 +7,8 @@ import bcd.solution.dvgKiprBot.core.services.KeyboardService;
 import bcd.solution.dvgKiprBot.core.services.MediaService;
 import bcd.solution.dvgKiprBot.core.services.ResortService;
 import bcd.solution.dvgKiprBot.core.services.StateMachineService;
+import bcd.solution.dvgKiprBot.core.utils.handlers.CallbackQueryHandler;
+import io.swagger.models.auth.In;
 import lombok.SneakyThrows;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
@@ -15,6 +17,7 @@ import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageCa
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 
 import java.util.List;
+import java.util.Optional;
 
 @Component
 public class ResortHandler {
@@ -22,15 +25,18 @@ public class ResortHandler {
     private final MediaService mediaService;
     private final KeyboardService keyboardService;
     private final StateMachineService stateMachineService;
+    private final HotelHandler hotelHandler;
 
     public ResortHandler(ResortService resortService,
                          MediaService mediaService,
                          KeyboardService keyboardService,
-                         StateMachineService stateMachineService) {
+                         StateMachineService stateMachineService,
+                         HotelHandler hotelHandler) {
         this.resortService = resortService;
         this.mediaService = mediaService;
         this.keyboardService = keyboardService;
         this.stateMachineService = stateMachineService;
+        this.hotelHandler = hotelHandler;
     }
 
     @Async
@@ -59,7 +65,7 @@ public class ResortHandler {
         bot.executeAsync(EditMessageCaption.builder()
                 .chatId(callbackQuery.getMessage().getChatId())
                 .messageId(callbackQuery.getMessage().getMessageId())
-                .caption(currentResorts.get(0).toString())
+                .caption(resortService.toString(currentResorts.get(0)))
                 .replyMarkup(keyboardService.getResortsKeyboard(0,
                         currentResorts.get(0).getId(),
                         currentResorts.size()))
@@ -71,7 +77,20 @@ public class ResortHandler {
     @Async
     @SneakyThrows
     private void selectHandler(CallbackQuery callbackQuery, DvgKiprBot bot) {
+        Long resortId = Long.parseLong(callbackQuery.getData().split("/")[1]);
 
+        Optional<Resort> selectedResort = resortService.getById(resortId);
+        if (selectedResort.isEmpty()) {
+            bot.executeAsync(AnswerCallbackQuery.builder()
+                            .callbackQueryId(callbackQuery.getId())
+                            .showAlert(true).text("Курорт не найден, попробуйте позже")
+                    .build());
+            return;
+        }
+
+        stateMachineService.setResortByUserId(selectedResort.get(), callbackQuery.getFrom().getId());
+
+        hotelHandler.defaultHandler(callbackQuery, bot);
     }
 
     @Async
@@ -90,7 +109,7 @@ public class ResortHandler {
         bot.executeAsync(EditMessageCaption.builder()
                 .chatId(callbackQuery.getMessage().getChatId())
                 .messageId(callbackQuery.getMessage().getMessageId())
-                .caption(currentResorts.get(index).toString())
+                .caption(resortService.toString(currentResorts.get(index)))
                 .replyMarkup(keyboardService.getResortsKeyboard(index,
                         currentResorts.get(index).getId(),
                         currentResorts.size()))
