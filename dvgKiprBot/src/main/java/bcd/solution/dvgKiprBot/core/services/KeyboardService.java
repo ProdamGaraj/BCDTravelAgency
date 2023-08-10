@@ -105,9 +105,7 @@ public class KeyboardService {
     }
 
     @Async
-    public InlineKeyboardMarkup getResortsKeyboard(Integer index, Long resortId) {
-
-        long size = resortRepo.count();
+    public InlineKeyboardMarkup getResortsKeyboard(Integer index, Long resortId, long size) {
 
         List<InlineKeyboardButton> navigation_row = new ArrayList<>();
         if (index > 0) {

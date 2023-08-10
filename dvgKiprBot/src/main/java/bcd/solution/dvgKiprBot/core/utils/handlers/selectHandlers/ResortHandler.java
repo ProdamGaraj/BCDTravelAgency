@@ -2,9 +2,11 @@ package bcd.solution.dvgKiprBot.core.utils.handlers.selectHandlers;
 
 import bcd.solution.dvgKiprBot.DvgKiprBot;
 import bcd.solution.dvgKiprBot.core.models.Resort;
+import bcd.solution.dvgKiprBot.core.models.StateMachine;
 import bcd.solution.dvgKiprBot.core.services.KeyboardService;
 import bcd.solution.dvgKiprBot.core.services.MediaService;
 import bcd.solution.dvgKiprBot.core.services.ResortService;
+import bcd.solution.dvgKiprBot.core.services.StateMachineService;
 import lombok.SneakyThrows;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
@@ -12,18 +14,23 @@ import org.telegram.telegrambots.meta.api.methods.AnswerCallbackQuery;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageCaption;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 
+import java.util.List;
+
 @Component
 public class ResortHandler {
     private final ResortService resortService;
     private final MediaService mediaService;
     private final KeyboardService keyboardService;
+    private final StateMachineService stateMachineService;
 
     public ResortHandler(ResortService resortService,
                          MediaService mediaService,
-                         KeyboardService keyboardService) {
+                         KeyboardService keyboardService,
+                         StateMachineService stateMachineService) {
         this.resortService = resortService;
         this.mediaService = mediaService;
         this.keyboardService = keyboardService;
+        this.stateMachineService = stateMachineService;
     }
 
     @Async
@@ -41,7 +48,8 @@ public class ResortHandler {
     @Async
     @SneakyThrows
     public void defaultHandler(CallbackQuery callbackQuery, DvgKiprBot bot) {
-        Resort currentResort = resortService.getByIndex(0);
+        StateMachine userState = stateMachineService.getByUserId(callbackQuery.getFrom().getId());
+        List<Resort> currentResorts = resortService.getByIndexAndActivities(0, userState.activities);
 //        TODO: add getting media of resort
 //        bot.executeAsync(EditMessageMedia.builder()
 //                .chatId(callbackQuery.getMessage().getChatId())
@@ -51,8 +59,10 @@ public class ResortHandler {
         bot.executeAsync(EditMessageCaption.builder()
                 .chatId(callbackQuery.getMessage().getChatId())
                 .messageId(callbackQuery.getMessage().getMessageId())
-                .caption(currentResort.toString())
-                .replyMarkup(keyboardService.getResortsKeyboard(0, currentResort.getId()))
+                .caption(currentResorts.get(0).toString())
+                .replyMarkup(keyboardService.getResortsKeyboard(0,
+                        currentResorts.get(0).getId(),
+                        currentResorts.size()))
                 .build());
         bot.executeAsync(AnswerCallbackQuery.builder()
                 .callbackQueryId(callbackQuery.getId()).build());
@@ -68,7 +78,9 @@ public class ResortHandler {
     @SneakyThrows
     private void changeHandler(CallbackQuery callbackQuery, DvgKiprBot bot) {
         Integer index = Integer.parseInt(callbackQuery.getData().split("/")[1]);
-        Resort currentResort = resortService.getByIndex(index);
+
+        StateMachine userState = stateMachineService.getByUserId(callbackQuery.getFrom().getId());
+        List<Resort> currentResorts = resortService.getByIndexAndActivities(index, userState.activities);
 //        TODO: add getting media of resort
 //        bot.executeAsync(EditMessageMedia.builder()
 //                .chatId(callbackQuery.getMessage().getChatId())
@@ -78,8 +90,10 @@ public class ResortHandler {
         bot.executeAsync(EditMessageCaption.builder()
                 .chatId(callbackQuery.getMessage().getChatId())
                 .messageId(callbackQuery.getMessage().getMessageId())
-                .caption(currentResort.toString())
-                .replyMarkup(keyboardService.getResortsKeyboard(index, currentResort.getId()))
+                .caption(currentResorts.get(index).toString())
+                .replyMarkup(keyboardService.getResortsKeyboard(index,
+                        currentResorts.get(index).getId(),
+                        currentResorts.size()))
                 .build());
         bot.executeAsync(AnswerCallbackQuery.builder()
                 .callbackQueryId(callbackQuery.getId()).build());

@@ -2,8 +2,10 @@ package bcd.solution.dvgKiprBot.core.utils.handlers;
 
 import bcd.solution.dvgKiprBot.DvgKiprBot;
 import bcd.solution.dvgKiprBot.core.models.*;
+import bcd.solution.dvgKiprBot.core.repository.ActivityRepo;
 import bcd.solution.dvgKiprBot.core.repository.HotelFeatureRepo;
 import bcd.solution.dvgKiprBot.core.repository.HotelRepo;
+import bcd.solution.dvgKiprBot.core.repository.ResortRepo;
 import bcd.solution.dvgKiprBot.core.services.KeyboardService;
 import bcd.solution.dvgKiprBot.core.services.MediaService;
 import bcd.solution.dvgKiprBot.core.services.ResortService;
@@ -28,19 +30,26 @@ public class CommandsHandler {
     private final HotelFeatureRepo hotelFeatureRepo;
     private final ResortService resortService;
     private final HotelRepo hotelRepo;
+    private final ResortRepo resortRepo;
+    private final ActivityRepo activityRepo;
 
     public CommandsHandler(UserService userService,
                            MediaService mediaService,
                            KeyboardService keyboardService,
                            HotelFeatureRepo hotelFeatureRepo,
                            ResortService resortService,
-                           HotelRepo hotelRepo) {
+                           HotelRepo hotelRepo,
+                           ResortRepo resortRepo,
+                           ActivityRepo activityRepo) {
         this.userService = userService;
         this.mediaService = mediaService;
         this.keyboardService = keyboardService;
         this.hotelFeatureRepo = hotelFeatureRepo;
         this.resortService = resortService;
         this.hotelRepo = hotelRepo;
+        this.resortRepo = resortRepo;
+        this.activityRepo = activityRepo;
+
     }
 
     @Async
@@ -217,9 +226,12 @@ public class CommandsHandler {
 //
 //        hotelRepo.saveAll(hotels);
 
+
+
         bot.executeAsync(SendMessage.builder()
                 .chatId(message.getChatId())
-                .text("Данные вставлены")
+                .text("Test")
+//                .text(resortService.getByActivities(activityRepo.findAll()).toString())
                 .build());
 
 

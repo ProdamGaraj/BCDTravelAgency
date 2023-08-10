@@ -25,6 +25,7 @@ public class CallbackQueryHandler {
     //Services
     private final KeyboardService keyboardService;
     private final MediaService mediaService;
+    private final StateMachineService stateMachineService;
     //Handlers
     private final AuthHandler authHandler;
     private final ActivityHandler activityHandler;
@@ -35,6 +36,7 @@ public class CallbackQueryHandler {
     @Autowired
     public CallbackQueryHandler(KeyboardService keyboardService,
                                 MediaService mediaService,
+                                StateMachineService stateMachineService,
 
                                 AuthHandler authHandler,
                                 ActivityHandler activityHandler,
@@ -43,6 +45,7 @@ public class CallbackQueryHandler {
                                 ResortHandler resortHandler) {
         this.keyboardService = keyboardService;
         this.mediaService = mediaService;
+        this.stateMachineService = stateMachineService;
 
         this.authHandler = authHandler;
         this.activityHandler = activityHandler;
@@ -78,6 +81,8 @@ public class CallbackQueryHandler {
     @Async
     @SneakyThrows
     private void restartHandler(CallbackQuery callbackQuery, DvgKiprBot bot) {
+        stateMachineService.clearStateByUserId(callbackQuery.getFrom().getId());
+
         bot.executeAsync(EditMessageMedia.builder()
                 .chatId(callbackQuery.getMessage().getChatId())
                 .messageId(callbackQuery.getMessage().getMessageId())

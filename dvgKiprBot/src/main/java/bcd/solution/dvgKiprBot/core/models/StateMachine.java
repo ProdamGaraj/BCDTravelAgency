@@ -6,6 +6,7 @@ import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
@@ -23,7 +24,7 @@ public class StateMachine {
     @OneToOne(fetch = FetchType.EAGER)
     public User user;
     @ManyToMany(fetch = FetchType.EAGER)
-    public List<Activity> activities;
+    public List<Activity> activities = new ArrayList<>();
     @ManyToOne(fetch = FetchType.EAGER)
     public Resort resort;
     @ManyToOne(fetch = FetchType.EAGER)

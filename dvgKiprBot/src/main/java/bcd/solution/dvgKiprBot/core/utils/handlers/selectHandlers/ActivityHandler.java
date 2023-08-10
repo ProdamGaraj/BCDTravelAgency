@@ -24,16 +24,19 @@ public class ActivityHandler {
     private final ActivityService activityService;
     private final KeyboardService keyboardService;
     private final MediaService mediaService;
+    private final ResortHandler resortHandler;
 
     @Autowired
     public ActivityHandler(StateMachineService stateMachineService,
                            ActivityService activityService,
                            KeyboardService keyboardService,
-                           MediaService mediaService) {
+                           MediaService mediaService,
+                           ResortHandler resortHandler) {
         this.activityService = activityService;
         this.keyboardService = keyboardService;
         this.stateMachineService = stateMachineService;
         this.mediaService = mediaService;
+        this.resortHandler = resortHandler;
     }
     @Async
     @SneakyThrows
@@ -120,8 +123,6 @@ public class ActivityHandler {
     @Async
     @SneakyThrows
     private void selectHandler(CallbackQuery callbackQuery, DvgKiprBot bot) {
-//        Template logic: clear state and restart activity selection
-        stateMachineService.clearActivitiesByUserId(callbackQuery.getFrom().getId());
-        defaultHandler(callbackQuery, bot);
+        resortHandler.defaultHandler(callbackQuery, bot);
     }
 }

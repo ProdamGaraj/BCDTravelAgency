@@ -9,6 +9,7 @@ import bcd.solution.dvgKiprBot.core.repository.UserRepository;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Optional;
 
 @Service
@@ -32,16 +33,16 @@ public class StateMachineService {
         if (stateMachineOptional.isPresent()) {
             return stateMachineOptional.get();
         }
-        StateMachine stateMachine = StateMachine.builder().user(user).build();
+        StateMachine stateMachine = StateMachine.builder().user(user).activities(new ArrayList<>()).build();
         stateMachineRepo.saveAndFlush(stateMachine);
         return stateMachine;
     }
 
     @Async
-    public StateMachine setWaitPasswordByUserId(Long id, boolean wait_password, Integer message_id) {
+    public StateMachine setWaitPasswordByUserId(Long id, boolean waitPassword, Integer messageId) {
         StateMachine stateMachine = getOrAddIfNotExists(id);
-        stateMachine.setWait_password(wait_password);
-        stateMachine.setAuth_message_id(message_id);
+        stateMachine.setWait_password(waitPassword);
+        stateMachine.setAuth_message_id(messageId);
         stateMachineRepo.save(stateMachine);
         return stateMachine;
     }
@@ -52,21 +53,25 @@ public class StateMachineService {
     }
 
     @Async
-    public StateMachine addActivityByIdByUserId(Long user_id, Long activity_id) {
-        Activity activity = activityRepo.getReferenceById(activity_id);
-        StateMachine stateMachine = getOrAddIfNotExists(user_id);
+    public void addActivityByIdByUserId(Long userId, Long activityId) {
+        Activity activity = activityRepo.getReferenceById(activityId);
+        StateMachine stateMachine = getOrAddIfNotExists(userId);
 
         stateMachine.activities.add(activity);
         stateMachineRepo.save(stateMachine);
 
-        return stateMachine;
     }
 
     @Async
-    public StateMachine clearActivitiesByUserId(Long user_id) {
-        StateMachine stateMachine = getOrAddIfNotExists(user_id);
+    public void clearActivitiesByUserId(Long userId) {
+        StateMachine stateMachine = getOrAddIfNotExists(userId);
         stateMachine.activities.clear();
         stateMachineRepo.save(stateMachine);
-        return stateMachine;
+    }
+
+    @Async
+    public void clearStateByUserId(Long userId) {
+        StateMachine stateMachine = getOrAddIfNotExists(userId);
+        stateMachineRepo.delete(stateMachine);
     }
 }
