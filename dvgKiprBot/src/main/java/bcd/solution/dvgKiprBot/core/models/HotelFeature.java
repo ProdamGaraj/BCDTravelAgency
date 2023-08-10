@@ -1,9 +1,6 @@
 package bcd.solution.dvgKiprBot.core.models;;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
@@ -26,4 +23,12 @@ public class HotelFeature {
 
     @Nullable
     public Boolean free;
+
+    public HotelFeature(String name,
+                        String description,
+                        Boolean free) {
+        this.name = name;
+        this.description = description;
+        this.free = free;
+    }
 }

@@ -29,7 +29,6 @@ import java.util.concurrent.CompletableFuture;
 
 @Component
 public class MessageHandler {
-    private final Map<Long, Pair<Boolean, Optional<Message>>> is_password = new HashMap<>();
     private final KeyboardService keyboardService;
 
     private final MediaService mediaService;
@@ -39,7 +38,6 @@ public class MessageHandler {
     private final AuthHandler authHandler;
     private final StateMachineService stateMachineService;
 
-    @Autowired
     public MessageHandler(KeyboardService keyboardService,
                           MediaService mediaService,
                           CommandsHandler commandsHandler,
@@ -75,19 +73,15 @@ public class MessageHandler {
             switch (command) {
                 case "/start":
                     commandsHandler.startHandler(message, bot);
-//                    startCommandHandler(message, bot);
                     break;
                 case "/customtours":
                     commandsHandler.tourChoosingHandler(message, bot);
-//                    customTourCommandHandler(message, bot);
                     break;
                 case "/authorization":
                     authHandler.authCommandHandler(message, bot);
-//                    authorizationCommandHandler(message, bot);
                     break;
                 case "/media":
                     commandsHandler.mediaHandler(message, bot);
-//                    mediaCommandHandler(message, bot);
                     break;
                 default:
                     bot.executeAsync(SendMessage.builder()

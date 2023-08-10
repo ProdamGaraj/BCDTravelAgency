@@ -20,8 +20,9 @@ public class Hotel {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     public String name;
+    @Column(columnDefinition = "TEXT")
     public String description;
-    @OneToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.EAGER)
     public List<HotelFeature> features;
     @ManyToOne(fetch = FetchType.EAGER)
     public Resort resort;
