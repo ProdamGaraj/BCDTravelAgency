@@ -1,15 +1,12 @@
 package bcd.solution.dvgKiprBot.core.services;
 
-import org.checkerframework.checker.units.qual.A;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
-import bcd.solution.dvgKiprBot.core.models.Activity;
 import bcd.solution.dvgKiprBot.core.models.CustomTour;
 import bcd.solution.dvgKiprBot.core.models.Hotel;
-import bcd.solution.dvgKiprBot.core.models.Resort;
 import bcd.solution.dvgKiprBot.core.repository.ActivityRepo;
 import bcd.solution.dvgKiprBot.core.repository.CustomTourRepo;
 import bcd.solution.dvgKiprBot.core.repository.HotelRepo;
@@ -69,7 +66,7 @@ public class KeyboardService {
     }
 
     @Async
-    public InlineKeyboardMarkup getActivitiesKeyboard(Integer index, Long activity_id) {
+    public InlineKeyboardMarkup getActivitiesKeyboard(Integer index, Long activityId) {
         long size = activityRepo.count();
 
         List<InlineKeyboardButton> navigation_row = new ArrayList<>();
@@ -81,7 +78,7 @@ public class KeyboardService {
         }
         navigation_row.add(InlineKeyboardButton.builder()
                 .text("Добавить")
-                .callbackData("activities_add/"+(index) + "/" + (activity_id))
+                .callbackData("activities_add/"+(index) + "/" + (activityId))
                 .build());
         if (index < size - 1) {
             navigation_row.add(InlineKeyboardButton.builder()
@@ -108,7 +105,7 @@ public class KeyboardService {
     }
 
     @Async
-    public InlineKeyboardMarkup getResortsKeyboard(Integer index, Long resort_id) {
+    public InlineKeyboardMarkup getResortsKeyboard(Integer index, Long resortId) {
 
         long size = resortRepo.count();
 
@@ -121,7 +118,7 @@ public class KeyboardService {
         }
         navigation_row.add(InlineKeyboardButton.builder()
                 .text("Выбрать")
-                .callbackData("resorts_select/"+(resort_id))
+                .callbackData("resorts_select/"+(resortId))
                 .build());
         if (index < size - 1) {
             navigation_row.add(InlineKeyboardButton.builder()
@@ -142,62 +139,66 @@ public class KeyboardService {
     }
 
     @Async
-    public InlineKeyboardMarkup getPersonalToursKeyboard(Integer index) {
+    public InlineKeyboardMarkup getCustomToursKeyboard(Integer index, Long customTourId) {
 
-        List<CustomTour> customTours = new ArrayList<>();
-//        List<CustomTour> customTours = customTourRepo.customTourList();
+        long size = customTourRepo.count();
 
-        CustomTour currentCustomTour = customTours.get(index);
+        List<InlineKeyboardButton> navigation_row = new ArrayList<>();
+        if (index > 0) {
+            navigation_row.add(InlineKeyboardButton.builder()
+                    .text("<-")
+                    .callbackData("customTours_change/" + (index - 1))
+                    .build());
+        }
+        navigation_row.add(InlineKeyboardButton.builder()
+                .text("Выбрать")
+                .callbackData("customTours_select/"+(customTourId))
+                .build());
+        if (index < size - 1) {
+            navigation_row.add(InlineKeyboardButton.builder()
+                    .text("->")
+                    .callbackData("customTours_change/" + (index + 1))
+                    .build());
+        }
 
         return InlineKeyboardMarkup.builder()
+                .keyboardRow(navigation_row)
                 .keyboardRow(List.of(
                         InlineKeyboardButton.builder()
-                                .text("<-")
-                                .callbackData("personalTour_left")
-                                .build(),
-                        InlineKeyboardButton.builder()
-                                .text(currentCustomTour.name)
-                                .callbackData("personalTour_select")
-                                .build(),
-                        InlineKeyboardButton.builder()
-                                .text("->")
-                                .callbackData("personalTour_right")
-                                .build()
-                ))
-                .keyboardRow(List.of(
-                        InlineKeyboardButton.builder()
-                                .text("Home")
+                                .text("В начало")
                                 .callbackData("restart")
                                 .build()
                 ))
                 .build();
     }
 
-    public InlineKeyboardMarkup getHotelChoosingKeyboard() {
+    public InlineKeyboardMarkup getHotelsKeyboard(Integer index, Long hotelId) {
 
-        List<Hotel> hotels = new ArrayList<>();
-//        List<Hotel> hotels = hotelRepo.hotelList();
+        long size = customTourRepo.count();
 
-        Hotel currentHotel = hotels.get(0);
+        List<InlineKeyboardButton> navigation_row = new ArrayList<>();
+        if (index > 0) {
+            navigation_row.add(InlineKeyboardButton.builder()
+                    .text("<-")
+                    .callbackData("hotels_change/" + (index - 1))
+                    .build());
+        }
+        navigation_row.add(InlineKeyboardButton.builder()
+                .text("Выбрать")
+                .callbackData("hotels_select/"+(hotelId))
+                .build());
+        if (index < size - 1) {
+            navigation_row.add(InlineKeyboardButton.builder()
+                    .text("->")
+                    .callbackData("hotels_change/" + (index + 1))
+                    .build());
+        }
 
         return InlineKeyboardMarkup.builder()
+                .keyboardRow(navigation_row)
                 .keyboardRow(List.of(
                         InlineKeyboardButton.builder()
-                                .text("<-")
-                                .callbackData("hotel_left")
-                                .build(),
-                        InlineKeyboardButton.builder()
-                                .text(currentHotel.name)
-                                .callbackData("hotel_select")
-                                .build(),
-                        InlineKeyboardButton.builder()
-                                .text("->")
-                                .callbackData("hotel_right")
-                                .build()
-                ))
-                .keyboardRow( List.of(
-                        InlineKeyboardButton.builder()
-                                .text("Home")
+                                .text("В начало")
                                 .callbackData("restart")
                                 .build()
                 ))

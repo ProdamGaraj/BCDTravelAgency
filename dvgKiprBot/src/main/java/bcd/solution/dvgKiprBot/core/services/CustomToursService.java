@@ -5,18 +5,15 @@ import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import bcd.solution.dvgKiprBot.core.models.CustomTour;
 import bcd.solution.dvgKiprBot.core.repository.CustomTourRepo;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.AnswerCallbackQuery;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageCaption;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageMedia;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageReplyMarkup;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
-import org.telegram.telegrambots.meta.bots.AbsSender;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 
 @Service
 public class CustomToursService {
@@ -42,12 +39,12 @@ public class CustomToursService {
                 .messageId(callbackQuery.getMessage().getMessageId())
                 .media(mediaService.updateMediaForCustomTour(new CustomTour()))
                 .build());
-        bot.executeAsync(EditMessageCaption.builder()
-                .chatId(callbackQuery.getMessage().getChatId())
-                .messageId(callbackQuery.getMessage().getMessageId())
-                .caption("Здесь будет список авторских туров:")
-                .replyMarkup(keyboardService.getPersonalToursKeyboard(0))
-                .build());
+//        bot.executeAsync(EditMessageCaption.builder()
+//                .chatId(callbackQuery.getMessage().getChatId())
+//                .messageId(callbackQuery.getMessage().getMessageId())
+//                .caption("Здесь будет список авторских туров:")
+//                .replyMarkup(keyboardService.getCustomToursKeyboard(0))
+//                .build());
         bot.executeAsync(AnswerCallbackQuery.builder()
                 .callbackQueryId(callbackQuery.getId()).build());
     }
@@ -66,11 +63,11 @@ public class CustomToursService {
 //        }//TODO: think about  mod(currentIndex:size)
 
 
-        bot.executeAsync(EditMessageReplyMarkup.builder()
-                .chatId(callbackQuery.getMessage().getChatId())
-                .messageId(callbackQuery.getMessage().getMessageId())
-                .replyMarkup(keyboardService.getPersonalToursKeyboard(index))
-                .build());
+//        bot.executeAsync(EditMessageReplyMarkup.builder()
+//                .chatId(callbackQuery.getMessage().getChatId())
+//                .messageId(callbackQuery.getMessage().getMessageId())
+//                .replyMarkup(keyboardService.getCustomToursKeyboard(index))
+//                .build());
         bot.executeAsync(AnswerCallbackQuery.builder()
                 .callbackQueryId(callbackQuery.getId()).build());
     }
@@ -88,11 +85,11 @@ public class CustomToursService {
 //            index = 0;
 //        }
 
-        bot.executeAsync(EditMessageReplyMarkup.builder()
-                .chatId(callbackQuery.getMessage().getChatId())
-                .messageId(callbackQuery.getMessage().getMessageId())
-                .replyMarkup(keyboardService.getPersonalToursKeyboard(index))
-                .build());
+//        bot.executeAsync(EditMessageReplyMarkup.builder()
+//                .chatId(callbackQuery.getMessage().getChatId())
+//                .messageId(callbackQuery.getMessage().getMessageId())
+//                .replyMarkup(keyboardService.getCustomToursKeyboard(index))
+//                .build());
         bot.executeAsync(AnswerCallbackQuery.builder()
                 .callbackQueryId(callbackQuery.getId()).build());
     }
