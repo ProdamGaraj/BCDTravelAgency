@@ -25,6 +25,7 @@ public class CustomTour {
     @Nullable
     public String media;
 
+    @Override
     public String toString() {
         return this.name + "\n\n" +
                 this.description;

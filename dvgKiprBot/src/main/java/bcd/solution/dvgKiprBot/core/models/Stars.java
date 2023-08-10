@@ -9,5 +9,18 @@ public enum Stars {
     twostar,
     threestar,
     fourstar,
-    fivestar
+    fivestar;
+
+    @Override
+    public String toString() {
+        switch (this) {
+            case nullstar -> {return "";}
+            case onestar -> {return "⭐️";}
+            case twostar -> {return "⭐️⭐️";}
+            case threestar -> {return "⭐️⭐️⭐️";}
+            case fourstar -> {return "⭐️⭐️⭐️⭐️";}
+            case fivestar -> {return "⭐️⭐️⭐️⭐️⭐️";}
+        }
+        return "";
+    }
 }

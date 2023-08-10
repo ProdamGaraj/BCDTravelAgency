@@ -28,6 +28,7 @@ public class Resort {
     @ManyToMany(fetch = FetchType.EAGER)
     public List<Activity> activities;
 
+    @Override
     public String toString() {
         StringBuilder activity_list = new StringBuilder();
         for (Activity activity : this.activities) {

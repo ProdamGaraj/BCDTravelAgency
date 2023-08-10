@@ -28,6 +28,7 @@ public class Activity {
     public Boolean free;
     public String media;
 
+    @Override
     public String toString() {
         return this.name + "\n\n"
                 + this.description + "\n\n"
