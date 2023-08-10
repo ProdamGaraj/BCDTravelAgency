@@ -2,8 +2,6 @@ package bcd.solution.dvgKiprBot.core.utils.handlers;
 
 import bcd.solution.dvgKiprBot.DvgKiprBot;
 import bcd.solution.dvgKiprBot.core.models.*;
-import bcd.solution.dvgKiprBot.core.repository.ActivityRepo;
-import bcd.solution.dvgKiprBot.core.repository.ResortRepo;
 import bcd.solution.dvgKiprBot.core.services.KeyboardService;
 import bcd.solution.dvgKiprBot.core.services.MediaService;
 import bcd.solution.dvgKiprBot.core.services.UserService;
@@ -13,27 +11,18 @@ import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
 import org.telegram.telegrambots.meta.api.objects.Message;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @Component
 public class CommandsHandler {
     private final UserService userService;
     private final MediaService mediaService;
     private final KeyboardService keyboardService;
-    private final ResortRepo resortRepo;
-    private final ActivityRepo activityRepo;
 
     public CommandsHandler(UserService userService,
                            MediaService mediaService,
-                           KeyboardService keyboardService,
-                           ResortRepo resortRepo,
-                           ActivityRepo activityRepo) {
+                           KeyboardService keyboardService) {
         this.userService = userService;
         this.mediaService = mediaService;
         this.keyboardService = keyboardService;
-        this.resortRepo = resortRepo;
-        this.activityRepo = activityRepo;
     }
 
     @Async

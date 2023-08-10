@@ -10,7 +10,6 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.AnswerCallbackQuery;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageCaption;
-import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageMedia;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 
 @Component
@@ -42,7 +41,7 @@ public class ResortHandler {
     @Async
     @SneakyThrows
     public void defaultHandler(CallbackQuery callbackQuery, DvgKiprBot bot) {
-        Resort resort = resortService.getResortByIndex(0);
+        Resort currentResort = resortService.getByIndex(0);
 //        TODO: add getting media of resort
 //        bot.executeAsync(EditMessageMedia.builder()
 //                .chatId(callbackQuery.getMessage().getChatId())
@@ -52,8 +51,8 @@ public class ResortHandler {
         bot.executeAsync(EditMessageCaption.builder()
                 .chatId(callbackQuery.getMessage().getChatId())
                 .messageId(callbackQuery.getMessage().getMessageId())
-                .caption(resort.toString())
-                .replyMarkup(keyboardService.getResortsKeyboard(0, resort.getId()))
+                .caption(currentResort.toString())
+                .replyMarkup(keyboardService.getResortsKeyboard(0, currentResort.getId()))
                 .build());
         bot.executeAsync(AnswerCallbackQuery.builder()
                 .callbackQueryId(callbackQuery.getId()).build());
@@ -69,7 +68,7 @@ public class ResortHandler {
     @SneakyThrows
     private void changeHandler(CallbackQuery callbackQuery, DvgKiprBot bot) {
         Integer index = Integer.parseInt(callbackQuery.getData().split("/")[1]);
-        Resort resort = resortService.getResortByIndex(index);
+        Resort currentResort = resortService.getByIndex(index);
 //        TODO: add getting media of resort
 //        bot.executeAsync(EditMessageMedia.builder()
 //                .chatId(callbackQuery.getMessage().getChatId())
@@ -79,8 +78,8 @@ public class ResortHandler {
         bot.executeAsync(EditMessageCaption.builder()
                 .chatId(callbackQuery.getMessage().getChatId())
                 .messageId(callbackQuery.getMessage().getMessageId())
-                .caption(resort.toString())
-                .replyMarkup(keyboardService.getResortsKeyboard(index, resort.getId()))
+                .caption(currentResort.toString())
+                .replyMarkup(keyboardService.getResortsKeyboard(index, currentResort.getId()))
                 .build());
         bot.executeAsync(AnswerCallbackQuery.builder()
                 .callbackQueryId(callbackQuery.getId()).build());
