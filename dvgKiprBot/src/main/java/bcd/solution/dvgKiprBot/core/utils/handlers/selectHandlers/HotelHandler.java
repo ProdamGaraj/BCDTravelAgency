@@ -51,6 +51,13 @@ public class HotelHandler {
         StateMachine usersState = stateMachineService.getByUserId(callbackQuery.getFrom().getId());
 
         List<Hotel> currentHotels = hotelService.findByResort(usersState.resort);
+        if (currentHotels.isEmpty()) {
+            bot.executeAsync(AnswerCallbackQuery.builder()
+                    .callbackQueryId(callbackQuery.getId())
+                    .showAlert(true).text("Отелей не найдено, попробуйте позже")
+                    .build());
+            return;
+        }
 
 //        bot.executeAsync(EditMessageMedia.builder()
 //            .chatId(callbackQuery.getMessage().getChatId())

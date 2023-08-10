@@ -100,6 +100,13 @@ public class ResortHandler {
 
         StateMachine userState = stateMachineService.getByUserId(callbackQuery.getFrom().getId());
         List<Resort> currentResorts = resortService.getByIndexAndActivities(index, userState.activities);
+        if (currentResorts.isEmpty()) {
+            bot.executeAsync(AnswerCallbackQuery.builder()
+                    .callbackQueryId(callbackQuery.getId())
+                    .showAlert(true).text("Курортов не найдено, попробуйте позже")
+                    .build());
+            return;
+        }
 //        TODO: add getting media of resort
 //        bot.executeAsync(EditMessageMedia.builder()
 //                .chatId(callbackQuery.getMessage().getChatId())
