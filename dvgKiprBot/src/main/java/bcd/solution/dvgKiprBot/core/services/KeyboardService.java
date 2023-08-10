@@ -174,7 +174,7 @@ public class KeyboardService {
 
     public InlineKeyboardMarkup getHotelsKeyboard(Integer index, Long hotelId) {
 
-        long size = customTourRepo.count();
+        long size = hotelRepo.count();
 
         List<InlineKeyboardButton> navigation_row = new ArrayList<>();
         if (index > 0) {
