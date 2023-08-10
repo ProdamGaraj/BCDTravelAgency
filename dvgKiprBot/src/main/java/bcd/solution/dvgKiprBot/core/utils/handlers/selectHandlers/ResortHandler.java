@@ -30,6 +30,7 @@ public class ResortHandler {
     @Async
     @SneakyThrows
     public void handleResortCallback(CallbackQuery callbackQuery, DvgKiprBot bot) {
+//        Look comments in activity handler class
         String action = callbackQuery.getData().split("/")[0];
         switch (action) {
             case "resorts" -> defaultHandler(callbackQuery, bot);

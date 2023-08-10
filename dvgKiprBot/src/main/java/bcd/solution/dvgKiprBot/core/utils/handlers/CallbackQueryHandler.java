@@ -79,9 +79,9 @@ public class CallbackQueryHandler {
     @Async
     @SneakyThrows
     public void handleQuery(CallbackQuery callbackQuery, DvgKiprBot bot) {
+//        Structure of callback data:
+//        {action group}[_{action}(optional)]/{current index (by default 0)}[/{current entity id}(optional)]
 
-        //TODO: rewrite?
-        //As an idea we should use if else statements to go easier inside of our algorithm paths
         String callback_action = callbackQuery.getData().split("_")[0];
 
         switch (callback_action) {

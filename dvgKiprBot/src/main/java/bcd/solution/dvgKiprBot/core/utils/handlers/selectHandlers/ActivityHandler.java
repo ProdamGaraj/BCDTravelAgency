@@ -49,13 +49,17 @@ public class ActivityHandler {
 
     @Async
     @SneakyThrows
-    private void defaultHandler(CallbackQuery callbackQuery, DvgKiprBot bot) {
+    public void defaultHandler(CallbackQuery callbackQuery, DvgKiprBot bot) {
+//        Get user's state for current list of activities
+//        and get current activity
         StateMachine stateMachine = stateMachineService.getByUserId(callbackQuery.getFrom().getId());
-        Activity activity = activityService.getByIndex(0);
-        StringBuilder caption = new StringBuilder(activity.toString() + "\n\nВыбранные активности: ");
+        Activity currentActivity = activityService.getByIndex(0);
+//        Build activity card with selected activities
+        StringBuilder caption = new StringBuilder(currentActivity.toString() + "\n\nВыбранные активности: ");
         for (Activity chousen_activity : stateMachine.activities) {
             caption.append("- ").append(chousen_activity.name).append("\n");
         }
+//        Call telegram API
 //        TODO: add getting media
 //        bot.executeAsync(EditMessageMedia.builder()
 //                .chatId(callbackQuery.getMessage().getChatId())
@@ -66,7 +70,7 @@ public class ActivityHandler {
                 .chatId(callbackQuery.getMessage().getChatId())
                 .messageId(callbackQuery.getMessage().getMessageId())
                 .caption(caption.toString())
-                .replyMarkup(keyboardService.getActivitiesKeyboard(0, activity.getId()))
+                .replyMarkup(keyboardService.getActivitiesKeyboard(0, currentActivity.getId()))
                 .build());
         bot.executeAsync(AnswerCallbackQuery.builder()
                 .callbackQueryId(callbackQuery.getId()).build());
@@ -75,21 +79,28 @@ public class ActivityHandler {
     @Async
     @SneakyThrows
     private void addHandler(CallbackQuery callbackQuery, DvgKiprBot bot) {
+//        Parse activity id from callback data and add activity to user's state
         Long activity_id = Long.parseLong(callbackQuery.getData().split("/")[2]);
         stateMachineService.addActivityByIdByUserId(callbackQuery.getFrom().getId(), activity_id);
+//        Answer callback
         changeHandler(callbackQuery, bot);
     }
 
     @Async
     @SneakyThrows
     private void changeHandler(CallbackQuery callbackQuery, DvgKiprBot bot) {
+//        Parse index of current activity
         Integer index = Integer.parseInt(callbackQuery.getData().split("/")[1]);
+//        Get user's state for current list of activities
+//        and get current activity
         StateMachine stateMachine = stateMachineService.getByUserId(callbackQuery.getFrom().getId());
-        Activity activity = activityService.getByIndex(index);
-        StringBuilder caption = new StringBuilder(activity.toString() + "\n\nВыбранные активности:\n");
+        Activity currentActivity = activityService.getByIndex(index);
+//        Build activity card with selected activities
+        StringBuilder caption = new StringBuilder(currentActivity.toString() + "\n\nВыбранные активности:\n");
         for (Activity chousen_activity : stateMachine.activities) {
             caption.append("- ").append(chousen_activity.name).append("\n");
         }
+//        Call telegram API
 //        TODO: add getting media
 //        bot.executeAsync(EditMessageMedia.builder()
 //                .chatId(callbackQuery.getMessage().getChatId())
@@ -100,7 +111,7 @@ public class ActivityHandler {
                 .chatId(callbackQuery.getMessage().getChatId())
                 .messageId(callbackQuery.getMessage().getMessageId())
                 .caption(caption.toString())
-                .replyMarkup(keyboardService.getActivitiesKeyboard(index, activity.getId()))
+                .replyMarkup(keyboardService.getActivitiesKeyboard(index, currentActivity.getId()))
                 .build());
         bot.executeAsync(AnswerCallbackQuery.builder()
                 .callbackQueryId(callbackQuery.getId()).build());
@@ -109,6 +120,7 @@ public class ActivityHandler {
     @Async
     @SneakyThrows
     private void selectHandler(CallbackQuery callbackQuery, DvgKiprBot bot) {
+//        Template logic: clear state and restart activity selection
         stateMachineService.clearActivitiesByUserId(callbackQuery.getFrom().getId());
         defaultHandler(callbackQuery, bot);
     }
