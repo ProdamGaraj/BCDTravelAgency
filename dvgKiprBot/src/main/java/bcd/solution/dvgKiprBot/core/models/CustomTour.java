@@ -24,4 +24,9 @@ public class CustomTour {
     public String description;
     @Nullable
     public String media;
+
+    public String toString() {
+        return this.name + "\n\n" +
+                this.description;
+    }
 }

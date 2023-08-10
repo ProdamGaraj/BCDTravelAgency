@@ -13,67 +13,7 @@ public class CustomToursService {
         this.customTourRepo = customTourRepo;
     }
 
-
-    @SneakyThrows
-    public void personalToursChooseHandler(CallbackQuery callbackQuery, DvgKiprBot bot) {
-
-        bot.executeAsync(EditMessageMedia.builder()
-                .chatId(callbackQuery.getMessage().getChatId())
-                .messageId(callbackQuery.getMessage().getMessageId())
-                .media(mediaService.updateMediaForCustomTour(new CustomTour()))
-                .build());
-//        bot.executeAsync(EditMessageCaption.builder()
-//                .chatId(callbackQuery.getMessage().getChatId())
-//                .messageId(callbackQuery.getMessage().getMessageId())
-//                .caption("Здесь будет список авторских туров:")
-//                .replyMarkup(keyboardService.getCustomToursKeyboard(0))
-//                .build());
-        bot.executeAsync(AnswerCallbackQuery.builder()
-                .callbackQueryId(callbackQuery.getId()).build());
-    }
-
-    @SneakyThrows
-    public void personalTour_leftHandler(CallbackQuery callbackQuery, DvgKiprBot bot) {
-
-        Long ID = callbackQuery.getMessage().getChatId();
-
-        selectedActivity.putIfAbsent(ID, 0);
-        Integer index = selectedActivity.get(ID);
-        index -= 1;
-
-//        if (index < 0 || index >= customTourRepo.customTourList().size()) {
-//            index = 0;
-//        }//TODO: think about  mod(currentIndex:size)
-
-
-//        bot.executeAsync(EditMessageReplyMarkup.builder()
-//                .chatId(callbackQuery.getMessage().getChatId())
-//                .messageId(callbackQuery.getMessage().getMessageId())
-//                .replyMarkup(keyboardService.getCustomToursKeyboard(index))
-//                .build());
-        bot.executeAsync(AnswerCallbackQuery.builder()
-                .callbackQueryId(callbackQuery.getId()).build());
-    }
-
-    @SneakyThrows
-    public void personalTour_rightHandler(CallbackQuery callbackQuery, DvgKiprBot bot) {
-
-        Long ID = callbackQuery.getMessage().getChatId();
-
-        selectedActivity.putIfAbsent(ID, 0);
-        Integer index = selectedActivity.get(ID);
-        index += 1;
-
-//        if (index < 0 || index >= customTourRepo.customTourList().size()) {
-//            index = 0;
-//        }
-
-//        bot.executeAsync(EditMessageReplyMarkup.builder()
-//                .chatId(callbackQuery.getMessage().getChatId())
-//                .messageId(callbackQuery.getMessage().getMessageId())
-//                .replyMarkup(keyboardService.getCustomToursKeyboard(index))
-//                .build());
-        bot.executeAsync(AnswerCallbackQuery.builder()
-                .callbackQueryId(callbackQuery.getId()).build());
+    public CustomTour getByIndex(Integer index) {
+        return customTourRepo.findAll().get(index);
     }
 }

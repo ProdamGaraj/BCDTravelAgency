@@ -85,5 +85,20 @@ public class CommandsHandler {
 //                        .activities(all_activities)
 //                        .media("pathToFile")
 //                .build());
+//        customTourRepo.save(CustomTour.builder()
+//                .name("Вокруг Кипра за 7 дней")
+//                .description("Вокруг Кипра за 7 дней")
+//                .build());
+//        customTourRepo.save(CustomTour.builder()
+//                .name("Пляж и развлечения")
+//                .description("Только отдых и водные развлечения на протяжении 7 дней!")
+//                .build());
+//        customTourRepo.save(CustomTour.builder()
+//                .name("Турецкая и Греческая культуры за один тур")
+//                .description("Вы посетите обе половины Кипра и узнаете, " +
+//                        "как столь разные народы уживаются на одном острове!")
+//                .build());
+
+
     }
 }
