@@ -41,7 +41,7 @@ public class AuthHandler {
 //        TODO: add message text
         CompletableFuture<Message> auth_message = bot.executeAsync(SendPhoto.builder() //executeAsync
                 .chatId(message.getChatId())
-                .photo(mediaService.getStartMessageMedia())
+                .photo(mediaService.getAuthMedia())
                 .caption("Введите пароль")
                 .replyMarkup(keyboardService.getAuthCancelKeyboard())
                 .build());

@@ -20,75 +20,61 @@ public class MediaService {
 
     //TODO: absolute path is piece of shit has to be rewrote quickly!
     @SneakyThrows
-    public InputFile getStartMessageMedia() {
-        ClassPathResource test = new ClassPathResource("images/kiprstart.jpg");
-        InputFile file = new InputFile();
-        file.setMedia(test.getInputStream(), "kiprstart.jpg");
-        return file;
-    }
-
-    @SneakyThrows
-    public InputFile getMediaForActivity(Activity activity){
-        InputFile file = new InputFile();
-        file.setMedia((new ClassPathResource("images/00.jpg")).getInputStream(), "00.jpg");
-        //TODO logic
-        return file;
-    }
-    @SneakyThrows
-    public InputFile getMediaForCustomTour(CustomTour tour){
-        InputFile file = new InputFile();
-        file.setMedia((new ClassPathResource("images/00.jpg")).getInputStream(), "IMG_7174.webp");
-        //TODO logic
-        return file;
-    }
-    public InputFile getMediaForResort(Resort resort){
-        InputFile file = new InputFile();
-        file.setMedia("https://picsum.photos/id/20/200/300");
-        //TODO logic
-        return file;
-    }
-    public InputFile getMediaForHotel(Hotel hotel){
-        InputFile file = new InputFile();
-        file.setMedia("https://picsum.photos/id/25/200/300");
-        //TODO logic
-        return file;
-    }
-
-    @SneakyThrows
-    public InputMedia updateMediaForActivity(Activity activity){
-        InputMedia file = new InputMediaPhoto();
-        file.setMedia((new ClassPathResource("images/00.jpg")).getInputStream(), "00.jpg");
-        //TODO logic
-        return file;
-    }
-    @SneakyThrows
-    public InputMedia updateMediaForCustomTour(CustomTour tour){
-        InputMedia file = new InputMediaPhoto();
-        file.setMedia((new ClassPathResource("images/00.jpg")).getInputStream(), "IMG_7174.webp");
-        //TODO logic
-        return file;
-    }
-    @SneakyThrows
-    public InputMedia updateMediaForResort(Resort resort){
-        InputMedia file = new InputMediaPhoto();
-        file.setMedia((new ClassPathResource("images/00.jpg")).getInputStream(), "Beach.webp");
-
-        //TODO logic
-        return file;
-    }
-    @SneakyThrows
-    public InputMedia updateMediaForHotel(Hotel hotel){
-        InputMedia file = new InputMediaPhoto();
-        file.setMedia((new ClassPathResource("images/00.jpg")).getInputStream(), "Double_-Twin_Rooms.webp");
-        //file.setMedia("https://picsum.photos/id/25/200/300");
-        //TODO logic
-        return file;
-    }
-    @SneakyThrows
     public InputMedia updateMediaForStart(){
         InputMedia file = new InputMediaPhoto();
         file.setMedia((new ClassPathResource("images/kiprstart.jpg")).getInputStream(), "kiprstart.jpg");
         //TODO logic
         return file;
+    }
+
+    @SneakyThrows
+    private InputMedia getMediaByPath(String path, String name) {
+        InputMedia media = new InputMediaPhoto();
+        media.setMedia(new ClassPathResource(path).getInputStream(), name);
+        return media;
+    }
+
+    @SneakyThrows
+    public InputMedia getActivityMedia(Activity activity) {
+        String fileName = activity.media.split("/")[2];
+        return getMediaByPath(activity.media, fileName);
+    }
+
+    @SneakyThrows
+    public InputMedia getHotelMedia(Hotel hotel) {
+        String fileName = hotel.media.split("/")[4];
+        return getMediaByPath(hotel.media, fileName);
+    }
+
+    @SneakyThrows
+    public InputMedia getResortMedia(Resort resort) {
+        String fileName = resort.media.split("/")[2];
+        return getMediaByPath(resort.media, fileName);
+    }
+
+    @SneakyThrows
+    public InputMedia getCustomTourMedia(CustomTour customTour) {
+        if (customTour.media == null) {
+            return updateMediaForStart();
+        }
+        String fileName = customTour.media.split("/")[2];
+        return getMediaByPath(customTour.media, fileName);
+    }
+
+    @SneakyThrows
+    public InputFile getStartMessageMedia() {
+        InputFile file = new InputFile();
+        file.setMedia(new ClassPathResource("images/kiprstart.jpg").getInputStream(), "kiprstart.jpg");
+        return file;
+    }
+
+    @SneakyThrows
+    public InputFile getTourChoosingMedia() {
+        return getStartMessageMedia();
+    }
+
+    @SneakyThrows
+    public InputFile getAuthMedia(){
+        return getStartMessageMedia();
     }
 }

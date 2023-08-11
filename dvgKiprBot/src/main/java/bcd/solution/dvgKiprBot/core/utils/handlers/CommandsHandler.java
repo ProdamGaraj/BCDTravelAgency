@@ -77,7 +77,7 @@ public class CommandsHandler {
     public void tourChoosingHandler(Message message, DvgKiprBot bot) {
         bot.executeAsync(SendPhoto.builder()
                 .chatId(message.getChatId())
-                .photo(mediaService.getMediaForCustomTour(new CustomTour()))
+                .photo(mediaService.getTourChoosingMedia())
                 .caption("Выберите, от чего хотите отталкиваться при выборе тура")
                 .replyMarkup(keyboardService.getTourChoosingKeyboard())
                 .build());

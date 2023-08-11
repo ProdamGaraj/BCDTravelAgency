@@ -64,11 +64,11 @@ public class ActivityHandler {
         }
 //        Call telegram API
 //        TODO: add getting media
-//        bot.executeAsync(EditMessageMedia.builder()
-//                .chatId(callbackQuery.getMessage().getChatId())
-//                .messageId(callbackQuery.getMessage().getMessageId())
-//                .media(mediaService.updateMediaForActivity(new Activity()))
-//                .build());
+        bot.executeAsync(EditMessageMedia.builder()
+                .chatId(callbackQuery.getMessage().getChatId())
+                .messageId(callbackQuery.getMessage().getMessageId())
+                .media(mediaService.getActivityMedia(currentActivity))
+                .build());
         bot.executeAsync(EditMessageCaption.builder()
                 .chatId(callbackQuery.getMessage().getChatId())
                 .messageId(callbackQuery.getMessage().getMessageId())
@@ -105,11 +105,11 @@ public class ActivityHandler {
         }
 //        Call telegram API
 //        TODO: add getting media
-//        bot.executeAsync(EditMessageMedia.builder()
-//                .chatId(callbackQuery.getMessage().getChatId())
-//                .messageId(callbackQuery.getMessage().getMessageId())
-//                .media(mediaService.updateMediaForActivity(new Activity()))
-//                .build());
+        bot.executeAsync(EditMessageMedia.builder()
+                .chatId(callbackQuery.getMessage().getChatId())
+                .messageId(callbackQuery.getMessage().getMessageId())
+                .media(mediaService.getActivityMedia(currentActivity))
+                .build());
         bot.executeAsync(EditMessageCaption.builder()
                 .chatId(callbackQuery.getMessage().getChatId())
                 .messageId(callbackQuery.getMessage().getMessageId())

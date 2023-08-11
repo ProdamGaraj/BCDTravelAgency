@@ -14,6 +14,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.AnswerCallbackQuery;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageCaption;
+import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageMedia;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 
 import java.util.List;
@@ -57,11 +58,11 @@ public class ResortHandler {
         StateMachine userState = stateMachineService.getByUserId(callbackQuery.getFrom().getId());
         List<Resort> currentResorts = resortService.getByIndexAndActivities(0, userState.activities);
 //        TODO: add getting media of resort
-//        bot.executeAsync(EditMessageMedia.builder()
-//                .chatId(callbackQuery.getMessage().getChatId())
-//                .messageId(callbackQuery.getMessage().getMessageId())
-//                .media(mediaService.updateMediaForResort(new Resort()))
-//                .build());
+        bot.executeAsync(EditMessageMedia.builder()
+                .chatId(callbackQuery.getMessage().getChatId())
+                .messageId(callbackQuery.getMessage().getMessageId())
+                .media(mediaService.getResortMedia(currentResorts.get(0)))
+                .build());
         bot.executeAsync(EditMessageCaption.builder()
                 .chatId(callbackQuery.getMessage().getChatId())
                 .messageId(callbackQuery.getMessage().getMessageId())
@@ -108,11 +109,11 @@ public class ResortHandler {
             return;
         }
 //        TODO: add getting media of resort
-//        bot.executeAsync(EditMessageMedia.builder()
-//                .chatId(callbackQuery.getMessage().getChatId())
-//                .messageId(callbackQuery.getMessage().getMessageId())
-//                .media(mediaService.updateMediaForResort(new Resort()))
-//                .build());
+        bot.executeAsync(EditMessageMedia.builder()
+                .chatId(callbackQuery.getMessage().getChatId())
+                .messageId(callbackQuery.getMessage().getMessageId())
+                .media(mediaService.getResortMedia(currentResorts.get(index)))
+                .build());
         bot.executeAsync(EditMessageCaption.builder()
                 .chatId(callbackQuery.getMessage().getChatId())
                 .messageId(callbackQuery.getMessage().getMessageId())

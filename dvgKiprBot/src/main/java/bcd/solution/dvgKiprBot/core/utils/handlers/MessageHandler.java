@@ -29,22 +29,15 @@ import java.util.concurrent.CompletableFuture;
 
 @Component
 public class MessageHandler {
-    private final KeyboardService keyboardService;
-
-    private final MediaService mediaService;
 
     private final CommandsHandler commandsHandler;
 
     private final AuthHandler authHandler;
     private final StateMachineService stateMachineService;
 
-    public MessageHandler(KeyboardService keyboardService,
-                          MediaService mediaService,
-                          CommandsHandler commandsHandler,
+    public MessageHandler(CommandsHandler commandsHandler,
                           AuthHandler authHandler,
                           StateMachineService stateMachineService) {
-        this.keyboardService = keyboardService;
-        this.mediaService = mediaService;
         this.commandsHandler = commandsHandler;
         this.authHandler = authHandler;
         this.stateMachineService = stateMachineService;
@@ -92,27 +85,5 @@ public class MessageHandler {
             }
 
         }
-    }
-
-    @SneakyThrows
-    private void customTourCommandHandler(Message message, DvgKiprBot bot) {
-//        TODO: add message text
-        bot.executeAsync(SendPhoto.builder()
-                .chatId(message.getChatId())
-                .photo(mediaService.getMediaForCustomTour(new CustomTour()))
-                .caption("Выберите, от чего хотите отталкиваться при выборе тура")
-                .replyMarkup(keyboardService.getTourChoosingKeyboard())
-                .build());
-    }
-
-    @SneakyThrows
-    private void mediaCommandHandler(Message message, DvgKiprBot bot) {
-//        TODO: add message text
-        bot.executeAsync(SendPhoto.builder()
-                .chatId(message.getChatId())
-                .photo(mediaService.getStartMessageMedia())
-                .caption("тестовый вывод фото")
-                .replyMarkup(keyboardService.getTourChoosingKeyboard())
-                .build());
     }
 }

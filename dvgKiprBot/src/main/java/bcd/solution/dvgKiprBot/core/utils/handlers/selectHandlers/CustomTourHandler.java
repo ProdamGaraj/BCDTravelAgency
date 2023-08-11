@@ -50,11 +50,11 @@ public class CustomTourHandler {
 
         CustomTour currentTour = customToursService.getByIndex(index);
 
-//        bot.executeAsync(EditMessageMedia.builder()
-//            .chatId(callbackQuery.getMessage().getChatId())
-//            .messageId(callbackQuery.getMessage().getMessageId())
-//            .media(mediaService.updateMediaForCustomTour(new CustomTour()))
-//            .build());
+        bot.executeAsync(EditMessageMedia.builder()
+            .chatId(callbackQuery.getMessage().getChatId())
+            .messageId(callbackQuery.getMessage().getMessageId())
+            .media(mediaService.getCustomTourMedia(currentTour))
+            .build());
         bot.executeAsync(EditMessageCaption.builder()
                 .chatId(callbackQuery.getMessage().getChatId())
                 .messageId(callbackQuery.getMessage().getMessageId())
@@ -77,11 +77,11 @@ public class CustomTourHandler {
     public void defaultHandler(CallbackQuery callbackQuery, DvgKiprBot bot) {
         CustomTour currentTour = customToursService.getByIndex(0);
 
-//        bot.executeAsync(EditMessageMedia.builder()
-//            .chatId(callbackQuery.getMessage().getChatId())
-//            .messageId(callbackQuery.getMessage().getMessageId())
-//            .media(mediaService.updateMediaForCustomTour(new CustomTour()))
-//            .build());
+        bot.executeAsync(EditMessageMedia.builder()
+            .chatId(callbackQuery.getMessage().getChatId())
+            .messageId(callbackQuery.getMessage().getMessageId())
+            .media(mediaService.getCustomTourMedia(currentTour))
+            .build());
         bot.executeAsync(EditMessageCaption.builder()
                 .chatId(callbackQuery.getMessage().getChatId())
                 .messageId(callbackQuery.getMessage().getMessageId())

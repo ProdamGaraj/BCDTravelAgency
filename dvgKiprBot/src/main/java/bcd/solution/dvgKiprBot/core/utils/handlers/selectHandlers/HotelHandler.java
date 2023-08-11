@@ -14,6 +14,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.AnswerCallbackQuery;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageCaption;
+import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageMedia;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 
 import java.util.List;
@@ -59,11 +60,11 @@ public class HotelHandler {
             return;
         }
 
-//        bot.executeAsync(EditMessageMedia.builder()
-//            .chatId(callbackQuery.getMessage().getChatId())
-//            .messageId(callbackQuery.getMessage().getMessageId())
-//            .media(mediaService.updateMediaForCustomTour(new CustomTour()))
-//            .build());
+        bot.executeAsync(EditMessageMedia.builder()
+            .chatId(callbackQuery.getMessage().getChatId())
+            .messageId(callbackQuery.getMessage().getMessageId())
+            .media(mediaService.getHotelMedia(currentHotels.get(0)))
+            .build());
         bot.executeAsync(EditMessageCaption.builder()
                 .chatId(callbackQuery.getMessage().getChatId())
                 .messageId(callbackQuery.getMessage().getMessageId())
@@ -81,16 +82,16 @@ public class HotelHandler {
     @Async
     @SneakyThrows
     private void changeHandler(CallbackQuery callbackQuery, DvgKiprBot bot) {
-        Integer index = Integer.parseInt(callbackQuery.getData().split("/")[1]);
+        int index = Integer.parseInt(callbackQuery.getData().split("/")[1]);
         StateMachine usersState = stateMachineService.getByUserId(callbackQuery.getFrom().getId());
 
         List<Hotel> currentHotels = hotelService.findByResort(usersState.resort);
 
-//        bot.executeAsync(EditMessageMedia.builder()
-//            .chatId(callbackQuery.getMessage().getChatId())
-//            .messageId(callbackQuery.getMessage().getMessageId())
-//            .media(mediaService.updateMediaForCustomTour(new CustomTour()))
-//            .build());
+        bot.executeAsync(EditMessageMedia.builder()
+            .chatId(callbackQuery.getMessage().getChatId())
+            .messageId(callbackQuery.getMessage().getMessageId())
+            .media(mediaService.getHotelMedia(currentHotels.get(index)))
+            .build());
         bot.executeAsync(EditMessageCaption.builder()
                 .chatId(callbackQuery.getMessage().getChatId())
                 .messageId(callbackQuery.getMessage().getMessageId())
