@@ -1,9 +1,6 @@
 package bcd.solution.dvgKiprBot.core.services;
 
-import bcd.solution.dvgKiprBot.core.models.Activity;
-import bcd.solution.dvgKiprBot.core.models.Resort;
-import bcd.solution.dvgKiprBot.core.models.StateMachine;
-import bcd.solution.dvgKiprBot.core.models.User;
+import bcd.solution.dvgKiprBot.core.models.*;
 import bcd.solution.dvgKiprBot.core.repository.ActivityRepo;
 import bcd.solution.dvgKiprBot.core.repository.StateMachineRepo;
 import bcd.solution.dvgKiprBot.core.repository.UserRepository;
@@ -76,9 +73,40 @@ public class StateMachineService {
     }
 
     @Async
+    public void setHotelByUserId(Hotel hotel, Long userId) {
+        StateMachine userState = getByUserId(userId);
+        userState.hotel = hotel;
+        stateMachineRepo.save(userState);
+    }
+
+    @Async
+    public void setCustomTourByUserId(CustomTour customTour, Long userId) {
+        StateMachine userState = getByUserId(userId);
+        userState.customTour = customTour;
+        stateMachineRepo.save(userState);
+    }
+
+    @Async
     public void removeActivityFromStateByUserId(Activity deletingActivity, Long userId) {
         StateMachine stateMachine = getOrAddIfNotExists(userId);
         stateMachine.activities.removeIf(activity -> Objects.equals(deletingActivity.getId(), activity.getId()));
         stateMachineRepo.save(stateMachine);
+    }
+
+    @Async
+    public String getFinalCardByUserId(Long userId) {
+        StateMachine stateMachine = getOrAddIfNotExists(userId);
+        StringBuilder card = new StringBuilder("Пользователь @" + stateMachine.user.getLogin() + " подобрал тур:\n\n");
+
+        if (stateMachine.customTour != null) {
+            card.append("Авторский тур: ").append(stateMachine.customTour.name).append("\n\n");
+        } else {
+            card
+                    .append("Курорт: ").append(stateMachine.resort.name).append("\n")
+                    .append("Отель: ").append(stateMachine.hotel.name).append("\n\n");
+        }
+
+        card.append("Вскоре он с Вами свяжется для завершения оформления тура.");
+        return card.toString();
     }
 }

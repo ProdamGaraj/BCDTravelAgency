@@ -1,9 +1,12 @@
 package bcd.solution.dvgKiprBot.core.services;
 
+import bcd.solution.dvgKiprBot.core.models.Resort;
 import org.springframework.beans.factory.annotation.Autowired;
 import bcd.solution.dvgKiprBot.core.models.CustomTour;
 import bcd.solution.dvgKiprBot.core.repository.CustomTourRepo;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 
 @Service
 public class CustomToursService {
@@ -15,5 +18,9 @@ public class CustomToursService {
 
     public CustomTour getByIndex(Integer index) {
         return customTourRepo.findAll().get(index);
+    }
+
+    public Optional<CustomTour> getById(Long customTourId) {
+        return customTourRepo.findById(customTourId);
     }
 }

@@ -1,6 +1,7 @@
 package bcd.solution.dvgKiprBot.core.handlers.selectHandlers;
 
 import bcd.solution.dvgKiprBot.DvgKiprBot;
+import bcd.solution.dvgKiprBot.core.models.CustomTour;
 import bcd.solution.dvgKiprBot.core.models.Hotel;
 import bcd.solution.dvgKiprBot.core.models.StateMachine;
 import bcd.solution.dvgKiprBot.core.services.HotelService;
@@ -16,6 +17,7 @@ import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageMe
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 
 import java.util.List;
+import java.util.Optional;
 
 @Component
 public class HotelHandler {
@@ -23,15 +25,18 @@ public class HotelHandler {
     private final MediaService mediaService;
     private final HotelService hotelService;
     private final StateMachineService stateMachineService;
+    private final FeedbackHandler feedbackHandler;
 
     public HotelHandler(KeyboardService keyboardService,
                         MediaService mediaService,
                         HotelService hotelService,
-                        StateMachineService stateMachineService) {
+                        StateMachineService stateMachineService,
+                        FeedbackHandler feedbackHandler) {
         this.keyboardService = keyboardService;
         this.mediaService = mediaService;
         this.hotelService = hotelService;
         this.stateMachineService = stateMachineService;
+        this.feedbackHandler = feedbackHandler;
     }
     @Async
     @SneakyThrows
@@ -107,5 +112,20 @@ public class HotelHandler {
     @Async
     @SneakyThrows
     private void selectHandler(CallbackQuery callbackQuery, DvgKiprBot bot) {
+        Long hotelId = Long.parseLong(callbackQuery.getData().split("/")[1]);
+
+        Optional<Hotel> selectedHotel = hotelService.getById(hotelId);
+        if (selectedHotel.isEmpty()) {
+            bot.executeAsync(AnswerCallbackQuery.builder()
+                    .callbackQueryId(callbackQuery.getId())
+                    .showAlert(true).text("Отель не найден, попробуйте позже")
+                    .build());
+            return;
+        }
+
+        stateMachineService.setHotelByUserId(selectedHotel.get(), callbackQuery.getFrom().getId());
+
+        feedbackHandler.feedbackHandler(callbackQuery, bot);
+
     }
 }

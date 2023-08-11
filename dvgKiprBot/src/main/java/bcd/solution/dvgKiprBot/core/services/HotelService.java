@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class HotelService {
@@ -23,5 +24,9 @@ public class HotelService {
 
     public List<Hotel> findByResort(Resort resort) {
         return hotelRepo.findAllByResort(resort);
+    }
+
+    public Optional<Hotel> getById(Long hotelId) {
+        return hotelRepo.findById(hotelId);
     }
 }

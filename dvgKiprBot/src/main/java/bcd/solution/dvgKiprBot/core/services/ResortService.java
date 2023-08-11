@@ -46,7 +46,6 @@ public class ResortService {
 //        return resort;
         Optional<Resort> resort = resortRepo.findById(resortId);
         return resort;
-
     }
 
     @Async

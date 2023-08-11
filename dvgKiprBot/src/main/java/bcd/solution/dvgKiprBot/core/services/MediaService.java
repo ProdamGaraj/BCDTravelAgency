@@ -62,6 +62,12 @@ public class MediaService {
     }
 
     @SneakyThrows
+    public InputMedia getFeedbackMedia() {
+        String fileName = "finish.jpg";
+        return getMediaByPath("images/hotelType_2.png", fileName);
+    }
+
+    @SneakyThrows
     public InputFile getStartMessageMedia() {
         InputFile file = new InputFile();
         file.setMedia(new ClassPathResource("images/kiprstart.jpg").getInputStream(), "kiprstart.jpg");
