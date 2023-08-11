@@ -1,4 +1,4 @@
-package bcd.solution.dvgKiprBot.core.utils.handlers.selectHandlers;
+package bcd.solution.dvgKiprBot.core.handlers.selectHandlers;
 
 import bcd.solution.dvgKiprBot.DvgKiprBot;
 import bcd.solution.dvgKiprBot.core.models.Resort;
@@ -7,8 +7,6 @@ import bcd.solution.dvgKiprBot.core.services.KeyboardService;
 import bcd.solution.dvgKiprBot.core.services.MediaService;
 import bcd.solution.dvgKiprBot.core.services.ResortService;
 import bcd.solution.dvgKiprBot.core.services.StateMachineService;
-import bcd.solution.dvgKiprBot.core.utils.handlers.CallbackQueryHandler;
-import io.swagger.models.auth.In;
 import lombok.SneakyThrows;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;

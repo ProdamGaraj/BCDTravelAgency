@@ -1,24 +1,19 @@
-package bcd.solution.dvgKiprBot.core.utils.handlers;
+package bcd.solution.dvgKiprBot.core.handlers;
 
 import bcd.solution.dvgKiprBot.DvgKiprBot;
 import bcd.solution.dvgKiprBot.core.services.*;
-import bcd.solution.dvgKiprBot.core.utils.handlers.selectHandlers.ActivityHandler;
-import bcd.solution.dvgKiprBot.core.utils.handlers.selectHandlers.CustomTourHandler;
-import bcd.solution.dvgKiprBot.core.utils.handlers.selectHandlers.HotelHandler;
-import bcd.solution.dvgKiprBot.core.utils.handlers.selectHandlers.ResortHandler;
+import bcd.solution.dvgKiprBot.core.handlers.selectHandlers.ActivityHandler;
+import bcd.solution.dvgKiprBot.core.handlers.selectHandlers.CustomTourHandler;
+import bcd.solution.dvgKiprBot.core.handlers.selectHandlers.HotelHandler;
+import bcd.solution.dvgKiprBot.core.handlers.selectHandlers.ResortHandler;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.util.Pair;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.AnswerCallbackQuery;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageCaption;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageMedia;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 @Component
 public class CallbackQueryHandler {

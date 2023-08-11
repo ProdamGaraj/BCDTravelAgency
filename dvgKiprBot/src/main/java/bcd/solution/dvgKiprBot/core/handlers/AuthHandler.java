@@ -1,4 +1,4 @@
-package bcd.solution.dvgKiprBot.core.utils.handlers;
+package bcd.solution.dvgKiprBot.core.handlers;
 
 import bcd.solution.dvgKiprBot.DvgKiprBot;
 import bcd.solution.dvgKiprBot.core.models.StateMachine;
@@ -6,7 +6,6 @@ import bcd.solution.dvgKiprBot.core.services.KeyboardService;
 import bcd.solution.dvgKiprBot.core.services.MediaService;
 import bcd.solution.dvgKiprBot.core.services.StateMachineService;
 import lombok.SneakyThrows;
-import org.springframework.data.util.Pair;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.AnswerCallbackQuery;
@@ -15,9 +14,7 @@ import org.telegram.telegrambots.meta.api.methods.updatingmessages.DeleteMessage
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageCaption;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import org.telegram.telegrambots.meta.api.objects.Message;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 
-import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
 @Component

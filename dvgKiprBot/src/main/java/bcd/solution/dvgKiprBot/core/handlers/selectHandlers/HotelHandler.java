@@ -1,10 +1,8 @@
-package bcd.solution.dvgKiprBot.core.utils.handlers.selectHandlers;
+package bcd.solution.dvgKiprBot.core.handlers.selectHandlers;
 
 import bcd.solution.dvgKiprBot.DvgKiprBot;
-import bcd.solution.dvgKiprBot.core.models.CustomTour;
 import bcd.solution.dvgKiprBot.core.models.Hotel;
 import bcd.solution.dvgKiprBot.core.models.StateMachine;
-import bcd.solution.dvgKiprBot.core.repository.HotelRepo;
 import bcd.solution.dvgKiprBot.core.services.HotelService;
 import bcd.solution.dvgKiprBot.core.services.KeyboardService;
 import bcd.solution.dvgKiprBot.core.services.MediaService;

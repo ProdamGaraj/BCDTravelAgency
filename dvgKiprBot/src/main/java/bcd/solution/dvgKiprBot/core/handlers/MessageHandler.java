@@ -1,31 +1,17 @@
-package bcd.solution.dvgKiprBot.core.utils.handlers;
+package bcd.solution.dvgKiprBot.core.handlers;
 
 import bcd.solution.dvgKiprBot.DvgKiprBot;
 import bcd.solution.dvgKiprBot.core.models.StateMachine;
 import bcd.solution.dvgKiprBot.core.services.StateMachineService;
 import lombok.SneakyThrows;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.util.Pair;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
-import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
-import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
-import org.telegram.telegrambots.meta.api.methods.updatingmessages.DeleteMessage;
-import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageCaption;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.MessageEntity;
-import org.telegram.telegrambots.meta.bots.AbsSender;
-import bcd.solution.dvgKiprBot.core.models.CustomTour;
-import bcd.solution.dvgKiprBot.core.services.KeyboardService;
-import bcd.solution.dvgKiprBot.core.services.MediaService;
 
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
 
 @Component
 public class MessageHandler {

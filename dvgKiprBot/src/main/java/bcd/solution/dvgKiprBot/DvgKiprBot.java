@@ -1,13 +1,9 @@
 package bcd.solution.dvgKiprBot;
 
-import bcd.solution.dvgKiprBot.core.utils.handlers.CallbackQueryHandler;
-import bcd.solution.dvgKiprBot.core.utils.handlers.MessageHandler;
-import jakarta.inject.Singleton;
-import lombok.SneakyThrows;
+import bcd.solution.dvgKiprBot.core.handlers.CallbackQueryHandler;
+import bcd.solution.dvgKiprBot.core.handlers.MessageHandler;
 import lombok.extern.log4j.Log4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;

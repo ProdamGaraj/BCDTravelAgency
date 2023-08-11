@@ -1,14 +1,12 @@
-package bcd.solution.dvgKiprBot.core.utils.handlers.selectHandlers;
+package bcd.solution.dvgKiprBot.core.handlers.selectHandlers;
 
 import bcd.solution.dvgKiprBot.DvgKiprBot;
 import bcd.solution.dvgKiprBot.core.models.Activity;
 import bcd.solution.dvgKiprBot.core.models.StateMachine;
-import bcd.solution.dvgKiprBot.core.repository.StateMachineRepo;
 import bcd.solution.dvgKiprBot.core.services.ActivityService;
 import bcd.solution.dvgKiprBot.core.services.KeyboardService;
 import bcd.solution.dvgKiprBot.core.services.MediaService;
 import bcd.solution.dvgKiprBot.core.services.StateMachineService;
-import io.swagger.models.auth.In;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
@@ -17,8 +15,6 @@ import org.telegram.telegrambots.meta.api.methods.AnswerCallbackQuery;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageCaption;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageMedia;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
-
-import java.util.List;
 
 @Component
 public class ActivityHandler {
