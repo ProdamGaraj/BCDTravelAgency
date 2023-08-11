@@ -19,4 +19,9 @@ public class ActivityService {
     public Activity getByIndex(Integer index) {
         return activityRepo.findAll().get(index);
     }
+
+    @Async
+    public Activity getById(Long activityId) {
+        return activityRepo.getReferenceById(activityId);
+    }
 }

@@ -66,7 +66,7 @@ public class KeyboardService {
     }
 
     @Async
-    public InlineKeyboardMarkup getActivitiesKeyboard(Integer index, Long activityId) {
+    public InlineKeyboardMarkup getActivitiesKeyboard(Integer index, Long activityId, boolean isDeleting) {
         long size = activityRepo.count();
 
         List<InlineKeyboardButton> navigation_row = new ArrayList<>();
@@ -76,10 +76,18 @@ public class KeyboardService {
                     .callbackData("activities_change/" + (index - 1))
                     .build());
         }
-        navigation_row.add(InlineKeyboardButton.builder()
-                .text("Добавить")
-                .callbackData("activities_add/"+(index) + "/" + (activityId))
-                .build());
+        if (isDeleting) {
+            navigation_row.add(InlineKeyboardButton.builder()
+                    .text("Убрать")
+                    .callbackData("activities_delete/"+(index) + "/" + (activityId))
+                    .build());
+        } else {
+            navigation_row.add(InlineKeyboardButton.builder()
+                    .text("Добавить")
+                    .callbackData("activities_add/"+(index) + "/" + (activityId))
+                    .build());
+        }
+
         if (index < size - 1) {
             navigation_row.add(InlineKeyboardButton.builder()
                     .text("->")

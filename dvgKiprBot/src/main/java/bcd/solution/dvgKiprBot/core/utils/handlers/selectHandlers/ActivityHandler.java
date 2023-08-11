@@ -18,6 +18,8 @@ import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageCa
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageMedia;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 
+import java.util.List;
+
 @Component
 public class ActivityHandler {
     private final StateMachineService stateMachineService;
@@ -47,7 +49,18 @@ public class ActivityHandler {
             case "activities_select" -> selectHandler(callbackQuery, bot);
             case "activities_add" -> addHandler(callbackQuery, bot);
             case "activities_change" -> changeHandler(callbackQuery, bot);
+            case "activities_delete" -> deleteHandler(callbackQuery, bot);
         }
+    }
+
+    private void deleteHandler(CallbackQuery callbackQuery, DvgKiprBot bot) {
+//        Parse activity id from callback data and delete activity from user's state
+        Long activityId = Long.parseLong(callbackQuery.getData().split("/")[2]);
+        Activity deletingActivity = activityService.getById(activityId);
+
+        stateMachineService.removeActivityFromStateByUserId(deletingActivity, callbackQuery.getFrom().getId());
+//        Answer callback
+        changeHandler(callbackQuery, bot);
     }
 
     @Async
@@ -62,6 +75,11 @@ public class ActivityHandler {
         for (Activity chousen_activity : stateMachine.activities) {
             caption.append("- ").append(chousen_activity.name).append("\n");
         }
+
+        boolean isDeleting = false;
+        if (!stateMachine.activities.isEmpty()) {
+            isDeleting = stateMachine.activities.contains(currentActivity);
+        }
 //        Call telegram API
 //        TODO: add getting media
         bot.executeAsync(EditMessageMedia.builder()
@@ -73,7 +91,7 @@ public class ActivityHandler {
                 .chatId(callbackQuery.getMessage().getChatId())
                 .messageId(callbackQuery.getMessage().getMessageId())
                 .caption(caption.toString())
-                .replyMarkup(keyboardService.getActivitiesKeyboard(0, currentActivity.getId()))
+                .replyMarkup(keyboardService.getActivitiesKeyboard(0, currentActivity.getId(), isDeleting))
                 .build());
         bot.executeAsync(AnswerCallbackQuery.builder()
                 .callbackQueryId(callbackQuery.getId()).build());
@@ -103,6 +121,10 @@ public class ActivityHandler {
         for (Activity chousen_activity : stateMachine.activities) {
             caption.append("- ").append(chousen_activity.name).append("\n");
         }
+        boolean isDeleting = false;
+        if (!stateMachine.activities.isEmpty()) {
+            isDeleting = stateMachine.activities.contains(currentActivity);
+        }
 //        Call telegram API
 //        TODO: add getting media
         bot.executeAsync(EditMessageMedia.builder()
@@ -114,7 +136,7 @@ public class ActivityHandler {
                 .chatId(callbackQuery.getMessage().getChatId())
                 .messageId(callbackQuery.getMessage().getMessageId())
                 .caption(caption.toString())
-                .replyMarkup(keyboardService.getActivitiesKeyboard(index, currentActivity.getId()))
+                .replyMarkup(keyboardService.getActivitiesKeyboard(index, currentActivity.getId(), isDeleting))
                 .build());
         bot.executeAsync(AnswerCallbackQuery.builder()
                 .callbackQueryId(callbackQuery.getId()).build());

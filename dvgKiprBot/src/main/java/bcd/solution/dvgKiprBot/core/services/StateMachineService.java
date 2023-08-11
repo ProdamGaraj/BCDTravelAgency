@@ -10,8 +10,7 @@ import bcd.solution.dvgKiprBot.core.repository.UserRepository;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class StateMachineService {
@@ -64,23 +63,22 @@ public class StateMachineService {
     }
 
     @Async
-    public void clearActivitiesByUserId(Long userId) {
-        StateMachine stateMachine = getOrAddIfNotExists(userId);
-        stateMachine.activities.clear();
-        stateMachineRepo.save(stateMachine);
-    }
-
-    @Async
     public void clearStateByUserId(Long userId) {
         StateMachine stateMachine = getOrAddIfNotExists(userId);
         stateMachineRepo.delete(stateMachine);
     }
 
     @Async
-    public StateMachine setResortByUserId(Resort resort, Long userId) {
+    public void setResortByUserId(Resort resort, Long userId) {
         StateMachine userState = getByUserId(userId);
         userState.resort = resort;
         stateMachineRepo.save(userState);
-        return userState;
+    }
+
+    @Async
+    public void removeActivityFromStateByUserId(Activity deletingActivity, Long userId) {
+        StateMachine stateMachine = getOrAddIfNotExists(userId);
+        stateMachine.activities.removeIf(activity -> Objects.equals(deletingActivity.getId(), activity.getId()));
+        stateMachineRepo.save(stateMachine);
     }
 }
