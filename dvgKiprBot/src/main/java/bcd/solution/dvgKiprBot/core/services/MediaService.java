@@ -2,7 +2,6 @@ package bcd.solution.dvgKiprBot.core.services;
 
 import lombok.SneakyThrows;
 import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.InputStreamSource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.ResourcePatternResolver;
 import org.springframework.stereotype.Service;
@@ -14,12 +13,11 @@ import bcd.solution.dvgKiprBot.core.models.CustomTour;
 import bcd.solution.dvgKiprBot.core.models.Hotel;
 import bcd.solution.dvgKiprBot.core.models.Resort;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class MediaService {
@@ -39,49 +37,85 @@ public class MediaService {
     }
 
     @SneakyThrows
-    private List<InputMedia> getMediasByPath(String path) {
+    private InputFile getFileByPath(String path) {
         Resource[] resources = this.resourcePatternResolver.getResources("classpath:" + path + "*");
-        return Arrays.stream(resources).map(resource ->
-        {
+        Optional<Resource> resource = Arrays.stream(resources).filter(Resource::isFile).findFirst();
+        if (resource.isEmpty()) {
+            throw new RuntimeException();
+        }
+        return new InputFile(resource.get().getInputStream(), resource.get().getFilename());
+    }
+
+    @SneakyThrows
+    private List<List<InputMedia>> getMediasByPath(String path) {
+        if(!(new ClassPathResource(path).exists())) {
+            throw new FileNotFoundException();
+        }
+        Resource[] resources = this.resourcePatternResolver.getResources("classpath:" + path + "big/*");
+        List<List<InputMedia>> result = new ArrayList<>();
+        
+        List<InputMedia> tmpList = new ArrayList<>();
+        for (Resource resource : resources) {
+            if (tmpList.size() == 10) {
+                result.add(tmpList);
+                tmpList.clear();
+            }
             InputMedia media = new InputMediaPhoto();
             try {
                 media.setMedia(resource.getInputStream(), resource.getFilename());
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
-            return media;
-        }).toList();
+            tmpList.add(media);
+        }
+        if (!tmpList.isEmpty()) {
+            result.add(tmpList);
+        }
+
+        return result;
     }
 
 
     @SneakyThrows
-    private InputMedia getMediaByPath(String path, String name) {
+    private InputMedia getMediaByPath(String path) {
+        Resource[] resources = this.resourcePatternResolver.getResources("classpath:" + path + "*");
+        Optional<Resource> resource = Arrays.stream(resources).filter(Resource::isFile).findFirst();
+        if (resource.isEmpty()) {
+            throw new RuntimeException();
+        }
         InputMedia media = new InputMediaPhoto();
-        media.setMedia(new ClassPathResource(path).getInputStream(), name);
+        media.setMedia(resource.get().getInputStream(), resource.get().getFilename());
         return media;
     }
 
     @SneakyThrows
-    public List<InputMedia> getHotelMedias(Hotel hotel) {
+    public List<List<InputMedia>> getHotelMedias(Hotel hotel) {
         return getMediasByPath(hotel.media);
     }
 
     @SneakyThrows
+    public List<List<InputMedia>> getCustomTourMedias(CustomTour customTour) {
+        return getMediasByPath(customTour.media);
+    }
+
+    @SneakyThrows
+    public List<List<InputMedia>> getResortMedias(Resort resort) {
+        return getMediasByPath(resort.media);
+    }
+
+    @SneakyThrows
     public InputMedia getActivityMedia(Activity activity) {
-        String fileName = activity.media.split("/")[2];
-        return getMediaByPath(activity.media, fileName);
+        return getMediaByPath(activity.media);
     }
 
     @SneakyThrows
     public InputMedia getHotelMedia(Hotel hotel) {
-        String fileName = hotel.media.split("/")[4];
-        return getMediaByPath(hotel.media, fileName);
+        return getMediaByPath(hotel.media);
     }
 
     @SneakyThrows
     public InputMedia getResortMedia(Resort resort) {
-        String fileName = resort.media.split("/")[2];
-        return getMediaByPath(resort.media, fileName);
+        return getMediaByPath(resort.media);
     }
 
     @SneakyThrows
@@ -89,14 +123,32 @@ public class MediaService {
         if (customTour.media == null) {
             return updateMediaForStart();
         }
-        String fileName = customTour.media.split("/")[2];
-        return getMediaByPath(customTour.media, fileName);
+        return getMediaByPath(customTour.media);
+    }
+
+    @SneakyThrows
+    public InputFile getHotelFile(Hotel hotel) {
+        return getFileByPath(hotel.media);
+    }
+
+    @SneakyThrows
+    public InputFile getResortFile(Resort resort) {
+        return getFileByPath(resort.media);
+    }
+
+    @SneakyThrows
+    public InputFile getCustomTourFile(CustomTour customTour) {
+        if (customTour.media == null) {
+            return getStartMessageMedia();
+        }
+        return getFileByPath(customTour.media);
     }
 
     @SneakyThrows
     public InputMedia getFeedbackMedia() {
-        String fileName = "finish.jpg";
-        return getMediaByPath("images/hotelType_2.png", fileName);
+        InputMedia file = new InputMediaPhoto();
+        file.setMedia((new ClassPathResource("images/hotelType_2.png")).getInputStream(), "finish.png");
+        return file;
     }
 
     @SneakyThrows

@@ -5,12 +5,8 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
-import bcd.solution.dvgKiprBot.core.models.CustomTour;
-import bcd.solution.dvgKiprBot.core.models.Hotel;
 import bcd.solution.dvgKiprBot.core.repository.ActivityRepo;
 import bcd.solution.dvgKiprBot.core.repository.CustomTourRepo;
-import bcd.solution.dvgKiprBot.core.repository.HotelRepo;
-import bcd.solution.dvgKiprBot.core.repository.ResortRepo;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,21 +16,13 @@ public class KeyboardService {
 
     private final ActivityRepo activityRepo;
 
-    private final ResortRepo resortRepo;
-
     private final CustomTourRepo customTourRepo;
-
-    private final HotelRepo hotelRepo;
 
     @Autowired
     public KeyboardService(ActivityRepo activityRepo,
-                           ResortRepo resortRepo,
-                           CustomTourRepo customTourRepo,
-                           HotelRepo hotelRepo) {
+                           CustomTourRepo customTourRepo) {
         this.activityRepo = activityRepo;
-        this.resortRepo = resortRepo;
         this.customTourRepo = customTourRepo;
-        this.hotelRepo = hotelRepo;
     }
 
     public InlineKeyboardMarkup getAuthCancelKeyboard() {
@@ -137,6 +125,12 @@ public class KeyboardService {
                 .keyboardRow(navigation_row)
                 .keyboardRow(List.of(
                         InlineKeyboardButton.builder()
+                                .text("Показать все фото")
+                                .callbackData("resorts_media/" + (index) + "/" + (resortId))
+                                .build()
+                ))
+                .keyboardRow(List.of(
+                        InlineKeyboardButton.builder()
                                 .text("В начало")
                                 .callbackData("restart")
                                 .build()
@@ -171,6 +165,12 @@ public class KeyboardService {
                 .keyboardRow(navigation_row)
                 .keyboardRow(List.of(
                         InlineKeyboardButton.builder()
+                                .text("Показать все фото")
+                                .callbackData("customTours_media/" + (index) + "/" + (customTourId))
+                                .build()
+                ))
+                .keyboardRow(List.of(
+                        InlineKeyboardButton.builder()
                                 .text("В начало")
                                 .callbackData("restart")
                                 .build()
@@ -200,6 +200,12 @@ public class KeyboardService {
 
         return InlineKeyboardMarkup.builder()
                 .keyboardRow(navigation_row)
+                .keyboardRow(List.of(
+                        InlineKeyboardButton.builder()
+                                .text("Показать все фото")
+                                .callbackData("hotels_media/" + (index) + "/" + (hotelId))
+                                .build()
+                ))
                 .keyboardRow(List.of(
                         InlineKeyboardButton.builder()
                                 .text("В начало")

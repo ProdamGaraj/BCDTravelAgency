@@ -1,7 +1,6 @@
 package bcd.solution.dvgKiprBot.core.handlers.selectHandlers;
 
 import bcd.solution.dvgKiprBot.DvgKiprBot;
-import bcd.solution.dvgKiprBot.core.models.CustomTour;
 import bcd.solution.dvgKiprBot.core.models.Hotel;
 import bcd.solution.dvgKiprBot.core.models.StateMachine;
 import bcd.solution.dvgKiprBot.core.services.HotelService;
@@ -13,15 +12,16 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.AnswerCallbackQuery;
 import org.telegram.telegrambots.meta.api.methods.send.SendMediaGroup;
+import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.DeleteMessage;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageCaption;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageMedia;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
-import org.telegram.telegrambots.meta.api.objects.Message;
+import org.telegram.telegrambots.meta.api.objects.InputFile;
+import org.telegram.telegrambots.meta.api.objects.media.InputMedia;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
 
 @Component
 public class HotelHandler {
@@ -50,8 +50,75 @@ public class HotelHandler {
         switch (action) {
             case "hotels_select" -> selectHandler(callbackQuery, bot);
             case "hotels_change" -> changeHandler(callbackQuery, bot);
+            case "hotels_media" -> mediaHandler(callbackQuery, bot);
         }
     }
+
+    @Async
+    @SneakyThrows
+    protected void mediaHandler(CallbackQuery callbackQuery, DvgKiprBot bot) {
+        String[] dataArray = callbackQuery.getData().split("/");
+        int index = Integer.parseInt(dataArray[1]);
+        Long hotelId = Long.parseLong(dataArray[2]);
+
+        StateMachine stateMachine = stateMachineService.getByUserId(callbackQuery.getFrom().getId());
+        List<Hotel> currentHotels = hotelService.findByResort(stateMachine.resort);
+        List<List<InputMedia>> allMedias;
+        try {
+            allMedias = mediaService.getHotelMedias(currentHotels.get(index));
+        } catch (Exception e) {
+            bot.executeAsync(AnswerCallbackQuery.builder()
+                    .callbackQueryId(callbackQuery.getId())
+                    .text("Дополнительных фото нет")
+                    .showAlert(true)
+                    .build());
+            return;
+        }
+
+        if (allMedias.isEmpty()) {
+            bot.executeAsync(AnswerCallbackQuery.builder()
+                    .callbackQueryId(callbackQuery.getId())
+                    .text("Дополнительных фото нет")
+                    .showAlert(true)
+                    .build());
+            return;
+        }
+
+        for (List<InputMedia> medias : allMedias) {
+            if (medias.size() > 1) {
+                bot.executeAsync(SendMediaGroup.builder()
+                        .chatId(callbackQuery.getFrom().getId())
+                        .medias(medias)
+                        .build());
+            } else {
+                InputFile file = new InputFile(
+                        medias.get(0).getNewMediaStream(),
+                        medias.get(0).getMediaName());
+                bot.executeAsync(SendPhoto.builder()
+                        .chatId(callbackQuery.getFrom().getId())
+                        .photo(file)
+                        .build());
+            }
+        }
+
+        bot.executeAsync(DeleteMessage.builder()
+                .chatId(callbackQuery.getMessage().getChatId())
+                .messageId(callbackQuery.getMessage().getMessageId())
+                .build());
+
+        bot.executeAsync(SendPhoto.builder()
+                .chatId(callbackQuery.getFrom().getId())
+                .photo(mediaService.getHotelFile(currentHotels.get(index)))
+                .caption(currentHotels.get(index).toString())
+                .replyMarkup(keyboardService.getHotelsKeyboard(index, hotelId, currentHotels.size()))
+                .build());
+
+        bot.executeAsync(AnswerCallbackQuery.builder()
+                .callbackQueryId(callbackQuery.getId())
+                .build());
+    }
+
+
 
     @Async
     @SneakyThrows
@@ -66,15 +133,6 @@ public class HotelHandler {
                     .build());
             return;
         }
-//        bot.executeAsync(DeleteMessage.builder()
-//                .chatId(callbackQuery.getMessage().getChatId())
-//                .messageId(callbackQuery.getMessage().getMessageId())
-//                .build());
-//        bot.executeAsync(SendMediaGroup.builder()
-//                        .chatId(callbackQuery.getFrom().getId())
-//                        .medias(mediaService.getHotelMedias(currentHotels.get(0)))
-//                .build());
-
 
         bot.executeAsync(EditMessageMedia.builder()
             .chatId(callbackQuery.getMessage().getChatId())
@@ -102,16 +160,6 @@ public class HotelHandler {
         StateMachine usersState = stateMachineService.getByUserId(callbackQuery.getFrom().getId());
 
         List<Hotel> currentHotels = hotelService.findByResort(usersState.resort);
-
-
-//        bot.executeAsync(DeleteMessage.builder()
-//                .chatId(callbackQuery.getMessage().getChatId())
-//                .messageId(callbackQuery.getMessage().getMessageId())
-//                .build());
-//        bot.executeAsync(SendMediaGroup.builder()
-//                .chatId(callbackQuery.getFrom().getId())
-//                .medias(mediaService.getHotelMedias(currentHotels.get(0)))
-//                .build());
 
         bot.executeAsync(EditMessageMedia.builder()
             .chatId(callbackQuery.getMessage().getChatId())
