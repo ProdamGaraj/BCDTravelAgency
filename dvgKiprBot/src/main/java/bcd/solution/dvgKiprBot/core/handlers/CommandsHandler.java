@@ -54,6 +54,16 @@ public class CommandsHandler {
 
     @Async
     @SneakyThrows
+    public void phoneHandler(Message message, DvgKiprBot bot) {
+        bot.executeAsync(SendMessage.builder()
+                        .text("Дай телефон, пж")
+                        .chatId(message.getChatId())
+                        .replyMarkup(keyboardService.getPhoneKeyboard())
+                .build());
+    }
+
+    @Async
+    @SneakyThrows
     public void startHandler(Message message, DvgKiprBot bot) {
         userService.addUserIfNotExists(
                 message.getFrom().getId(),

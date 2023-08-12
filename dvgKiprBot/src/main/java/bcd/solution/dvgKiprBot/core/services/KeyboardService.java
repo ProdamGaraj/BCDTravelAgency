@@ -4,9 +4,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 import bcd.solution.dvgKiprBot.core.repository.ActivityRepo;
 import bcd.solution.dvgKiprBot.core.repository.CustomTourRepo;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardButton;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -212,6 +215,18 @@ public class KeyboardService {
                                 .callbackData("restart")
                                 .build()
                 ))
+                .build();
+    }
+
+    public ReplyKeyboardMarkup getPhoneKeyboard() {
+        return ReplyKeyboardMarkup.builder()
+                .keyboardRow(
+                        new KeyboardRow(
+                                List.of(
+                                        KeyboardButton.builder()
+                                                .text("Держи телефон")
+                                                .requestContact(true)
+                                                .build())))
                 .build();
     }
 }

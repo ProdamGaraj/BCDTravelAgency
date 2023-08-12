@@ -33,6 +33,9 @@ public class MessageHandler {
     @SneakyThrows
     public void handleMessage(Message message, DvgKiprBot bot) {
 
+        if (message.hasContact()) {
+            authHandler.contactHandler(message, bot);
+        }
         if (!message.hasText()) {
             return;
         }
@@ -61,6 +64,9 @@ public class MessageHandler {
                     break;
                 case "/media":
                     commandsHandler.mediaHandler(message, bot);
+                    break;
+                case "/phone":
+                    commandsHandler.phoneHandler(message, bot);
                     break;
                 default:
                     bot.executeAsync(SendMessage.builder()

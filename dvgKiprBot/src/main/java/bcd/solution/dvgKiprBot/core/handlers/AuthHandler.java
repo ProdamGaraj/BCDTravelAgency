@@ -9,11 +9,13 @@ import lombok.SneakyThrows;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.AnswerCallbackQuery;
+import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.DeleteMessage;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageCaption;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import org.telegram.telegrambots.meta.api.objects.Message;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardRemove;
 
 import java.util.concurrent.CompletableFuture;
 
@@ -30,6 +32,17 @@ public class AuthHandler {
         this.stateMachineService = stateMachineService;
         this.mediaService = mediaService;
         this.keyboardService = keyboardService;
+    }
+
+    @Async
+    @SneakyThrows
+    public void contactHandler(Message message, DvgKiprBot bot) {
+        String phoneNumber = message.getContact().getPhoneNumber();
+        bot.execute(SendMessage.builder()
+                        .chatId(message.getChatId())
+                        .text(phoneNumber)
+                        .replyMarkup(new ReplyKeyboardRemove(true))
+                .build());
     }
 
     @Async
