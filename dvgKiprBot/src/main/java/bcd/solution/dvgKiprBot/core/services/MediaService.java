@@ -2,6 +2,9 @@ package bcd.solution.dvgKiprBot.core.services;
 
 import lombok.SneakyThrows;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.InputStreamSource;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.support.ResourcePatternResolver;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.objects.InputFile;
 import org.telegram.telegrambots.meta.api.objects.media.InputMedia;
@@ -13,10 +16,18 @@ import bcd.solution.dvgKiprBot.core.models.Resort;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStream;
+import java.util.Arrays;
+import java.util.List;
 
 @Service
 public class MediaService {
+    private final ResourcePatternResolver resourcePatternResolver;
+
+    public MediaService(ResourcePatternResolver resourcePatternResolver) {
+        this.resourcePatternResolver = resourcePatternResolver;
+    }
 
     //TODO: absolute path is piece of shit has to be rewrote quickly!
     @SneakyThrows
@@ -28,10 +39,31 @@ public class MediaService {
     }
 
     @SneakyThrows
+    private List<InputMedia> getMediasByPath(String path) {
+        Resource[] resources = this.resourcePatternResolver.getResources("classpath:" + path + "*");
+        return Arrays.stream(resources).map(resource ->
+        {
+            InputMedia media = new InputMediaPhoto();
+            try {
+                media.setMedia(resource.getInputStream(), resource.getFilename());
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            return media;
+        }).toList();
+    }
+
+
+    @SneakyThrows
     private InputMedia getMediaByPath(String path, String name) {
         InputMedia media = new InputMediaPhoto();
         media.setMedia(new ClassPathResource(path).getInputStream(), name);
         return media;
+    }
+
+    @SneakyThrows
+    public List<InputMedia> getHotelMedias(Hotel hotel) {
+        return getMediasByPath(hotel.media);
     }
 
     @SneakyThrows

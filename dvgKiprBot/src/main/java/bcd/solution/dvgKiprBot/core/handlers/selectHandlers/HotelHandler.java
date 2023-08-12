@@ -12,12 +12,16 @@ import lombok.SneakyThrows;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.AnswerCallbackQuery;
+import org.telegram.telegrambots.meta.api.methods.send.SendMediaGroup;
+import org.telegram.telegrambots.meta.api.methods.updatingmessages.DeleteMessage;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageCaption;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageMedia;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
+import org.telegram.telegrambots.meta.api.objects.Message;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 
 @Component
 public class HotelHandler {
@@ -62,6 +66,15 @@ public class HotelHandler {
                     .build());
             return;
         }
+//        bot.executeAsync(DeleteMessage.builder()
+//                .chatId(callbackQuery.getMessage().getChatId())
+//                .messageId(callbackQuery.getMessage().getMessageId())
+//                .build());
+//        bot.executeAsync(SendMediaGroup.builder()
+//                        .chatId(callbackQuery.getFrom().getId())
+//                        .medias(mediaService.getHotelMedias(currentHotels.get(0)))
+//                .build());
+
 
         bot.executeAsync(EditMessageMedia.builder()
             .chatId(callbackQuery.getMessage().getChatId())
@@ -84,11 +97,21 @@ public class HotelHandler {
 
     @Async
     @SneakyThrows
-    private void changeHandler(CallbackQuery callbackQuery, DvgKiprBot bot) {
+    protected void changeHandler(CallbackQuery callbackQuery, DvgKiprBot bot) {
         int index = Integer.parseInt(callbackQuery.getData().split("/")[1]);
         StateMachine usersState = stateMachineService.getByUserId(callbackQuery.getFrom().getId());
 
         List<Hotel> currentHotels = hotelService.findByResort(usersState.resort);
+
+
+//        bot.executeAsync(DeleteMessage.builder()
+//                .chatId(callbackQuery.getMessage().getChatId())
+//                .messageId(callbackQuery.getMessage().getMessageId())
+//                .build());
+//        bot.executeAsync(SendMediaGroup.builder()
+//                .chatId(callbackQuery.getFrom().getId())
+//                .medias(mediaService.getHotelMedias(currentHotels.get(0)))
+//                .build());
 
         bot.executeAsync(EditMessageMedia.builder()
             .chatId(callbackQuery.getMessage().getChatId())
@@ -111,7 +134,7 @@ public class HotelHandler {
 
     @Async
     @SneakyThrows
-    private void selectHandler(CallbackQuery callbackQuery, DvgKiprBot bot) {
+    protected void selectHandler(CallbackQuery callbackQuery, DvgKiprBot bot) {
         Long hotelId = Long.parseLong(callbackQuery.getData().split("/")[1]);
 
         Optional<Hotel> selectedHotel = hotelService.getById(hotelId);
