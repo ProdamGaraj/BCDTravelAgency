@@ -55,10 +55,8 @@ public class MessageHandler {
                     commandEntity.get().getLength());
             switch (command) {
                 case "/start" -> commandsHandler.startHandler(message, bot);
-//                case "/customtours" -> commandsHandler.tourChoosingHandler(message, bot);
                 case "/authorization" -> authHandler.authCommandHandler(message, bot);
                 case "/media" -> commandsHandler.mediaHandler(message, bot);
-//                case "/phone" -> commandsHandler.phoneHandler(message, bot);
                 default -> bot.executeAsync(SendMessage.builder()
                         .text("Команда не найдена")
                         .chatId(message.getChatId())

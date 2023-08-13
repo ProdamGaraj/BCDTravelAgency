@@ -47,7 +47,6 @@ public class CommandsHandler {
             "истории и кухни Средиземноморья.\n\n" +
             "Доступные комманды:\n" +
             "/start\n" +
-            "/customtours - подбор тура\n" +
             "/authorization - вход для партнеров";
 
     public CommandsHandler(UserService userService,
@@ -67,16 +66,6 @@ public class CommandsHandler {
         this.resortRepo = resortRepo;
         this.activityRepo = activityRepo;
 
-    }
-
-    @Async
-    @SneakyThrows
-    public void phoneHandler(Message message, DvgKiprBot bot) {
-        bot.executeAsync(SendMessage.builder()
-                .text("Дай телефон, пж")
-                .chatId(message.getChatId())
-                .replyMarkup(keyboardService.getPhoneKeyboard())
-                .build());
     }
 
     @Async
@@ -105,21 +94,6 @@ public class CommandsHandler {
             return;
         }
         choosingMessageSender(message.getChatId(), bot, true);
-    }
-
-    @Async
-    @SneakyThrows
-    public void tourChoosingHandler(Message message, DvgKiprBot bot) {
-        bot.executeAsync(SendPhoto.builder()
-                .chatId(message.getChatId())
-                .photo(mediaService.getTourChoosingMedia())
-                .caption("Выберите, от чего хотите отталкиваться при выборе тура")
-                .replyMarkup(keyboardService.getTourChoosingKeyboard(
-                        userService.addUserIfNotExists(
-                                message.getFrom().getId(),
-                                message.getFrom().getUserName())
-                                .getPhone() != null))
-                .build());
     }
 
     @Async
