@@ -20,6 +20,8 @@ public class User {
     private Long id;
     private String login; //TODO: phone number or username
     @Nullable
+    private String phone; //TODO: phone number or username
+    @Nullable
     private String password;
     @Enumerated(EnumType.STRING)
     private UserRole role;

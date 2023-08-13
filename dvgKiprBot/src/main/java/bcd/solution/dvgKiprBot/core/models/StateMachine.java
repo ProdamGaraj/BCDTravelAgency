@@ -31,5 +31,6 @@ public class StateMachine {
     public boolean authorized;
     public boolean wait_password;
     public Integer auth_message_id;
-
+    public boolean waitPhone;
+    public Integer phoneMessageId;
 }

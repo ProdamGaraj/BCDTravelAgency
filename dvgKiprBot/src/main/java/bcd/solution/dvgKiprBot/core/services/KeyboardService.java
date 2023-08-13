@@ -28,6 +28,15 @@ public class KeyboardService {
         this.customTourRepo = customTourRepo;
     }
 
+    public InlineKeyboardMarkup getRestartKeyboard() {
+        return InlineKeyboardMarkup.builder()
+                .keyboardRow(List.of(InlineKeyboardButton.builder()
+                        .text("В начало")
+                        .callbackData("start")
+                        .build()))
+                .build();
+    }
+
     public InlineKeyboardMarkup getAuthCancelKeyboard() {
         return InlineKeyboardMarkup.builder()
                 .keyboardRow(List.of(InlineKeyboardButton.builder()
@@ -37,23 +46,43 @@ public class KeyboardService {
                 .build();
     }
 
-    @Async
-    public InlineKeyboardMarkup getTourChoosingKeyboard() {
+    public InlineKeyboardMarkup getPhoneCancelKeyboard() {
         return InlineKeyboardMarkup.builder()
                 .keyboardRow(List.of(InlineKeyboardButton.builder()
-                        .text("Активности")
-                        .callbackData("activities")
+                        .text("Отмена")
+                        .callbackData("auth_phoneCancel")
                         .build()))
-                .keyboardRow(List.of(InlineKeyboardButton.builder()
-                        .text("Курорты")
-                        .callbackData("resorts")
-                        .build()))
+                .build();
+    }
+
+    @Async
+    public InlineKeyboardMarkup getTourChoosingKeyboard(boolean hasPhone) {
+        InlineKeyboardMarkup.InlineKeyboardMarkupBuilder builder = InlineKeyboardMarkup.builder();
+        if (true) {
+//        if (hasPhone) {
+            builder.keyboardRow(List.of(InlineKeyboardButton.builder()
+                            .text("Активности")
+                            .callbackData("activities")
+                            .build()))
+                    .keyboardRow(List.of(InlineKeyboardButton.builder()
+                            .text("Курорты")
+                            .callbackData("resorts")
+                            .build()));
+        }
+        builder
                 .keyboardRow(List.of(InlineKeyboardButton.builder()
                         .text("Авторские туры")
                         .callbackData("customTours")
                         .build()
-                ))
-                .build();
+                ));
+        if (!hasPhone) {
+            builder.keyboardRow(List.of(InlineKeyboardButton.builder()
+                            .text("Добавить номер телефона")
+                            .callbackData("auth_getPhone")
+                    .build()));
+        }
+
+        return builder.build();
     }
 
     @Async
@@ -218,15 +247,33 @@ public class KeyboardService {
                 .build();
     }
 
+    public InlineKeyboardMarkup getStarterKeyboard() {
+        return InlineKeyboardMarkup.builder()
+                .keyboardRow(List.of(
+                        InlineKeyboardButton.builder()
+                                .text("Ввести номер телефона")
+                                .callbackData("auth_getPhone")
+                                .build(),
+                        InlineKeyboardButton.builder()
+                                .text("Подобрать тур")
+                                .callbackData("restart")
+                                .build()
+                ))
+                .build();
+    }
+
     public ReplyKeyboardMarkup getPhoneKeyboard() {
         return ReplyKeyboardMarkup.builder()
+                .resizeKeyboard(true)
                 .keyboardRow(
                         new KeyboardRow(
                                 List.of(
                                         KeyboardButton.builder()
-                                                .text("Держи телефон")
+                                                .text("Отправить номер телефона")
                                                 .requestContact(true)
+
                                                 .build())))
                 .build();
     }
+
 }

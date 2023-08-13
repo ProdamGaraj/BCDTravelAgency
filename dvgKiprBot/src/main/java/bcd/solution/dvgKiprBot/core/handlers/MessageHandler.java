@@ -32,15 +32,16 @@ public class MessageHandler {
     @Async
     @SneakyThrows
     public void handleMessage(Message message, DvgKiprBot bot) {
-
-        if (message.hasContact()) {
+        StateMachine stateMachine = stateMachineService.getOrAddIfNodeExist(
+                message.getFrom().getId(),
+                message.getFrom().getUserName());
+        if (message.hasContact() && stateMachine.waitPhone) {
             authHandler.contactHandler(message, bot);
         }
         if (!message.hasText()) {
             return;
         }
         if (!message.hasEntities()) {
-            StateMachine stateMachine = stateMachineService.getByUserId(message.getFrom().getId());
             if (stateMachine.wait_password) {
                 authHandler.passwordHandler(message, bot, stateMachine);
             }
@@ -53,27 +54,15 @@ public class MessageHandler {
                     commandEntity.get().getOffset(),
                     commandEntity.get().getLength());
             switch (command) {
-                case "/start":
-                    commandsHandler.startHandler(message, bot);
-                    break;
-                case "/customtours":
-                    commandsHandler.tourChoosingHandler(message, bot);
-                    break;
-                case "/authorization":
-                    authHandler.authCommandHandler(message, bot);
-                    break;
-                case "/media":
-                    commandsHandler.mediaHandler(message, bot);
-                    break;
-                case "/phone":
-                    commandsHandler.phoneHandler(message, bot);
-                    break;
-                default:
-                    bot.executeAsync(SendMessage.builder()
-                            .text("Команда не найдена")
-                            .chatId(message.getChatId())
-                            .build());
-                    break;
+                case "/start" -> commandsHandler.startHandler(message, bot);
+//                case "/customtours" -> commandsHandler.tourChoosingHandler(message, bot);
+                case "/authorization" -> authHandler.authCommandHandler(message, bot);
+                case "/media" -> commandsHandler.mediaHandler(message, bot);
+//                case "/phone" -> commandsHandler.phoneHandler(message, bot);
+                default -> bot.executeAsync(SendMessage.builder()
+                        .text("Команда не найдена")
+                        .chatId(message.getChatId())
+                        .build());
             }
 
         }

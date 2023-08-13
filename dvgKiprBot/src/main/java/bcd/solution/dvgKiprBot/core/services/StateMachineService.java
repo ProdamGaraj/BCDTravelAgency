@@ -14,17 +14,20 @@ public class StateMachineService {
     private final StateMachineRepo stateMachineRepo;
     private final UserRepository userRepository;
     private final ActivityRepo activityRepo;
+    private final UserService userService;
 
     public StateMachineService(StateMachineRepo stateMachineRepo,
                                UserRepository userRepository,
-                               ActivityRepo activityRepo) {
+                               ActivityRepo activityRepo,
+                               UserService userService) {
         this.stateMachineRepo = stateMachineRepo;
         this.userRepository = userRepository;
         this.activityRepo = activityRepo;
+        this.userService = userService;
     }
 
     @Async
-    private StateMachine getOrAddIfNotExists(Long id) {
+    protected StateMachine getOrAddIfNotExists(Long id) {
         User user = userRepository.getReferenceById(id);
         Optional<StateMachine> stateMachineOptional = stateMachineRepo.findByUser(user);
         if (stateMachineOptional.isPresent()) {
@@ -45,8 +48,23 @@ public class StateMachineService {
     }
 
     @Async
+    public StateMachine setWaitPhoneByUserId(Long id, boolean waitPhone, Integer messageId) {
+        StateMachine stateMachine = getOrAddIfNotExists(id);
+        stateMachine.setWaitPhone(waitPhone);
+        stateMachine.setPhoneMessageId(messageId);
+        stateMachineRepo.save(stateMachine);
+        return stateMachine;
+    }
+
+    @Async
     public StateMachine getByUserId(Long id) {
         return getOrAddIfNotExists(id);
+    }
+
+    @Async
+    public StateMachine getOrAddIfNodeExist(Long id, String username) {
+        userService.addUserIfNotExists(id, username);
+        return getByUserId(id);
     }
 
     @Async
@@ -94,7 +112,7 @@ public class StateMachineService {
     }
 
     @Async
-    public String getFinalCardByUserId(Long userId) {
+    public String getManagerCardByUserId(Long userId) {
         StateMachine stateMachine = getOrAddIfNotExists(userId);
         StringBuilder card = new StringBuilder("Пользователь @" + stateMachine.user.getLogin() + " подобрал тур:\n\n");
 
@@ -107,6 +125,25 @@ public class StateMachineService {
         }
 
         card.append("Вскоре он с Вами свяжется для завершения оформления тура.");
+        return card.toString();
+    }
+
+    @Async
+    public String getUserCardByUserId(Long userId, String managerUsername) {
+        StateMachine stateMachine = getOrAddIfNotExists(userId);
+        StringBuilder card = new StringBuilder("Спасибо, что выбрали нас!\n\nВаш выбор:\n");
+
+        if (stateMachine.customTour != null) {
+            card.append("Авторский тур: ").append(stateMachine.customTour.name).append("\n\n");
+        } else {
+            card
+                    .append("Курорт: ").append(stateMachine.resort.name).append("\n")
+                    .append("Отель: ").append(stateMachine.hotel.name).append("\n\n");
+        }
+
+        card.append("Обратитесь к менеджеру (@")
+                .append(managerUsername)
+                .append(") для оформления выбранного тура");
         return card.toString();
     }
 }

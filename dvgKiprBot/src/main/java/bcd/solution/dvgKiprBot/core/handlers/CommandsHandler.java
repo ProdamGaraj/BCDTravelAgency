@@ -32,6 +32,23 @@ public class CommandsHandler {
     private final HotelRepo hotelRepo;
     private final ResortRepo resortRepo;
     private final ActivityRepo activityRepo;
+    public final String inviteString = "Кипр - это островное государство в Средиземном море," +
+            "расположенное на перекрестке Европы, Азии и Африки. " +
+            "Он является отличным туристическим направлением благодаря " +
+            "своим красивым пляжам, теплому климату и богатой истории." +
+            "Кипр имеет богатое культурное наследие, которое отражается " +
+            "в его архитектуре, музеях и археологических раскопках." +
+            "Столицей Кипра является Никосия, где можно посетить множество " +
+            "достопримечательностей, таких как Кипрский музей, " +
+            "Собор Святого Иоанна и Кипрский национальный парк. " +
+            "Кипр также славится своими винами и кухней, в которой сочетаются греческие," +
+            " турецкие и английские влияния. В целом, Кипр - это " +
+            "прекрасное место для отдыха и изучения культуры, " +
+            "истории и кухни Средиземноморья.\n\n" +
+            "Доступные комманды:\n" +
+            "/start\n" +
+            "/customtours - подбор тура\n" +
+            "/authorization - вход для партнеров";
 
     public CommandsHandler(UserService userService,
                            MediaService mediaService,
@@ -56,40 +73,38 @@ public class CommandsHandler {
     @SneakyThrows
     public void phoneHandler(Message message, DvgKiprBot bot) {
         bot.executeAsync(SendMessage.builder()
-                        .text("Дай телефон, пж")
-                        .chatId(message.getChatId())
-                        .replyMarkup(keyboardService.getPhoneKeyboard())
+                .text("Дай телефон, пж")
+                .chatId(message.getChatId())
+                .replyMarkup(keyboardService.getPhoneKeyboard())
+                .build());
+    }
+
+    @Async
+    @SneakyThrows
+    public void choosingMessageSender(Long chatId, DvgKiprBot bot, boolean hasPhone) {
+        bot.executeAsync(SendPhoto.builder()
+                .chatId(chatId)
+                .photo(mediaService.getStartMessageMedia())
+                .caption(inviteString)
+                .replyMarkup(keyboardService.getTourChoosingKeyboard(hasPhone))
                 .build());
     }
 
     @Async
     @SneakyThrows
     public void startHandler(Message message, DvgKiprBot bot) {
-        userService.addUserIfNotExists(
-                message.getFrom().getId(),
-                message.getFrom().getUserName());
-        bot.executeAsync(SendPhoto.builder()
-                .chatId(message.getChatId())
-                .photo(mediaService.getStartMessageMedia())
-                .caption("Кипр - это островное государство в Средиземном море," +
-                        "расположенное на перекрестке Европы, Азии и Африки. " +
-                        "Он является отличным туристическим направлением благодаря " +
-                        "своим красивым пляжам, теплому климату и богатой истории." +
-                        "Кипр имеет богатое культурное наследие, которое отражается " +
-                        "в его архитектуре, музеях и археологических раскопках." +
-                        "Столицей Кипра является Никосия, где можно посетить множество " +
-                        "достопримечательностей, таких как Кипрский музей, " +
-                        "Собор Святого Иоанна и Кипрский национальный парк. " +
-                        "Кипр также славится своими винами и кухней, в которой сочетаются греческие," +
-                        " турецкие и английские влияния. В целом, Кипр - это " +
-                        "прекрасное место для отдыха и изучения культуры, " +
-                        "истории и кухни Средиземноморья.\n\n" +
-                        "Доступные комманды:\n" +
-                        "/start\n" +
-                        "/customtours - подбор тура\n" +
-                        "/authorization - вход для партнеров")
-                .replyMarkup(keyboardService.getTourChoosingKeyboard())
-                .build());
+        if (!userService.hasPhoneById(message.getFrom().getId())) {
+            bot.executeAsync(SendPhoto.builder()
+                    .chatId(message.getChatId())
+                    .photo(mediaService.getStartMessageMedia())
+//                .caption("Для доступа к полному функционалу бота необходимо указать номер телефона. " +
+//                        "Но Вы все равно можете выбрать один из авторских туров")
+                    .caption("Для повышения качесва обслуживания нам неоходим Ваш номер телефона")
+                    .replyMarkup(keyboardService.getStarterKeyboard())
+                    .build());
+            return;
+        }
+        choosingMessageSender(message.getChatId(), bot, true);
     }
 
     @Async
@@ -99,7 +114,11 @@ public class CommandsHandler {
                 .chatId(message.getChatId())
                 .photo(mediaService.getTourChoosingMedia())
                 .caption("Выберите, от чего хотите отталкиваться при выборе тура")
-                .replyMarkup(keyboardService.getTourChoosingKeyboard())
+                .replyMarkup(keyboardService.getTourChoosingKeyboard(
+                        userService.addUserIfNotExists(
+                                message.getFrom().getId(),
+                                message.getFrom().getUserName())
+                                .getPhone() != null))
                 .build());
     }
 
@@ -245,7 +264,6 @@ public class CommandsHandler {
 //                .media("pathToFile").build());
 //
 //        hotelRepo.saveAll(hotels);
-
 
 
         bot.executeAsync(SendMessage.builder()

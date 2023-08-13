@@ -8,13 +8,12 @@ import bcd.solution.dvgKiprBot.core.handlers.selectHandlers.HotelHandler;
 import bcd.solution.dvgKiprBot.core.handlers.selectHandlers.ResortHandler;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.AnswerCallbackQuery;
-import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageCaption;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageMedia;
+import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageReplyMarkup;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 
 @Component
@@ -23,32 +22,38 @@ public class CallbackQueryHandler {
     private final KeyboardService keyboardService;
     private final MediaService mediaService;
     private final StateMachineService stateMachineService;
+    private final UserService userService;
     //Handlers
     private final AuthHandler authHandler;
     private final ActivityHandler activityHandler;
     private final CustomTourHandler customTourHandler;
     private final HotelHandler hotelHandler;
     private final ResortHandler resortHandler;
+    private final CommandsHandler commandsHandler;
 
     @Autowired
     public CallbackQueryHandler(KeyboardService keyboardService,
                                 MediaService mediaService,
                                 StateMachineService stateMachineService,
+                                UserService userService,
 
                                 AuthHandler authHandler,
                                 ActivityHandler activityHandler,
                                 CustomTourHandler customTourHandler,
                                 HotelHandler hotelHandler,
-                                ResortHandler resortHandler) {
+                                ResortHandler resortHandler,
+                                CommandsHandler commandsHandler) {
         this.keyboardService = keyboardService;
         this.mediaService = mediaService;
         this.stateMachineService = stateMachineService;
+        this.userService = userService;
 
         this.authHandler = authHandler;
         this.activityHandler = activityHandler;
         this.customTourHandler = customTourHandler;
         this.hotelHandler = hotelHandler;
         this.resortHandler = resortHandler;
+        this.commandsHandler = commandsHandler;
     }
 
 
@@ -62,7 +67,8 @@ public class CallbackQueryHandler {
 
         switch (callback_action) {
             case "restart" -> restartHandler(callbackQuery, bot);
-            case "auth" -> authHandler.cancelHandler(callbackQuery, bot);
+            case "start" -> startHandler(callbackQuery, bot);
+            case "auth" -> authHandler.handleCallback(callbackQuery, bot);
             case "resorts" -> resortHandler.handleResortCallback(callbackQuery, bot);
             case "customTours" -> customTourHandler.handleCustomTourCallback(callbackQuery, bot);
             case "activities" -> activityHandler.handleActivityCallback(callbackQuery, bot);
@@ -77,7 +83,7 @@ public class CallbackQueryHandler {
 
     @Async
     @SneakyThrows
-    private void restartHandler(CallbackQuery callbackQuery, DvgKiprBot bot) {
+    protected void restartHandler(CallbackQuery callbackQuery, DvgKiprBot bot) {
         stateMachineService.clearStateByUserId(callbackQuery.getFrom().getId());
 
         bot.executeAsync(EditMessageMedia.builder()
@@ -88,9 +94,27 @@ public class CallbackQueryHandler {
         bot.executeAsync(EditMessageCaption.builder()
                 .chatId(callbackQuery.getMessage().getChatId())
                 .messageId(callbackQuery.getMessage().getMessageId())
-                .caption("Выберите, от чего хотите отталкиваться при выборе тура")
-                .replyMarkup(keyboardService.getTourChoosingKeyboard())
+                .caption(commandsHandler.inviteString)
+                .replyMarkup(keyboardService.getTourChoosingKeyboard(
+                        userService.hasPhoneById(callbackQuery.getFrom().getId())))
                 .build());
+        bot.executeAsync(AnswerCallbackQuery.builder()
+                .callbackQueryId(callbackQuery.getId()).build());
+    }
+
+    @Async
+    @SneakyThrows
+    protected void startHandler(CallbackQuery callbackQuery, DvgKiprBot bot) {
+        commandsHandler.choosingMessageSender(
+                callbackQuery.getMessage().getChatId(),
+                bot,
+                userService.hasPhoneById(callbackQuery.getFrom().getId()));
+        bot.executeAsync(EditMessageReplyMarkup.builder()
+                        .chatId(callbackQuery.getMessage().getChatId())
+                        .messageId(callbackQuery.getMessage().getMessageId())
+                        .replyMarkup(null)
+                .build());
+
         bot.executeAsync(AnswerCallbackQuery.builder()
                 .callbackQueryId(callbackQuery.getId()).build());
     }

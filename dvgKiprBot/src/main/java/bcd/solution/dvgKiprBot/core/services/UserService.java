@@ -17,8 +17,20 @@ public class UserService {
         if (userRepository.existsById(telegram_id)) {
             return userRepository.getReferenceById(telegram_id);
         }
-        User user = new User(telegram_id, username, null, UserRole.client);
+        User user = new User(telegram_id, username, null, null, UserRole.client);
         userRepository.save(user);
         return user;
+    }
+
+    public User setPhoneById(Long telegram_id, String phone) {
+        User user = userRepository.findById(telegram_id).get();
+        user.setPhone(phone);
+        userRepository.save(user);
+        return user;
+    }
+
+    public boolean hasPhoneById(Long telegram_id) {
+        User user = userRepository.findById(telegram_id).get();
+        return user.getPhone() != null;
     }
 }

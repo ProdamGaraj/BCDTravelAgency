@@ -1,6 +1,7 @@
 package bcd.solution.dvgKiprBot.core.handlers.selectHandlers;
 
 import bcd.solution.dvgKiprBot.DvgKiprBot;
+import bcd.solution.dvgKiprBot.core.services.KeyboardService;
 import bcd.solution.dvgKiprBot.core.services.MediaService;
 import bcd.solution.dvgKiprBot.core.services.StateMachineService;
 import lombok.SneakyThrows;
@@ -17,6 +18,7 @@ import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 public class FeedbackHandler {
     private final StateMachineService stateMachineService;
     private final MediaService mediaService;
+    private final KeyboardService keyboardService;
 
 
     private final Long managerId;
@@ -24,10 +26,12 @@ public class FeedbackHandler {
 
     public FeedbackHandler(StateMachineService stateMachineService,
                            MediaService mediaService,
+                           KeyboardService keyboardService,
                            @Value("${bot.managerId}") Long managerId,
                            @Value("${bot.managerUsername}") String managerUsername) {
         this.stateMachineService = stateMachineService;
         this.mediaService = mediaService;
+        this.keyboardService = keyboardService;
 
         this.managerId = managerId;
         this.managerUsername = managerUsername;
@@ -38,11 +42,15 @@ public class FeedbackHandler {
     @SneakyThrows
     public void feedbackHandler(CallbackQuery callbackQuery, DvgKiprBot bot) {
 
-        String userTourCard = stateMachineService.getFinalCardByUserId(callbackQuery.getFrom().getId());
+        String managerTourCard = stateMachineService.getManagerCardByUserId(callbackQuery.getFrom().getId());
         bot.executeAsync(SendMessage.builder()
                 .chatId(this.managerId)
-                .text(userTourCard)
+                .text(managerTourCard)
                 .build());
+        String userTourCard = stateMachineService.getUserCardByUserId(
+                callbackQuery.getFrom().getId(),
+                this.managerUsername
+        );
         stateMachineService.clearStateByUserId(callbackQuery.getFrom().getId());
 
         bot.executeAsync(EditMessageMedia.builder()
@@ -53,10 +61,8 @@ public class FeedbackHandler {
         bot.executeAsync(EditMessageCaption.builder()
                 .chatId(callbackQuery.getMessage().getChatId())
                 .messageId(callbackQuery.getMessage().getMessageId())
-                .caption("Спасибо, что выбрали нас!\n\n" +
-                        "Обратитесь к менеджеру (@" + this.managerUsername + ") " +
-                        "для оформления выбранного тура")
-                .replyMarkup(null)
+                .caption(userTourCard)
+                .replyMarkup(keyboardService.getRestartKeyboard())
                 .build());
         bot.executeAsync(AnswerCallbackQuery.builder()
                 .callbackQueryId(callbackQuery.getId()).build());
