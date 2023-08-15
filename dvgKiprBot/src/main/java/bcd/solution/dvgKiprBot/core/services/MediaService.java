@@ -78,7 +78,15 @@ public class MediaService {
 
     @SneakyThrows
     private InputMedia getMediaByPath(String path) {
-        Resource[] resources = this.resourcePatternResolver.getResources("classpath:" + path + "*");
+        // TODO: убрать этот говнокод
+        Resource[] resources;
+        String[] numbers = new String[]{"0", "1", "2", "3", "4", "5", "6", "7", "8", "9"};
+        if (Arrays.stream(numbers).anyMatch(path::contains)) {
+            resources = this.resourcePatternResolver.getResources("classpath:" + path + "big/*");
+        } else {
+            resources = this.resourcePatternResolver.getResources("classpath:" + path + "*");
+        }
+        //Resource[] resources = this.resourcePatternResolver.getResources("classpath:" + path + "big/*");
         Optional<Resource> resource = Arrays.stream(resources).filter(Resource::isFile).findFirst();
         if (resource.isEmpty()) {
             throw new RuntimeException();
