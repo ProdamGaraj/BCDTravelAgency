@@ -11,6 +11,7 @@ import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.MessageEntity;
 
 
+import java.util.List;
 import java.util.Optional;
 
 @Component
@@ -35,20 +36,25 @@ public class MessageHandler {
         StateMachine stateMachine = stateMachineService.getOrAddIfNodeExist(
                 message.getFrom().getId(),
                 message.getFrom().getUserName());
+
         if (message.hasContact() && stateMachine.waitPhone) {
             authHandler.contactHandler(message, bot);
         }
+
         if (!message.hasText()) {
             return;
         }
-        if (!message.hasEntities()) {
+
+        List<MessageEntity> entities = message.getEntities();
+        if (!message.hasEntities() || entities.stream().noneMatch(e -> "bot_command".equals(e.getType()))) {
             if (stateMachine.wait_password) {
                 authHandler.passwordHandler(message, bot, stateMachine);
             }
             return;
         }
+
         Optional<MessageEntity> commandEntity =
-                message.getEntities().stream().filter(e -> "bot_command".equals(e.getType())).findFirst();
+                entities.stream().filter(e -> "bot_command".equals(e.getType())).findFirst();
         if (commandEntity.isPresent()) {
             String command = message.getText().substring(
                     commandEntity.get().getOffset(),
