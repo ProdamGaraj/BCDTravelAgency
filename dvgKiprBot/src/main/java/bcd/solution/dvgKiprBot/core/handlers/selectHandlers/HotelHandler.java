@@ -48,6 +48,7 @@ public class HotelHandler {
 //        Look comments in activity handler class
         String action = callbackQuery.getData().split("/")[0];
         switch (action) {
+            case "hotels" -> defaultHandler(callbackQuery, bot);
             case "hotels_select" -> selectHandler(callbackQuery, bot);
             case "hotels_change" -> changeHandler(callbackQuery, bot);
             case "hotels_media" -> mediaHandler(callbackQuery, bot);

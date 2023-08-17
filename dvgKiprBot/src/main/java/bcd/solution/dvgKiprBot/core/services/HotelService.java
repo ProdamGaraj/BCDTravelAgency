@@ -23,6 +23,9 @@ public class HotelService {
     }
 
     public List<Hotel> findByResort(Resort resort) {
+        if (resort == null) {
+            return hotelRepo.findAll();
+        }
         return hotelRepo.findAllByResort(resort);
     }
 

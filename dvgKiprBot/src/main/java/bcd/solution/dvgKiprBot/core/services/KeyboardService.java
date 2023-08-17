@@ -67,6 +67,10 @@ public class KeyboardService {
                     .keyboardRow(List.of(InlineKeyboardButton.builder()
                             .text("Курорты")
                             .callbackData("resorts")
+                            .build()))
+                    .keyboardRow(List.of(InlineKeyboardButton.builder()
+                                    .text("Отели")
+                                    .callbackData("hotels")
                             .build()));
         }
         builder
