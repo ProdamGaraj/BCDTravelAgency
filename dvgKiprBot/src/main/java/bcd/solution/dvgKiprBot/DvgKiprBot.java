@@ -8,9 +8,11 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.TelegramBotsApi;
+import org.telegram.telegrambots.meta.api.methods.commands.SetMyCommands;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
+import org.telegram.telegrambots.meta.api.objects.commands.BotCommand;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 
@@ -38,6 +40,17 @@ public class DvgKiprBot extends TelegramLongPollingBot {
 
         TelegramBotsApi telegramBotsApi = new TelegramBotsApi(DefaultBotSession.class);
         telegramBotsApi.registerBot(this);
+
+        this.executeAsync(SetMyCommands.builder()
+                        .command(BotCommand.builder()
+                                .command("/start")
+                                .description("Запуск бота")
+                                .build())
+                        .command(BotCommand.builder()
+                                .command("/authorization")
+                                .description("Вход для партнеров")
+                                .build())
+                .build());
     }
 
     @Async
