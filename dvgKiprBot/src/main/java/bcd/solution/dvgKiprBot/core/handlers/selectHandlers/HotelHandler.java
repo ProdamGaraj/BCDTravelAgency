@@ -1,6 +1,7 @@
 package bcd.solution.dvgKiprBot.core.handlers.selectHandlers;
 
 import bcd.solution.dvgKiprBot.DvgKiprBot;
+import bcd.solution.dvgKiprBot.core.handlers.FeedbackHandler;
 import bcd.solution.dvgKiprBot.core.models.Hotel;
 import bcd.solution.dvgKiprBot.core.models.StateMachine;
 import bcd.solution.dvgKiprBot.core.services.HotelService;

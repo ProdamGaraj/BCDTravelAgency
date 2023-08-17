@@ -1,7 +1,6 @@
 package bcd.solution.dvgKiprBot.core.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
@@ -31,7 +30,7 @@ public class KeyboardService {
     public InlineKeyboardMarkup getRestartKeyboard() {
         return InlineKeyboardMarkup.builder()
                 .keyboardRow(List.of(InlineKeyboardButton.builder()
-                        .text("В начало")
+                        .text("На домашнюю страницу")
                         .callbackData("start")
                         .build()))
                 .build();
@@ -55,7 +54,6 @@ public class KeyboardService {
                 .build();
     }
 
-    @Async
     public InlineKeyboardMarkup getTourChoosingKeyboard(boolean hasPhone) {
         InlineKeyboardMarkup.InlineKeyboardMarkupBuilder builder = InlineKeyboardMarkup.builder();
         if (true) {
@@ -89,7 +87,6 @@ public class KeyboardService {
         return builder.build();
     }
 
-    @Async
     public InlineKeyboardMarkup getActivitiesKeyboard(Integer index, Long activityId, boolean isDeleting) {
         long size = activityRepo.count();
 
@@ -136,7 +133,6 @@ public class KeyboardService {
                 .build();
     }
 
-    @Async
     public InlineKeyboardMarkup getResortsKeyboard(Integer index, Long resortId, long size) {
 
         List<InlineKeyboardButton> navigation_row = new ArrayList<>();
@@ -174,7 +170,6 @@ public class KeyboardService {
                 .build();
     }
 
-    @Async
     public InlineKeyboardMarkup getCustomToursKeyboard(Integer index, Long customTourId) {
 
         long size = customTourRepo.count();

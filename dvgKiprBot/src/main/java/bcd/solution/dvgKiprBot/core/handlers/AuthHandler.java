@@ -139,12 +139,12 @@ public class AuthHandler {
                     .chatId(message.getChatId())
                     .photo(mediaService.getAuthMedia())
                     .caption("Вы уже авторизованы")
-                    .replyMarkup(null)
+                    .replyMarkup(keyboardService.getRestartKeyboard())
                     .build());
             bot.executeAsync(UnpinAllChatMessages.builder().chatId(message.getChatId()).build());
             bot.executeAsync(PinChatMessage.builder()
-                            .chatId(message.getChatId())
-                            .messageId(auth_message.join().getMessageId())
+                    .chatId(message.getChatId())
+                    .messageId(auth_message.join().getMessageId())
                     .build());
             return;
         }
@@ -183,6 +183,7 @@ public class AuthHandler {
                     .chatId(message.getChatId())
                     .messageId(stateMachine.auth_message_id)
                     .caption("Пароль получен: " + password)
+                    .replyMarkup(keyboardService.getRestartKeyboard())
                     .build());
 
             bot.execute(PinChatMessage.builder()
@@ -208,7 +209,7 @@ public class AuthHandler {
                 .chatId(callbackQuery.getMessage().getChatId())
                 .messageId(callbackQuery.getMessage().getMessageId())
                 .caption("Ввод пароля отменен")
-                .replyMarkup(null)
+                .replyMarkup(keyboardService.getRestartKeyboard())
                 .build());
         stateMachineService.setWaitPasswordByUserId(callbackQuery.getFrom().getId(), false, 0);
         bot.executeAsync(AnswerCallbackQuery.builder()

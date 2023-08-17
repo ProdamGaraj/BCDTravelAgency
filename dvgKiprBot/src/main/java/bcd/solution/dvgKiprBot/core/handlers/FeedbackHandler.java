@@ -1,4 +1,4 @@
-package bcd.solution.dvgKiprBot.core.handlers.selectHandlers;
+package bcd.solution.dvgKiprBot.core.handlers;
 
 import bcd.solution.dvgKiprBot.DvgKiprBot;
 import bcd.solution.dvgKiprBot.core.services.KeyboardService;
