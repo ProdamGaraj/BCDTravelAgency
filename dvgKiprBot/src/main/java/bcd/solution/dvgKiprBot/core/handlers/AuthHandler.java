@@ -15,6 +15,7 @@ import org.telegram.telegrambots.meta.api.methods.updatingmessages.*;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardRemove;
+import org.telegram.telegrambots.meta.exceptions.TelegramApiRequestException;
 
 import java.util.concurrent.CompletableFuture;
 
@@ -167,11 +168,16 @@ public class AuthHandler {
         String password = message.getText();
 
         if (!authorizationService.authByPassword(message.getFrom().getId(), password)) {
-            bot.execute(EditMessageCaption.builder()
-                    .chatId(message.getChatId())
-                    .messageId(stateMachine.auth_message_id)
-                    .caption("Пароль не найден")
-                    .build());
+            try {
+                bot.execute(EditMessageCaption.builder()
+                        .chatId(message.getChatId())
+                        .messageId(stateMachine.auth_message_id)
+                        .caption("Пароль не найден, попробуйте снова")
+                        .build());
+            } catch (TelegramApiRequestException ignored) {
+
+            }
+
         } else {
             bot.execute(EditMessageCaption.builder()
                     .chatId(message.getChatId())
@@ -184,8 +190,8 @@ public class AuthHandler {
                     .messageId(stateMachine.auth_message_id)
                     .disableNotification(true)
                     .build());
+            stateMachineService.setWaitPasswordByUserId(message.getFrom().getId(), false, 0);
         }
-        stateMachineService.setWaitPasswordByUserId(message.getFrom().getId(), false, 0);
         bot.executeAsync(DeleteMessage.builder()
                 .chatId(message.getChatId())
                 .messageId(message.getMessageId())
