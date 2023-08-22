@@ -36,6 +36,9 @@ public class HotelService {
 
     public List<Hotel> findByResortAndStars(Resort resort, Stars stars) {
         if (resort == null) {
+            if (stars == null) {
+                return hotelRepo.findAll();
+            }
             return hotelRepo.findAllByStars(stars);
         }
         return hotelRepo.findAllByResortAndStars(resort, stars);
