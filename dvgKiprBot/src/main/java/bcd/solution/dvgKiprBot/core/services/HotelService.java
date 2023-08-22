@@ -33,4 +33,12 @@ public class HotelService {
     public Optional<Hotel> getById(Long hotelId) {
         return hotelRepo.findById(hotelId);
     }
+
+    public List<Hotel> findByResortAndStars(Resort resort, Stars stars) {
+        if (resort == null) {
+            return hotelRepo.findAllByStars(stars);
+        }
+        return hotelRepo.findAllByResortAndStars(resort, stars);
+    }
+
 }

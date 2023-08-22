@@ -14,7 +14,7 @@ public enum Stars {
     @Override
     public String toString() {
         switch (this) {
-            case nullstar -> {return "";}
+            case nullstar -> {return "Без звезд";}
             case onestar -> {return "⭐️";}
             case twostar -> {return "⭐️⭐️";}
             case threestar -> {return "⭐️⭐️⭐️";}

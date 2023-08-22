@@ -13,4 +13,7 @@ import java.util.Set;
 
 public interface HotelRepo extends JpaRepository<Hotel, Long> {
     List<Hotel> findAllByResort(Resort resort);
+
+    List<Hotel> findAllByResortAndStars(Resort resort, Stars stars);
+    List<Hotel> findAllByStars(Stars stars);
 }

@@ -24,6 +24,8 @@ public class StateMachine {
     public List<Activity> activities = new ArrayList<>();
     @ManyToOne(fetch = FetchType.EAGER)
     public Resort resort;
+    @Enumerated(EnumType.STRING)
+    public Stars stars;
     @ManyToOne(fetch = FetchType.EAGER)
     public Hotel hotel;
     @ManyToOne(fetch = FetchType.EAGER)

@@ -145,4 +145,13 @@ public class StateMachineService {
                 .append(") для оформления выбранного тура");
         return card.toString();
     }
+
+    @Async
+    public StateMachine setStarsByUserId(Long userId, Stars stars) {
+        StateMachine stateMachine = getOrAddIfNotExists(userId);
+        stateMachine.stars = stars;
+        stateMachineRepo.save(stateMachine);
+
+        return stateMachine;
+    }
 }

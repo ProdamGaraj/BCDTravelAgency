@@ -1,5 +1,6 @@
 package bcd.solution.dvgKiprBot.core.services;
 
+import bcd.solution.dvgKiprBot.core.models.Stars;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
@@ -32,28 +33,33 @@ public class KeyboardService {
 
         builder.keyboardRow(List.of(InlineKeyboardButton.builder()
                         .text("no stars")
-                        .callbackData("hotels_stars/nullstar")
+                        .callbackData("hotels_stars/" + Stars.nullstar.name())
                         .build()))
                 .keyboardRow(List.of(InlineKeyboardButton.builder()
                         .text("1*")
-                        .callbackData("hotels_stars/onestar")
+                        .callbackData("hotels_stars/" + Stars.onestar.name())
                         .build()))
                 .keyboardRow(List.of(InlineKeyboardButton.builder()
                         .text("2*")
-                        .callbackData("hotels_stars/twostar")
+                        .callbackData("hotels_stars/" + Stars.twostar.name())
                         .build()))
                 .keyboardRow(List.of(InlineKeyboardButton.builder()
                         .text("3*")
-                        .callbackData("hotels_stars/threestar")
+                        .callbackData("hotels_stars/" + Stars.threestar.name())
                         .build()))
                 .keyboardRow(List.of(InlineKeyboardButton.builder()
                         .text("4*")
-                        .callbackData("hotels_stars/fourstar")
+                        .callbackData("hotels_stars/" + Stars.fourstar.name())
                         .build()))
                 .keyboardRow(List.of(InlineKeyboardButton.builder()
                         .text("5*")
-                        .callbackData("hotels_stars/fivestar")
-                        .build()));
+                        .callbackData("hotels_stars/" + Stars.fivestar.name())
+                        .build()))
+                .keyboardRow(List.of(
+                        InlineKeyboardButton.builder()
+                                .text("В начало")
+                                .callbackData("restart")
+                                .build()));
 
         return builder.build();
     }
