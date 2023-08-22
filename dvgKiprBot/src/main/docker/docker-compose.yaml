@@ -1,0 +1,28 @@
+version: '2'
+
+services:
+  app:
+    image: 'dvg-kipr-bot:latest'
+    build:
+      context: .
+    container_name: app
+    depends_on:
+      - db
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=garbage
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+
+  db:
+    container_name: PostgreSQL
+    image: "postgres:latest"
+    environment:
+      TZ: "Europe/Moscow"
+      POSTGRES_USER: "postgres"
+      POSTGRES_PASSWORD: "garbage"
+    restart: unless-stopped
+    ports:
+      - "5432:5432"
+    networks:
+      - default

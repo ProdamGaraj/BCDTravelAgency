@@ -18,6 +18,11 @@ target/
 *.iws
 *.iml
 *.ipr
+*.xml
+*.workspace.xml
+# |     не работает
+
+
 
 ### NetBeans ###
 /nbproject/private/
@@ -31,4 +36,3 @@ build/
 
 ### VS Code ###
 .vscode/
-
