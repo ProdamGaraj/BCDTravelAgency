@@ -14,10 +14,7 @@ import bcd.solution.dvgKiprBot.core.models.Hotel;
 import bcd.solution.dvgKiprBot.core.models.Resort;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class MediaService {
@@ -37,11 +34,29 @@ public class MediaService {
     }
 
     @SneakyThrows
+    public InputMedia getNoPhotoMedia(){
+        InputMedia file = new InputMediaPhoto();
+        file.setMedia((new ClassPathResource("images/no_photo.jpeg")).getInputStream(), "no_photo.jpeg");
+        //TODO logic
+        return file;
+    }
+
+    @SneakyThrows
+    public InputFile getNoPhotoFile(){
+        InputFile file = new InputFile();
+        file.setMedia((new ClassPathResource("images/no_photo.jpeg")).getInputStream(), "no_photo.jpeg");
+        //TODO logic
+        return file;
+    }
+
+    @SneakyThrows
     private InputFile getFileByPath(String path) {
         Resource[] resources = this.resourcePatternResolver.getResources("classpath:" + path + "*");
-        Optional<Resource> resource = Arrays.stream(resources).filter(Resource::isFile).findFirst();
+        Optional<Resource> resource = Arrays.stream(resources)
+                .filter(resource1 -> Objects.requireNonNull(resource1.getFilename()).contains("."))
+                .findFirst();
         if (resource.isEmpty()) {
-            throw new RuntimeException();
+            return getNoPhotoFile();
         }
         return new InputFile(resource.get().getInputStream(), resource.get().getFilename());
     }
@@ -79,9 +94,11 @@ public class MediaService {
     @SneakyThrows
     private InputMedia getMediaByPath(String path) {
         Resource[] resources = this.resourcePatternResolver.getResources("classpath:" + path + "*");
-        Optional<Resource> resource = Arrays.stream(resources).filter(Resource::isFile).findFirst();
+        Optional<Resource> resource = Arrays.stream(resources)
+                .filter(resource1 -> Objects.requireNonNull(resource1.getFilename()).contains("."))
+                .findFirst();
         if (resource.isEmpty()) {
-            throw new RuntimeException();
+            return getNoPhotoMedia();
         }
         InputMedia media = new InputMediaPhoto();
         media.setMedia(resource.get().getInputStream(), resource.get().getFilename());
