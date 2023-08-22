@@ -223,6 +223,15 @@ public class HotelHandler {
                 usersState.resort,
                 usersState.stars);
 
+
+        if (currentHotels.isEmpty()) {
+            bot.executeAsync(AnswerCallbackQuery.builder()
+                    .callbackQueryId(callbackQuery.getId())
+                    .showAlert(true).text("Отелей не найдено, попробуйте позже")
+                    .build());
+            return;
+        }
+
         bot.executeAsync(EditMessageMedia.builder()
                 .chatId(callbackQuery.getMessage().getChatId())
                 .messageId(callbackQuery.getMessage().getMessageId())

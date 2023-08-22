@@ -41,6 +41,9 @@ public class HotelService {
             }
             return hotelRepo.findAllByStars(stars);
         }
+        if (stars == null) {
+            return hotelRepo.findAllByResort(resort);
+        }
         return hotelRepo.findAllByResortAndStars(resort, stars);
     }
 
