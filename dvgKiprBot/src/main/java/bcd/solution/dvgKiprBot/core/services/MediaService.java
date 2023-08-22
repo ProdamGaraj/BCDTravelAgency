@@ -102,9 +102,7 @@ public class MediaService {
     }
 
     @SneakyThrows
-    public List<List<InputMedia>> getCustomTourMedias(CustomTour customTour) {
-        return getMediasByPath(customTour.media);
-    }
+    public List<List<InputMedia>> getCustomTourMedias(CustomTour customTour) {return getMediasByPath(customTour.media);}
 
     @SneakyThrows
     public List<List<InputMedia>> getResortMedias(Resort resort) {

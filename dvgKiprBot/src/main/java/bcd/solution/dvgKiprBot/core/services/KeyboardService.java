@@ -27,6 +27,37 @@ public class KeyboardService {
         this.customTourRepo = customTourRepo;
     }
 
+    public InlineKeyboardMarkup getHotelsStarsKeyboard() {
+        InlineKeyboardMarkup.InlineKeyboardMarkupBuilder builder = InlineKeyboardMarkup.builder();
+
+        builder.keyboardRow(List.of(InlineKeyboardButton.builder()
+                        .text("no stars")
+                        .callbackData("hotels_stars/nullstar")
+                        .build()))
+                .keyboardRow(List.of(InlineKeyboardButton.builder()
+                        .text("1*")
+                        .callbackData("hotels_stars/onestar")
+                        .build()))
+                .keyboardRow(List.of(InlineKeyboardButton.builder()
+                        .text("2*")
+                        .callbackData("hotels_stars/twostar")
+                        .build()))
+                .keyboardRow(List.of(InlineKeyboardButton.builder()
+                        .text("3*")
+                        .callbackData("hotels_stars/threestar")
+                        .build()))
+                .keyboardRow(List.of(InlineKeyboardButton.builder()
+                        .text("4*")
+                        .callbackData("hotels_stars/fourstar")
+                        .build()))
+                .keyboardRow(List.of(InlineKeyboardButton.builder()
+                        .text("5*")
+                        .callbackData("hotels_stars/fivestar")
+                        .build()));
+
+        return builder.build();
+    }
+
     public InlineKeyboardMarkup getRestartKeyboard() {
         return InlineKeyboardMarkup.builder()
                 .keyboardRow(List.of(InlineKeyboardButton.builder()
@@ -67,8 +98,8 @@ public class KeyboardService {
                             .callbackData("resorts")
                             .build()))
                     .keyboardRow(List.of(InlineKeyboardButton.builder()
-                                    .text("Отели")
-                                    .callbackData("hotels")
+                            .text("Отели")
+                            .callbackData("hotels")
                             .build()));
         }
         builder
@@ -79,8 +110,8 @@ public class KeyboardService {
                 ));
         if (!hasPhone) {
             builder.keyboardRow(List.of(InlineKeyboardButton.builder()
-                            .text("Добавить номер телефона")
-                            .callbackData("auth_getPhone")
+                    .text("Добавить номер телефона")
+                    .callbackData("auth_getPhone")
                     .build()));
         }
 
@@ -100,12 +131,12 @@ public class KeyboardService {
         if (isDeleting) {
             navigation_row.add(InlineKeyboardButton.builder()
                     .text("Убрать")
-                    .callbackData("activities_delete/"+(index) + "/" + (activityId))
+                    .callbackData("activities_delete/" + (index) + "/" + (activityId))
                     .build());
         } else {
             navigation_row.add(InlineKeyboardButton.builder()
                     .text("Добавить")
-                    .callbackData("activities_add/"+(index) + "/" + (activityId))
+                    .callbackData("activities_add/" + (index) + "/" + (activityId))
                     .build());
         }
 
@@ -144,7 +175,7 @@ public class KeyboardService {
         }
         navigation_row.add(InlineKeyboardButton.builder()
                 .text("Выбрать")
-                .callbackData("resorts_select/"+(resortId))
+                .callbackData("resorts_select/" + (resortId))
                 .build());
         if (index < size - 1) {
             navigation_row.add(InlineKeyboardButton.builder()
@@ -183,7 +214,7 @@ public class KeyboardService {
         }
         navigation_row.add(InlineKeyboardButton.builder()
                 .text("Выбрать")
-                .callbackData("customTours_select/"+(customTourId))
+                .callbackData("customTours_select/" + (customTourId))
                 .build());
         if (index < size - 1) {
             navigation_row.add(InlineKeyboardButton.builder()
@@ -220,7 +251,7 @@ public class KeyboardService {
         }
         navigation_row.add(InlineKeyboardButton.builder()
                 .text("Выбрать")
-                .callbackData("hotels_select/"+(hotelId))
+                .callbackData("hotels_select/" + (hotelId))
                 .build());
         if (index < size - 1) {
             navigation_row.add(InlineKeyboardButton.builder()

@@ -158,7 +158,7 @@ public class ResortHandler {
 
         stateMachineService.setResortByUserId(selectedResort.get(), callbackQuery.getFrom().getId());
 
-        hotelHandler.defaultHandler(callbackQuery, bot);
+        hotelHandler.starsHandler(callbackQuery, bot);
     }
 
     @Async
