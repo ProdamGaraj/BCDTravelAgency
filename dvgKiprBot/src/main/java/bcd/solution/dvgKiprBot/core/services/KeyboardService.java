@@ -1,5 +1,6 @@
 package bcd.solution.dvgKiprBot.core.services;
 
+import bcd.solution.dvgKiprBot.core.models.Activity;
 import bcd.solution.dvgKiprBot.core.models.Stars;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -12,7 +13,9 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.Keyboard
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class KeyboardService {
@@ -122,37 +125,69 @@ public class KeyboardService {
         return builder.build();
     }
 
-    public InlineKeyboardMarkup getActivitiesKeyboard(Integer index, Long activityId, boolean isDeleting) {
-        long size = activityRepo.count();
+//    public InlineKeyboardMarkup getActivitiesKeyboard(Integer index, Long activityId, boolean isDeleting) {
+//        long size = activityRepo.count();
+//
+//        List<InlineKeyboardButton> navigation_row = new ArrayList<>();
+//        if (index > 0) {
+//            navigation_row.add(InlineKeyboardButton.builder()
+//                    .text("<-")
+//                    .callbackData("activities_change/" + (index - 1))
+//                    .build());
+//        }
+//        if (isDeleting) {
+//            navigation_row.add(InlineKeyboardButton.builder()
+//                    .text("Убрать")
+//                    .callbackData("activities_delete/" + (index) + "/" + (activityId))
+//                    .build());
+//        } else {
+//            navigation_row.add(InlineKeyboardButton.builder()
+//                    .text("Добавить")
+//                    .callbackData("activities_add/" + (index) + "/" + (activityId))
+//                    .build());
+//        }
+//
+//        if (index < size - 1) {
+//            navigation_row.add(InlineKeyboardButton.builder()
+//                    .text("->")
+//                    .callbackData("activities_change/" + (index + 1))
+//                    .build());
+//        }
+//
+//        return InlineKeyboardMarkup.builder()
+//                .keyboardRow(navigation_row)
+//                .keyboardRow(List.of(
+//                        InlineKeyboardButton.builder()
+//                                .text("Выбрать")
+//                                .callbackData("activities_select")
+//                                .build()
+//                ))
+//                .keyboardRow(List.of(
+//                        InlineKeyboardButton.builder()
+//                                .text("В начало")
+//                                .callbackData("restart")
+//                                .build()
+//                ))
+//                .build();
+//    }
 
-        List<InlineKeyboardButton> navigation_row = new ArrayList<>();
-        if (index > 0) {
-            navigation_row.add(InlineKeyboardButton.builder()
-                    .text("<-")
-                    .callbackData("activities_change/" + (index - 1))
-                    .build());
-        }
-        if (isDeleting) {
-            navigation_row.add(InlineKeyboardButton.builder()
-                    .text("Убрать")
-                    .callbackData("activities_delete/" + (index) + "/" + (activityId))
-                    .build());
-        } else {
-            navigation_row.add(InlineKeyboardButton.builder()
-                    .text("Добавить")
-                    .callbackData("activities_add/" + (index) + "/" + (activityId))
-                    .build());
+    public InlineKeyboardMarkup getActivitiesKeyboard(List<Activity> selectedActivities) {
+        List<Activity> allActivities = activityRepo.findAll();
+        Set<Activity> activitySet = new HashSet<>(selectedActivities);
+
+        InlineKeyboardMarkup.InlineKeyboardMarkupBuilder builder = InlineKeyboardMarkup.builder();
+
+        for (Activity activity : allActivities) {
+            boolean isChosen = activitySet.contains(activity);
+            builder.keyboardRow(List.of(
+                    InlineKeyboardButton.builder()
+                            .text(activity.name + (isChosen ? " (убрать)" : ""))
+                            .callbackData("activities_" + (isChosen ? "delete" : "add") + "/" + (activity.getId()))
+                            .build()
+            ));
         }
 
-        if (index < size - 1) {
-            navigation_row.add(InlineKeyboardButton.builder()
-                    .text("->")
-                    .callbackData("activities_change/" + (index + 1))
-                    .build());
-        }
-
-        return InlineKeyboardMarkup.builder()
-                .keyboardRow(navigation_row)
+        return builder
                 .keyboardRow(List.of(
                         InlineKeyboardButton.builder()
                                 .text("Выбрать")

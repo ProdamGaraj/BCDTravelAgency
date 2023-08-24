@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.objects.InputFile;
 import org.telegram.telegrambots.meta.api.objects.media.InputMedia;
 import org.telegram.telegrambots.meta.api.objects.media.InputMediaPhoto;
-import bcd.solution.dvgKiprBot.core.models.Activity;
 import bcd.solution.dvgKiprBot.core.models.CustomTour;
 import bcd.solution.dvgKiprBot.core.models.Hotel;
 import bcd.solution.dvgKiprBot.core.models.Resort;
@@ -119,8 +118,10 @@ public class MediaService {
     }
 
     @SneakyThrows
-    public InputMedia getActivityMedia(Activity activity) {
-        return getMediaByPath(activity.media);
+    public InputMedia getActivityMedia() {
+        InputMedia file = new InputMediaPhoto();
+        file.setMedia((new ClassPathResource("images/00.jpg")).getInputStream(), "activity.png");
+        return file;
     }
 
     @SneakyThrows
