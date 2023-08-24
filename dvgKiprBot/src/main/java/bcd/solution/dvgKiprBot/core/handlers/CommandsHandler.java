@@ -86,9 +86,10 @@ public class CommandsHandler {
             bot.executeAsync(SendPhoto.builder()
                     .chatId(message.getChatId())
                     .photo(mediaService.getStartMessageMedia())
-//                .caption("Для доступа к полному функционалу бота необходимо указать номер телефона. " +
-//                        "Но Вы все равно можете выбрать один из авторских туров")
-                    .caption("Для повышения качесва обслуживания нам неоходим Ваш номер телефона")
+                .caption("Для доступа к полному функционалу бота необходимо указать номер телефона."
+//                        + " Но Вы все равно можете выбрать один из авторских туров"
+                )
+//                    .caption("Для повышения качесва обслуживания нам неоходим Ваш номер телефона")
                     .replyMarkup(keyboardService.getStarterKeyboard())
                     .build());
             return;

@@ -305,11 +305,11 @@ public class KeyboardService {
                         InlineKeyboardButton.builder()
                                 .text("Ввести номер телефона")
                                 .callbackData("auth_getPhone")
-                                .build(),
-                        InlineKeyboardButton.builder()
-                                .text("Подобрать тур")
-                                .callbackData("restart")
                                 .build()
+//                        InlineKeyboardButton.builder()
+//                                .text("Подобрать тур")
+//                                .callbackData("restart")
+//                                .build()
                 ))
                 .build();
     }
