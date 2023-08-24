@@ -100,7 +100,7 @@ public class AuthHandler {
                 .build());
         bot.executeAsync(SendMessage.builder()
                 .chatId(callbackQuery.getMessage().getChatId())
-                .text("Хорошо, но для дальнейшего использования бота Вам необходимо его ввести")
+                .text("Хорошо, но Вы можете ввести его позже")
                 .replyMarkup(new ReplyKeyboardRemove(true))
                 .build());
 
