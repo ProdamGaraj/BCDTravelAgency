@@ -24,6 +24,9 @@ public class KeyboardService {
 
     private final CustomTourRepo customTourRepo;
 
+    private final String rightArrow = "➡️";
+    private final String leftArrow = "⬅️";
+
     @Autowired
     public KeyboardService(ActivityRepo activityRepo,
                            CustomTourRepo customTourRepo) {
@@ -208,7 +211,7 @@ public class KeyboardService {
         List<InlineKeyboardButton> navigation_row = new ArrayList<>();
         if (index > 0) {
             navigation_row.add(InlineKeyboardButton.builder()
-                    .text("<-")
+                    .text(leftArrow)
                     .callbackData("resorts_change/" + (index - 1))
                     .build());
         }
@@ -218,7 +221,7 @@ public class KeyboardService {
                 .build());
         if (index < size - 1) {
             navigation_row.add(InlineKeyboardButton.builder()
-                    .text("->")
+                    .text(rightArrow)
                     .callbackData("resorts_change/" + (index + 1))
                     .build());
         }
@@ -253,7 +256,7 @@ public class KeyboardService {
         List<InlineKeyboardButton> navigation_row = new ArrayList<>();
         if (index > 0) {
             navigation_row.add(InlineKeyboardButton.builder()
-                    .text("<-")
+                    .text(leftArrow)
                     .callbackData("customTours_change/" + (index - 1))
                     .build());
         }
@@ -263,7 +266,7 @@ public class KeyboardService {
                 .build());
         if (index < size - 1) {
             navigation_row.add(InlineKeyboardButton.builder()
-                    .text("->")
+                    .text(rightArrow)
                     .callbackData("customTours_change/" + (index + 1))
                     .build());
         }
@@ -296,7 +299,7 @@ public class KeyboardService {
         List<InlineKeyboardButton> navigation_row = new ArrayList<>();
         if (index > 0) {
             navigation_row.add(InlineKeyboardButton.builder()
-                    .text("<-")
+                    .text(leftArrow)
                     .callbackData("hotels_change/" + (index - 1))
                     .build());
         }
@@ -306,7 +309,7 @@ public class KeyboardService {
                 .build());
         if (index < size - 1) {
             navigation_row.add(InlineKeyboardButton.builder()
-                    .text("->")
+                    .text(rightArrow)
                     .callbackData("hotels_change/" + (index + 1))
                     .build());
         }
