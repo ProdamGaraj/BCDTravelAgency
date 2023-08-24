@@ -10,14 +10,12 @@ import org.telegram.telegrambots.meta.api.methods.AnswerCallbackQuery;
 import org.telegram.telegrambots.meta.api.methods.pinnedmessages.PinChatMessage;
 import org.telegram.telegrambots.meta.api.methods.pinnedmessages.UnpinAllChatMessages;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
-import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.*;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardRemove;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiRequestException;
 
-import java.util.concurrent.CompletableFuture;
 
 @Component
 public class AuthHandler {
@@ -164,39 +162,6 @@ public class AuthHandler {
         bot.executeAsync(AnswerCallbackQuery.builder()
                 .callbackQueryId(callbackQuery.getId())
                 .build());
-    }
-
-    @Async
-    @SneakyThrows
-    public void authCommandHandler(Message message, DvgKiprBot bot) {
-//        TODO: add message text
-
-        if (authorizationService.isAuthorized(message.getFrom().getId())) {
-            CompletableFuture<Message> auth_message = bot.executeAsync(SendPhoto.builder()
-                    .chatId(message.getChatId())
-                    .photo(mediaService.getAuthFile())
-                    .caption("Вы уже авторизованы")
-                    .replyMarkup(keyboardService.getRestartKeyboard())
-                    .build());
-            bot.executeAsync(UnpinAllChatMessages.builder().chatId(message.getChatId()).build());
-            bot.executeAsync(PinChatMessage.builder()
-                    .chatId(message.getChatId())
-                    .messageId(auth_message.join().getMessageId())
-                    .build());
-            return;
-        }
-
-        CompletableFuture<Message> auth_message = bot.executeAsync(SendPhoto.builder() //executeAsync
-                .chatId(message.getChatId())
-                .photo(mediaService.getAuthFile())
-                .caption("Введите пароль")
-                .replyMarkup(keyboardService.getAuthCancelKeyboard())
-                .build());
-
-        stateMachineService.setWaitPasswordByUserId(
-                message.getFrom().getId(),
-                true,
-                auth_message.join().getMessageId());
     }
 
     @Async

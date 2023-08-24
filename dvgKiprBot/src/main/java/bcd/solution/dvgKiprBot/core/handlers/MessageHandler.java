@@ -61,8 +61,6 @@ public class MessageHandler {
                     commandEntity.get().getLength());
             switch (command) {
                 case "/start" -> commandsHandler.startHandler(bot, message.getFrom().getId(), message.getChatId());
-                case "/authorization" -> authHandler.authCommandHandler(message, bot);
-                case "/media" -> commandsHandler.mediaHandler(message, bot);
                 default -> bot.executeAsync(SendMessage.builder()
                         .text("Команда не найдена")
                         .chatId(message.getChatId())

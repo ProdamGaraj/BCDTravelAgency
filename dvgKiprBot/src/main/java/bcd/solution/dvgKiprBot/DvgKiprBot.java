@@ -46,10 +46,6 @@ public class DvgKiprBot extends TelegramLongPollingBot {
                                 .command("/start")
                                 .description("Запуск бота")
                                 .build())
-                        .command(BotCommand.builder()
-                                .command("/authorization")
-                                .description("Вход для партнеров")
-                                .build())
                 .build());
     }
 
