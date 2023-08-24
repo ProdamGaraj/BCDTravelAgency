@@ -17,7 +17,6 @@ import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardRemove;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiRequestException;
 
-import java.io.Serializable;
 import java.util.concurrent.CompletableFuture;
 
 @Component
@@ -101,14 +100,13 @@ public class AuthHandler {
                 .build());
         bot.executeAsync(SendMessage.builder()
                 .chatId(callbackQuery.getMessage().getChatId())
-                .text("Хорошо, но Вы всегда сможете его нам его отправить")
+                .text("Хорошо, но для дальнейшего использования бота Вам необходимо его ввести")
                 .replyMarkup(new ReplyKeyboardRemove(true))
                 .build());
-        commandsHandler.choosingMessageSender(
-                callbackQuery.getMessage().getChatId(),
-                bot,
-                userService.hasPhoneById(callbackQuery.getFrom().getId()),
-                userService.isAuthorized(callbackQuery.getFrom().getId()));
+
+        commandsHandler.startHandler(bot,
+                callbackQuery.getFrom().getId(),
+                callbackQuery.getMessage().getChatId());
     }
 
     @Async
@@ -137,7 +135,7 @@ public class AuthHandler {
         stateMachineService.setWaitPhoneByUserId(
                 message.getFrom().getId(),
                 false, 0);
-        commandsHandler.startHandler(message, bot);
+        commandsHandler.startHandler(bot, message.getFrom().getId(), message.getChatId());
     }
 
     @Async
@@ -244,15 +242,18 @@ public class AuthHandler {
     @Async
     @SneakyThrows
     protected void cancelHandler(CallbackQuery callbackQuery, DvgKiprBot bot) {
-        bot.executeAsync(EditMessageCaption.builder()
+        bot.executeAsync(DeleteMessage.builder()
                 .chatId(callbackQuery.getMessage().getChatId())
                 .messageId(callbackQuery.getMessage().getMessageId())
-                .caption("Ввод пароля отменен")
-                .replyMarkup(keyboardService.getRestartKeyboard())
                 .build());
+
         stateMachineService.setWaitPasswordByUserId(callbackQuery.getFrom().getId(), false, 0);
+        commandsHandler.startHandler(bot,
+                callbackQuery.getFrom().getId(),
+                callbackQuery.getMessage().getChatId());
         bot.executeAsync(AnswerCallbackQuery.builder()
                 .callbackQueryId(callbackQuery.getId())
+                .text("Ввод пароля отменен")
                 .build());
     }
 

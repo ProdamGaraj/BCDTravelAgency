@@ -114,18 +114,36 @@ public class CallbackQueryHandler {
     @Async
     @SneakyThrows
     protected void startHandler(CallbackQuery callbackQuery, DvgKiprBot bot) {
+        if (!userService.hasPhoneById(callbackQuery.getFrom().getId())) {
+            bot.executeAsync(EditMessageMedia.builder()
+                    .chatId(callbackQuery.getMessage().getChatId())
+                    .messageId(callbackQuery.getMessage().getMessageId())
+                    .media(mediaService.getStartMedia())
+                    .build());
+            bot.executeAsync(EditMessageCaption.builder()
+                    .chatId(callbackQuery.getMessage().getChatId())
+                    .messageId(callbackQuery.getMessage().getMessageId())
+                    .caption("Для доступа к полному функционалу бота необходимо указать номер телефона."
+//                        + " Но Вы все равно можете выбрать один из авторских туров"
+                    )
+//                    .caption("Для повышения качесва обслуживания нам неоходим Ваш номер телефона")
+                    .replyMarkup(keyboardService.getStarterKeyboard())
+                    .build());
+
+            bot.executeAsync(AnswerCallbackQuery.builder()
+                    .callbackQueryId(callbackQuery.getId()).build());
+            return;
+        }
+
         commandsHandler.choosingMessageSender(
                 callbackQuery.getMessage().getChatId(),
                 bot,
                 userService.hasPhoneById(callbackQuery.getFrom().getId()),
                 userService.isAuthorized(callbackQuery.getFrom().getId()));
         bot.executeAsync(EditMessageReplyMarkup.builder()
-                        .chatId(callbackQuery.getMessage().getChatId())
-                        .messageId(callbackQuery.getMessage().getMessageId())
-                        .replyMarkup(null)
+                .chatId(callbackQuery.getMessage().getChatId())
+                .messageId(callbackQuery.getMessage().getMessageId())
+                .replyMarkup(null)
                 .build());
-
-        bot.executeAsync(AnswerCallbackQuery.builder()
-                .callbackQueryId(callbackQuery.getId()).build());
     }
 }

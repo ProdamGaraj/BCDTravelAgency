@@ -32,22 +32,11 @@ public class CommandsHandler {
     private final HotelRepo hotelRepo;
     private final ResortRepo resortRepo;
     private final ActivityRepo activityRepo;
-    public final String inviteString = "Кипр - это островное государство в Средиземном море," +
-            "расположенное на перекрестке Европы, Азии и Африки. " +
-            "Он является отличным туристическим направлением благодаря " +
-            "своим красивым пляжам, теплому климату и богатой истории." +
-            "Кипр имеет богатое культурное наследие, которое отражается " +
-            "в его архитектуре, музеях и археологических раскопках." +
-            "Столицей Кипра является Никосия, где можно посетить множество " +
-            "достопримечательностей, таких как Кипрский музей, " +
-            "Собор Святого Иоанна и Кипрский национальный парк. " +
-            "Кипр также славится своими винами и кухней, в которой сочетаются греческие," +
-            " турецкие и английские влияния. В целом, Кипр - это " +
-            "прекрасное место для отдыха и изучения культуры, " +
-            "истории и кухни Средиземноморья.\n\n" +
-            "Доступные комманды:\n" +
-            "/start\n" +
-            "/authorization - вход для партнеров";
+    public final String inviteString = """
+            Кипр - это островное государство в Средиземном море,расположенное на перекрестке Европы, Азии и Африки. Он является отличным туристическим направлением благодаря своим красивым пляжам, теплому климату и богатой истории.Кипр имеет богатое культурное наследие, которое отражается в его архитектуре, музеях и археологических раскопках.Столицей Кипра является Никосия, где можно посетить множество достопримечательностей, таких как Кипрский музей, Собор Святого Иоанна и Кипрский национальный парк. Кипр также славится своими винами и кухней, в которой сочетаются греческие, турецкие и английские влияния. В целом, Кипр - это прекрасное место для отдыха и изучения культуры, истории и кухни Средиземноморья.
+
+            Доступные комманды:
+            /start""";
 
     public CommandsHandler(UserService userService,
                            MediaService mediaService,
@@ -81,10 +70,10 @@ public class CommandsHandler {
 
     @Async
     @SneakyThrows
-    public void startHandler(Message message, DvgKiprBot bot) {
-        if (!userService.hasPhoneById(message.getFrom().getId())) {
+    public void startHandler(DvgKiprBot bot, Long userId, Long chatId) {
+        if (!userService.hasPhoneById(userId)) {
             bot.executeAsync(SendPhoto.builder()
-                    .chatId(message.getChatId())
+                    .chatId(chatId)
                     .photo(mediaService.getStartMessageMedia())
                 .caption("Для доступа к полному функционалу бота необходимо указать номер телефона."
 //                        + " Но Вы все равно можете выбрать один из авторских туров"
@@ -95,9 +84,9 @@ public class CommandsHandler {
             return;
         }
         choosingMessageSender(
-                message.getChatId(),
+                chatId,
                 bot, true,
-                userService.isAuthorized(message.getFrom().getId()));
+                userService.isAuthorized(userId));
     }
 
     @Async
