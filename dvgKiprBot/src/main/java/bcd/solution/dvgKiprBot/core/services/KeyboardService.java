@@ -24,8 +24,8 @@ public class KeyboardService {
 
     private final CustomTourRepo customTourRepo;
 
-    private final String rightArrowText = "➡️";
-    private final String leftArrowText = "⬅️";
+    private final String rightArrowText = "Далее ➡️";
+    private final String leftArrowText = "⬅️ Назад";
     private final String restartButtonText = "В начало 🔄";
     private final String cancelButtonText = "Отмена ❌";
     private final String phoneButtonText = "Добавить номер телефона ☎️";
