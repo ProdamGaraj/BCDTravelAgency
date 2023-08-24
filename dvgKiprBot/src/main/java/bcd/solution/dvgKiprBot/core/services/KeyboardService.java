@@ -32,18 +32,6 @@ public class KeyboardService {
         InlineKeyboardMarkup.InlineKeyboardMarkupBuilder builder = InlineKeyboardMarkup.builder();
 
         builder.keyboardRow(List.of(InlineKeyboardButton.builder()
-                        .text(Stars.nullstar.toString())
-                        .callbackData("hotels_stars/" + Stars.nullstar.name())
-                        .build()))
-                .keyboardRow(List.of(InlineKeyboardButton.builder()
-                        .text(Stars.onestar.toString())
-                        .callbackData("hotels_stars/" + Stars.onestar.name())
-                        .build()))
-                .keyboardRow(List.of(InlineKeyboardButton.builder()
-                        .text(Stars.twostar.toString())
-                        .callbackData("hotels_stars/" + Stars.twostar.name())
-                        .build()))
-                .keyboardRow(List.of(InlineKeyboardButton.builder()
                         .text(Stars.threestar.toString())
                         .callbackData("hotels_stars/" + Stars.threestar.name())
                         .build()))
