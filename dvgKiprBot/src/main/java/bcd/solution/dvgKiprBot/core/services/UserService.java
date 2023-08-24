@@ -33,4 +33,9 @@ public class UserService {
         User user = userRepository.findById(telegram_id).get();
         return user.getPhone() != null;
     }
+
+    public boolean isAuthorized(Long telegram_id) {
+        UserRole userRole = userRepository.findById(telegram_id).get().getRole();
+        return userRole == UserRole.partner || userRole == UserRole.admin;
+    }
 }

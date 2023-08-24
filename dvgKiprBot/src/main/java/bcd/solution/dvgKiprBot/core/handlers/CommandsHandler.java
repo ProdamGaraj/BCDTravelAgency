@@ -70,12 +70,12 @@ public class CommandsHandler {
 
     @Async
     @SneakyThrows
-    public void choosingMessageSender(Long chatId, DvgKiprBot bot, boolean hasPhone) {
+    public void choosingMessageSender(Long chatId, DvgKiprBot bot, boolean hasPhone, boolean isAuthorized) {
         bot.executeAsync(SendPhoto.builder()
                 .chatId(chatId)
                 .photo(mediaService.getStartMessageMedia())
                 .caption(inviteString)
-                .replyMarkup(keyboardService.getTourChoosingKeyboard(hasPhone))
+                .replyMarkup(keyboardService.getTourChoosingKeyboard(hasPhone, isAuthorized))
                 .build());
     }
 
@@ -93,7 +93,10 @@ public class CommandsHandler {
                     .build());
             return;
         }
-        choosingMessageSender(message.getChatId(), bot, true);
+        choosingMessageSender(
+                message.getChatId(),
+                bot, true,
+                userService.isAuthorized(message.getFrom().getId()));
     }
 
     @Async

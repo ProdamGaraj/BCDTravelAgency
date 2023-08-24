@@ -97,14 +97,15 @@ public class CallbackQueryHandler {
         bot.executeAsync(EditMessageMedia.builder()
                 .chatId(callbackQuery.getMessage().getChatId())
                 .messageId(callbackQuery.getMessage().getMessageId())
-                .media(mediaService.updateMediaForStart())
+                .media(mediaService.getStartMedia())
                 .build());
         bot.executeAsync(EditMessageCaption.builder()
                 .chatId(callbackQuery.getMessage().getChatId())
                 .messageId(callbackQuery.getMessage().getMessageId())
                 .caption(commandsHandler.inviteString)
                 .replyMarkup(keyboardService.getTourChoosingKeyboard(
-                        userService.hasPhoneById(callbackQuery.getFrom().getId())))
+                        userService.hasPhoneById(callbackQuery.getFrom().getId()),
+                        userService.isAuthorized(callbackQuery.getFrom().getId())))
                 .build());
         bot.executeAsync(AnswerCallbackQuery.builder()
                 .callbackQueryId(callbackQuery.getId()).build());
@@ -116,7 +117,8 @@ public class CallbackQueryHandler {
         commandsHandler.choosingMessageSender(
                 callbackQuery.getMessage().getChatId(),
                 bot,
-                userService.hasPhoneById(callbackQuery.getFrom().getId()));
+                userService.hasPhoneById(callbackQuery.getFrom().getId()),
+                userService.isAuthorized(callbackQuery.getFrom().getId()));
         bot.executeAsync(EditMessageReplyMarkup.builder()
                         .chatId(callbackQuery.getMessage().getChatId())
                         .messageId(callbackQuery.getMessage().getMessageId())

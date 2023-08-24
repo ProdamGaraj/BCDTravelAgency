@@ -17,6 +17,7 @@ import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardRemove;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiRequestException;
 
+import java.io.Serializable;
 import java.util.concurrent.CompletableFuture;
 
 @Component
@@ -48,10 +49,47 @@ public class AuthHandler {
     public void handleCallback(CallbackQuery callbackQuery, DvgKiprBot bot) {
         String action = callbackQuery.getData().split("/")[0];
         switch (action) {
+            case "auth" -> authHandler(callbackQuery, bot);
             case "auth_cancel" -> cancelHandler(callbackQuery, bot);
             case "auth_getPhone" -> getPhoneHandler(callbackQuery, bot);
             case "auth_phoneCancel" -> phoneCancelHandler(callbackQuery, bot);
         }
+    }
+
+    @Async
+    @SneakyThrows
+    protected void authHandler(CallbackQuery callbackQuery, DvgKiprBot bot) {
+        bot.executeAsync(EditMessageMedia.builder()
+                .chatId(callbackQuery.getMessage().getChatId())
+                .messageId(callbackQuery.getMessage().getMessageId())
+                .media(mediaService.getAuthMedia())
+                .build());
+        if (authorizationService.isAuthorized(callbackQuery.getFrom().getId())) {
+            bot.executeAsync(EditMessageCaption.builder()
+                    .chatId(callbackQuery.getMessage().getChatId())
+                    .messageId(callbackQuery.getMessage().getMessageId())
+                    .caption("Вы уже авторизованы")
+                    .replyMarkup(keyboardService.getRestartKeyboard())
+                    .build());
+            bot.executeAsync(UnpinAllChatMessages.builder().chatId(callbackQuery.getMessage().getChatId()).build());
+            bot.executeAsync(PinChatMessage.builder()
+                    .chatId(callbackQuery.getMessage().getChatId())
+                    .messageId(callbackQuery.getMessage().getMessageId())
+                    .build());
+            return;
+        }
+
+        bot.executeAsync(EditMessageCaption.builder()
+                .chatId(callbackQuery.getMessage().getChatId())
+                .messageId(callbackQuery.getMessage().getMessageId())
+                .caption("Введите пароль")
+                .replyMarkup(keyboardService.getAuthCancelKeyboard())
+                .build());
+
+        stateMachineService.setWaitPasswordByUserId(
+                callbackQuery.getFrom().getId(),
+                true,
+                callbackQuery.getMessage().getMessageId());
     }
 
     @Async
@@ -69,7 +107,8 @@ public class AuthHandler {
         commandsHandler.choosingMessageSender(
                 callbackQuery.getMessage().getChatId(),
                 bot,
-                userService.hasPhoneById(callbackQuery.getFrom().getId()));
+                userService.hasPhoneById(callbackQuery.getFrom().getId()),
+                userService.isAuthorized(callbackQuery.getFrom().getId()));
     }
 
     @Async
@@ -137,7 +176,7 @@ public class AuthHandler {
         if (authorizationService.isAuthorized(message.getFrom().getId())) {
             CompletableFuture<Message> auth_message = bot.executeAsync(SendPhoto.builder()
                     .chatId(message.getChatId())
-                    .photo(mediaService.getAuthMedia())
+                    .photo(mediaService.getAuthFile())
                     .caption("Вы уже авторизованы")
                     .replyMarkup(keyboardService.getRestartKeyboard())
                     .build());
@@ -151,7 +190,7 @@ public class AuthHandler {
 
         CompletableFuture<Message> auth_message = bot.executeAsync(SendPhoto.builder() //executeAsync
                 .chatId(message.getChatId())
-                .photo(mediaService.getAuthMedia())
+                .photo(mediaService.getAuthFile())
                 .caption("Введите пароль")
                 .replyMarkup(keyboardService.getAuthCancelKeyboard())
                 .build());
@@ -182,7 +221,7 @@ public class AuthHandler {
             bot.execute(EditMessageCaption.builder()
                     .chatId(message.getChatId())
                     .messageId(stateMachine.auth_message_id)
-                    .caption("Пароль получен: " + password)
+                    .caption("Вы авторизованы!")
                     .replyMarkup(keyboardService.getRestartKeyboard())
                     .build());
 

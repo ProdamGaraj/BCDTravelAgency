@@ -84,7 +84,7 @@ public class KeyboardService {
                 .build();
     }
 
-    public InlineKeyboardMarkup getTourChoosingKeyboard(boolean hasPhone) {
+    public InlineKeyboardMarkup getTourChoosingKeyboard(boolean hasPhone, boolean isAuthorized) {
         InlineKeyboardMarkup.InlineKeyboardMarkupBuilder builder = InlineKeyboardMarkup.builder();
 //        if (true) {
         if (hasPhone) {
@@ -112,7 +112,12 @@ public class KeyboardService {
                     .callbackData("auth_getPhone")
                     .build()));
         }
-//        TODO: button for auth
+        if (!isAuthorized) {
+            builder.keyboardRow(List.of(InlineKeyboardButton.builder()
+                    .text("Авторизоваться")
+                    .callbackData("auth")
+                    .build()));
+        }
 
         return builder.build();
     }

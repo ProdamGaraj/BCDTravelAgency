@@ -26,7 +26,7 @@ public class MediaService {
 
     //TODO: absolute path is piece of shit has to be rewrote quickly!
     @SneakyThrows
-    public InputMedia updateMediaForStart(){
+    public InputMedia getStartMedia(){
         InputMedia file = new InputMediaPhoto();
         file.setMedia((new ClassPathResource("images/kiprstart.jpg")).getInputStream(), "kiprstart.jpg");
         //TODO logic
@@ -136,7 +136,7 @@ public class MediaService {
     @SneakyThrows
     public InputMedia getCustomTourMedia(CustomTour customTour) {
         if (customTour.media == null) {
-            return updateMediaForStart();
+            return getStartMedia();
         }
         return getMediaByPath(customTour.media);
     }
@@ -179,7 +179,12 @@ public class MediaService {
     }
 
     @SneakyThrows
-    public InputFile getAuthMedia(){
+    public InputFile getAuthFile(){
         return getStartMessageMedia();
+    }
+
+    @SneakyThrows
+    public InputMedia getAuthMedia(){
+        return getStartMedia();
     }
 }
