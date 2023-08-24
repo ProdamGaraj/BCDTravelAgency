@@ -24,8 +24,21 @@ public class KeyboardService {
 
     private final CustomTourRepo customTourRepo;
 
-    private final String rightArrow = "➡️";
-    private final String leftArrow = "⬅️";
+    private final String rightArrowText = "➡️";
+    private final String leftArrowText = "⬅️";
+    private final String restartButtonText = "В начало 🔄";
+    private final String cancelButtonText = "Отмена ❌";
+    private final String phoneButtonText = "Добавить номер телефона ☎️";
+    private final String sendPhoneButtonText = "Отправить номер телефона";
+    private final String confirmButtonText = "Выбрать ✅";
+    private final String showPhotoButtonText = "Показать все фото 🖼️";
+    private final String noMatterButtonText = "Не важно 🤷‍♂️";
+    private final String homeButtonText = "На домашнюю страницу 🏠";
+    private final String authButtonText = "Авторизация 🔐";
+    private final String activitiesButtonText = "Активности ⚽️";
+    private final String resortsButtonText = "Курорты 🏝️";
+    private final String hotelsButtonText = "Отели 🏨";
+    private final String customToursButtonText = "Авторские туры 🗺️";
 
     @Autowired
     public KeyboardService(ActivityRepo activityRepo,
@@ -51,12 +64,12 @@ public class KeyboardService {
                         .build()))
                 .keyboardRow(List.of(
                         InlineKeyboardButton.builder()
-                                .text("Не важно")
+                                .text(noMatterButtonText)
                                 .callbackData("hotels_change/" + 0)
                                 .build()))
                 .keyboardRow(List.of(
                         InlineKeyboardButton.builder()
-                                .text("В начало")
+                                .text(restartButtonText)
                                 .callbackData("restart")
                                 .build()));
 
@@ -66,7 +79,7 @@ public class KeyboardService {
     public InlineKeyboardMarkup getRestartKeyboard() {
         return InlineKeyboardMarkup.builder()
                 .keyboardRow(List.of(InlineKeyboardButton.builder()
-                        .text("На домашнюю страницу")
+                        .text(homeButtonText)
                         .callbackData("start")
                         .build()))
                 .build();
@@ -75,7 +88,7 @@ public class KeyboardService {
     public InlineKeyboardMarkup getAuthCancelKeyboard() {
         return InlineKeyboardMarkup.builder()
                 .keyboardRow(List.of(InlineKeyboardButton.builder()
-                        .text("Отмена")
+                        .text(cancelButtonText)
                         .callbackData("auth_cancel")
                         .build()))
                 .build();
@@ -84,7 +97,7 @@ public class KeyboardService {
     public InlineKeyboardMarkup getPhoneCancelKeyboard() {
         return InlineKeyboardMarkup.builder()
                 .keyboardRow(List.of(InlineKeyboardButton.builder()
-                        .text("Отмена")
+                        .text(cancelButtonText)
                         .callbackData("auth_phoneCancel")
                         .build()))
                 .build();
@@ -95,84 +108,38 @@ public class KeyboardService {
 //        if (true) {
         if (hasPhone) {
             builder.keyboardRow(List.of(InlineKeyboardButton.builder()
-                            .text("Активности")
+                            .text(activitiesButtonText)
                             .callbackData("activities")
                             .build()))
                     .keyboardRow(List.of(InlineKeyboardButton.builder()
-                            .text("Курорты")
+                            .text(resortsButtonText)
                             .callbackData("resorts")
                             .build()))
                     .keyboardRow(List.of(InlineKeyboardButton.builder()
-                            .text("Отели")
+                            .text(hotelsButtonText)
                             .callbackData("hotels")
                             .build()))
                     .keyboardRow(List.of(InlineKeyboardButton.builder()
-                            .text("Авторские туры")
+                            .text(customToursButtonText)
                             .callbackData("customTours")
                             .build()
                     ));
         }
         if (!hasPhone) {
             builder.keyboardRow(List.of(InlineKeyboardButton.builder()
-                    .text("Добавить номер телефона")
+                    .text(phoneButtonText)
                     .callbackData("auth_getPhone")
                     .build()));
         }
         if (!isAuthorized) {
             builder.keyboardRow(List.of(InlineKeyboardButton.builder()
-                    .text("Авторизоваться")
+                    .text(authButtonText)
                     .callbackData("auth")
                     .build()));
         }
 
         return builder.build();
     }
-
-//    public InlineKeyboardMarkup getActivitiesKeyboard(Integer index, Long activityId, boolean isDeleting) {
-//        long size = activityRepo.count();
-//
-//        List<InlineKeyboardButton> navigation_row = new ArrayList<>();
-//        if (index > 0) {
-//            navigation_row.add(InlineKeyboardButton.builder()
-//                    .text("<-")
-//                    .callbackData("activities_change/" + (index - 1))
-//                    .build());
-//        }
-//        if (isDeleting) {
-//            navigation_row.add(InlineKeyboardButton.builder()
-//                    .text("Убрать")
-//                    .callbackData("activities_delete/" + (index) + "/" + (activityId))
-//                    .build());
-//        } else {
-//            navigation_row.add(InlineKeyboardButton.builder()
-//                    .text("Добавить")
-//                    .callbackData("activities_add/" + (index) + "/" + (activityId))
-//                    .build());
-//        }
-//
-//        if (index < size - 1) {
-//            navigation_row.add(InlineKeyboardButton.builder()
-//                    .text("->")
-//                    .callbackData("activities_change/" + (index + 1))
-//                    .build());
-//        }
-//
-//        return InlineKeyboardMarkup.builder()
-//                .keyboardRow(navigation_row)
-//                .keyboardRow(List.of(
-//                        InlineKeyboardButton.builder()
-//                                .text("Выбрать")
-//                                .callbackData("activities_select")
-//                                .build()
-//                ))
-//                .keyboardRow(List.of(
-//                        InlineKeyboardButton.builder()
-//                                .text("В начало")
-//                                .callbackData("restart")
-//                                .build()
-//                ))
-//                .build();
-//    }
 
     public InlineKeyboardMarkup getActivitiesKeyboard(List<Activity> selectedActivities) {
         List<Activity> allActivities = activityRepo.findAll();
@@ -193,13 +160,13 @@ public class KeyboardService {
         return builder
                 .keyboardRow(List.of(
                         InlineKeyboardButton.builder()
-                                .text("Выбрать")
+                                .text(confirmButtonText)
                                 .callbackData("activities_select")
                                 .build()
                 ))
                 .keyboardRow(List.of(
                         InlineKeyboardButton.builder()
-                                .text("В начало")
+                                .text(restartButtonText)
                                 .callbackData("restart")
                                 .build()
                 ))
@@ -211,7 +178,7 @@ public class KeyboardService {
         List<InlineKeyboardButton> navigation_row = new ArrayList<>();
         if (index > 0) {
             navigation_row.add(InlineKeyboardButton.builder()
-                    .text(leftArrow)
+                    .text(leftArrowText)
                     .callbackData("resorts_change/" + (index - 1))
                     .build());
         }
@@ -221,7 +188,7 @@ public class KeyboardService {
                 .build());
         if (index < size - 1) {
             navigation_row.add(InlineKeyboardButton.builder()
-                    .text(rightArrow)
+                    .text(rightArrowText)
                     .callbackData("resorts_change/" + (index + 1))
                     .build());
         }
@@ -230,19 +197,19 @@ public class KeyboardService {
                 .keyboardRow(navigation_row)
                 .keyboardRow(List.of(
                         InlineKeyboardButton.builder()
-                                .text("Выбрать")
+                                .text(confirmButtonText)
                                 .callbackData("resorts_select/" + (resortId))
                                 .build()
                 ))
                 .keyboardRow(List.of(
                         InlineKeyboardButton.builder()
-                                .text("Показать все фото")
+                                .text(showPhotoButtonText)
                                 .callbackData("resorts_media/" + (index) + "/" + (resortId))
                                 .build()
                 ))
                 .keyboardRow(List.of(
                         InlineKeyboardButton.builder()
-                                .text("В начало")
+                                .text(restartButtonText)
                                 .callbackData("restart")
                                 .build()
                 ))
@@ -256,7 +223,7 @@ public class KeyboardService {
         List<InlineKeyboardButton> navigation_row = new ArrayList<>();
         if (index > 0) {
             navigation_row.add(InlineKeyboardButton.builder()
-                    .text(leftArrow)
+                    .text(leftArrowText)
                     .callbackData("customTours_change/" + (index - 1))
                     .build());
         }
@@ -266,7 +233,7 @@ public class KeyboardService {
                 .build());
         if (index < size - 1) {
             navigation_row.add(InlineKeyboardButton.builder()
-                    .text(rightArrow)
+                    .text(rightArrowText)
                     .callbackData("customTours_change/" + (index + 1))
                     .build());
         }
@@ -275,19 +242,19 @@ public class KeyboardService {
                 .keyboardRow(navigation_row)
                 .keyboardRow(List.of(
                         InlineKeyboardButton.builder()
-                                .text("Выбрать")
+                                .text(confirmButtonText)
                                 .callbackData("customTours_select/" + (customTourId))
                                 .build()
                 ))
                 .keyboardRow(List.of(
                         InlineKeyboardButton.builder()
-                                .text("Показать все фото")
+                                .text(showPhotoButtonText)
                                 .callbackData("customTours_media/" + (index) + "/" + (customTourId))
                                 .build()
                 ))
                 .keyboardRow(List.of(
                         InlineKeyboardButton.builder()
-                                .text("В начало")
+                                .text(restartButtonText)
                                 .callbackData("restart")
                                 .build()
                 ))
@@ -299,7 +266,7 @@ public class KeyboardService {
         List<InlineKeyboardButton> navigation_row = new ArrayList<>();
         if (index > 0) {
             navigation_row.add(InlineKeyboardButton.builder()
-                    .text(leftArrow)
+                    .text(leftArrowText)
                     .callbackData("hotels_change/" + (index - 1))
                     .build());
         }
@@ -309,7 +276,7 @@ public class KeyboardService {
                 .build());
         if (index < size - 1) {
             navigation_row.add(InlineKeyboardButton.builder()
-                    .text(rightArrow)
+                    .text(rightArrowText)
                     .callbackData("hotels_change/" + (index + 1))
                     .build());
         }
@@ -318,19 +285,19 @@ public class KeyboardService {
                 .keyboardRow(navigation_row)
                 .keyboardRow(List.of(
                         InlineKeyboardButton.builder()
-                                .text("Выбрать")
+                                .text(confirmButtonText)
                                 .callbackData("hotels_select/" + (hotelId))
                                 .build()
                 ))
                 .keyboardRow(List.of(
                         InlineKeyboardButton.builder()
-                                .text("Показать все фото")
+                                .text(showPhotoButtonText)
                                 .callbackData("hotels_media/" + (index) + "/" + (hotelId))
                                 .build()
                 ))
                 .keyboardRow(List.of(
                         InlineKeyboardButton.builder()
-                                .text("В начало")
+                                .text(restartButtonText)
                                 .callbackData("restart")
                                 .build()
                 ))
@@ -341,7 +308,7 @@ public class KeyboardService {
         return InlineKeyboardMarkup.builder()
                 .keyboardRow(List.of(
                         InlineKeyboardButton.builder()
-                                .text("Ввести номер телефона")
+                                .text(phoneButtonText)
                                 .callbackData("auth_getPhone")
                                 .build()
 //                        InlineKeyboardButton.builder()
@@ -359,9 +326,8 @@ public class KeyboardService {
                         new KeyboardRow(
                                 List.of(
                                         KeyboardButton.builder()
-                                                .text("Отправить номер телефона")
+                                                .text(sendPhoneButtonText)
                                                 .requestContact(true)
-
                                                 .build())))
                 .build();
     }
