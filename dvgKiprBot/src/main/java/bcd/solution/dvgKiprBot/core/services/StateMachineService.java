@@ -125,7 +125,10 @@ public class StateMachineService {
     @Async
     public String getManagerCardByUserId(Long userId) {
         StateMachine stateMachine = getOrAddIfNotExists(userId);
-        StringBuilder card = new StringBuilder("Пользователь @" + stateMachine.user.getLogin() + " подобрал тур:\n\n");
+        StringBuilder card = new StringBuilder(
+                "Пользователь подобрал тур\n\n" +
+                        "Тег: @" + stateMachine.user.getLogin() + "\n" +
+                        "Номер телефона: " + stateMachine.user.getPhone() + "\n\n");
 
         fillTourInfo(card, stateMachine);
 
