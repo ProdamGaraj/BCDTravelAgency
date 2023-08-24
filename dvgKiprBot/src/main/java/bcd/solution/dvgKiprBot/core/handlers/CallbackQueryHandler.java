@@ -66,6 +66,7 @@ public class CallbackQueryHandler {
         String callback_action = callbackQuery.getData().split("_")[0];
 
         switch (callback_action) {
+            case "null" -> nothingHandler(callbackQuery, bot);
             case "restart" -> restartHandler(callbackQuery, bot);
             case "start" -> startHandler(callbackQuery, bot);
             case "auth" -> authHandler.handleCallback(callbackQuery, bot);
@@ -79,6 +80,13 @@ public class CallbackQueryHandler {
                     .showAlert(Boolean.TRUE)
                     .build());
         }
+    }
+
+    @Async
+    @SneakyThrows
+    protected void nothingHandler(CallbackQuery callbackQuery, DvgKiprBot bot) {
+        bot.executeAsync(AnswerCallbackQuery.builder()
+                .callbackQueryId(callbackQuery.getId()).build());
     }
 
     @Async
