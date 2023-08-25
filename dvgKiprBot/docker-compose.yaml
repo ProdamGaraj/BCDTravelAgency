@@ -8,32 +8,11 @@ services:
     container_name: app
     depends_on:
       - db
-    env_file:
-      - environment.env
-    environment:
-      - SPRING_DATASOURCE_URL=${CONNECTION_STRING}
-      - SPRING_DATASOURCE_USERNAME=${DB_USERNAME}
-      - SPRING_DATASOURCE_PASSWORD=${DB_PASSWORD}
-      - SPRING_JPA_HIBERNATE_DDL_AUTO=${HIBERNATE_STRATEG}
-      - SPRING.JPA.PROPERTIES.HIBERNATE.JDBC.LOB.NON_CONTEXTUAL_CREATION=${HIBERNATE_CREATION}
-      - SPRING.JPA.PROPERTIES.HIBERNATE.DIALECT=${HIBERNATE.DIALECT}
-      - SPRING.JPA.SHOW-SQL=${SHOW-SQL}
-      - BOT.NAME=${BOT_NAME}
-      - BOT.TOKEN=${BOT_TOKEN}
-      - BOT.MANAGERID=${BOT_MANAGER_ID}
-      - BOT.MANAGERUSERNAME=${BOT_MANAGER_USERNAME}
-      - BOT.MANAGERPHONE=${BOT_MANAGER_PHONE}
-
+    env_file: environment.env
   db:
     container_name: PostgreSQL
     image: "postgres:latest"
-    env_file:
-      - environment.env
-    environment:
-      - TZ=Europe/Moscow
-      - POSTGRES_USER=${DB_USERNAME}
-      - POSTGRES_PASSWORD=${DB_PASSWORD}
-      - POSTGRES_DB=${DEFAULT_DB}
+    env_file: environment.env
     volumes:
       - db:/var/lib/postgresql/data
     restart: unless-stopped
