@@ -17,7 +17,7 @@ public class ActivityService {
 
     @Async
     public Activity getByIndex(Integer index) {
-        return activityRepo.findAll().get(index);
+        return activityRepo.findAllByIsDeleted(false).get(index);
     }
 
     @Async

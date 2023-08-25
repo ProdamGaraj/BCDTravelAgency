@@ -1,6 +1,5 @@
 package bcd.solution.dvgKiprBot.core.services;
 
-import bcd.solution.dvgKiprBot.core.models.Resort;
 import org.springframework.beans.factory.annotation.Autowired;
 import bcd.solution.dvgKiprBot.core.models.CustomTour;
 import bcd.solution.dvgKiprBot.core.repository.CustomTourRepo;
@@ -17,7 +16,7 @@ public class CustomToursService {
     }
 
     public CustomTour getByIndex(Integer index) {
-        return customTourRepo.findAll().get(index);
+        return customTourRepo.findAllByIsDeleted(false).get(index);
     }
 
     public Optional<CustomTour> getById(Long customTourId) {

@@ -64,7 +64,7 @@ public class ResortHandler {
         Long hotelId = Long.parseLong(dataArray[2]);
 
         StateMachine stateMachine = stateMachineService.getByUserId(callbackQuery.getFrom().getId());
-        List<Resort> currentResorts = resortService.getByIndexAndActivities(index, stateMachine.activities);
+        List<Resort> currentResorts = resortService.getByActivities(stateMachine.activities);
         List<List<InputMedia>> allMedias;
         try {
             allMedias = mediaService.getResortMedias(currentResorts.get(index));
@@ -122,8 +122,7 @@ public class ResortHandler {
     @SneakyThrows
     public void defaultHandler(CallbackQuery callbackQuery, DvgKiprBot bot) {
         StateMachine userState = stateMachineService.getByUserId(callbackQuery.getFrom().getId());
-        List<Resort> currentResorts = resortService.getByIndexAndActivities(0,
-                userState.activities.stream().toList());
+        List<Resort> currentResorts = resortService.getByActivities(userState.activities.stream().toList());
 //        TODO: add getting media of resort
         bot.executeAsync(EditMessageMedia.builder()
                 .chatId(callbackQuery.getMessage().getChatId())
@@ -167,8 +166,7 @@ public class ResortHandler {
         int index = Integer.parseInt(callbackQuery.getData().split("/")[1]);
 
         StateMachine userState = stateMachineService.getByUserId(callbackQuery.getFrom().getId());
-        List<Resort> currentResorts = resortService.getByIndexAndActivities(index,
-                userState.activities.stream().toList());
+        List<Resort> currentResorts = resortService.getByActivities(userState.activities.stream().toList());
         if (currentResorts.isEmpty()) {
             bot.executeAsync(AnswerCallbackQuery.builder()
                     .callbackQueryId(callbackQuery.getId())

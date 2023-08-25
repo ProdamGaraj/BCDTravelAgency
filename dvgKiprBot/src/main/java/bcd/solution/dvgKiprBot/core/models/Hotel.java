@@ -1,11 +1,10 @@
-package bcd.solution.dvgKiprBot.core.models;;
+package bcd.solution.dvgKiprBot.core.models;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import java.util.List;
 
@@ -32,6 +31,8 @@ public class Hotel {
     @Enumerated(EnumType.STRING)
     public List<Food> food;
     public String media;
+    @Column(name = "is_deleted", columnDefinition = "boolean default false")
+    public boolean isDeleted = false;
 
     @Override
     public String toString() {

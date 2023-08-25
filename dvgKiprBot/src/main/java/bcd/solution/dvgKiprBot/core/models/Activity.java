@@ -1,5 +1,6 @@
 package bcd.solution.dvgKiprBot.core.models;
 
+import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -28,6 +29,8 @@ public class Activity {
     @Nullable
     public Boolean free;
     public String media;
+    @Column(name = "is_deleted", columnDefinition = "boolean default false")
+    public boolean isDeleted = false;
 
     @Override
     public String toString() {

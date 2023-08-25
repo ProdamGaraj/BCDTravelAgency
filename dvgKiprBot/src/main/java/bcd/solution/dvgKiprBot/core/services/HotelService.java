@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 @Service
 public class HotelService {
@@ -21,14 +20,14 @@ public class HotelService {
     }
 
     public Hotel getByIndex(Integer index) {
-        return hotelRepo.findAll().get(index);
+        return hotelRepo.findAllByIsDeleted(false).get(index);
     }
 
     public List<Hotel> findByResort(Resort resort) {
         if (resort == null) {
-            return hotelRepo.findAll();
+            return hotelRepo.findAllByIsDeleted(false);
         }
-        return hotelRepo.findAllByResort(resort);
+        return hotelRepo.findAllByResortAndIsDeleted(resort, false);
     }
     public Optional<Hotel> getById(Long hotelId) {
         return hotelRepo.findById(hotelId);
@@ -37,14 +36,14 @@ public class HotelService {
     public List<Hotel> findByResortAndStars(Resort resort, Stars stars) {
         if (resort == null) {
             if (stars == null) {
-                return hotelRepo.findAll();
+                return hotelRepo.findAllByIsDeleted(false);
             }
-            return hotelRepo.findAllByStars(stars);
+            return hotelRepo.findAllByStarsAndIsDeleted(stars, false);
         }
         if (stars == null) {
-            return hotelRepo.findAllByResort(resort);
+            return hotelRepo.findAllByResortAndIsDeleted(resort, false);
         }
-        return hotelRepo.findAllByResortAndStars(resort, stars);
+        return hotelRepo.findAllByResortAndStarsAndIsDeleted(resort, stars, false);
     }
 
 }
