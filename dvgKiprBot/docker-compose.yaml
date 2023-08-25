@@ -8,27 +8,32 @@ services:
     container_name: app
     depends_on:
       - db
+    env_file:
+      - environment.env
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/bcd_travel_agency_bot
-      - SPRING_DATASOURCE_USERNAME=postgres
-      - SPRING_DATASOURCE_PASSWORD=garbage
-      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
-      - SPRING.JPA.PROPERTIES.HIBERNATE.JDBC.LOB.NON_CONTEXTUAL_CREATION= true
-      - SPRING.JPA.PROPERTIES.HIBERNATE.DIALECT= org.hibernate.dialect.PostgreSQLDialect
-      - SPRING.JPA.SHOW-SQL=true
-      - BOT.NAME=dvg_bcd_agency_travel_bot
-      - BOT.TOKEN=6389125314:AAFPFbQuqkNY10K8fz03gcHfW8sbvg627nc
-      - BOT.MANAGERID=748689055
-      - BOT.MANAGERUSERNAME=prodgaraj
+      - SPRING_DATASOURCE_URL=${CONNECTION_STRING}
+      - SPRING_DATASOURCE_USERNAME=${DB_USERNAME}
+      - SPRING_DATASOURCE_PASSWORD=${DB_PASSWORD}
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=${HIBERNATE_STRATEG}
+      - SPRING.JPA.PROPERTIES.HIBERNATE.JDBC.LOB.NON_CONTEXTUAL_CREATION=${HIBERNATE_CREATION}
+      - SPRING.JPA.PROPERTIES.HIBERNATE.DIALECT=${HIBERNATE.DIALECT}
+      - SPRING.JPA.SHOW-SQL=${SHOW-SQL}
+      - BOT.NAME=${BOT_NAME}
+      - BOT.TOKEN=${BOT_TOKEN}
+      - BOT.MANAGERID=${BOT_MANAGER_ID}
+      - BOT.MANAGERUSERNAME=${BOT_MANAGER_USERNAME}
+      - BOT.MANAGERPHONE=${BOT_MANAGER_PHONE}
 
   db:
     container_name: PostgreSQL
     image: "postgres:latest"
+    env_file:
+      - environment.env
     environment:
       - TZ=Europe/Moscow
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=garbage
-      - POSTGRES_DB=bcd_travel_agency_bot
+      - POSTGRES_USER=${DB_USERNAME}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=${DEFAULT_DB}
     volumes:
       - db:/var/lib/postgresql/data
     restart: unless-stopped
