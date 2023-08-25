@@ -1,6 +1,7 @@
 package bcd.solution.dvgKiprBot.core.services;
 
 import bcd.solution.dvgKiprBot.core.models.Activity;
+import bcd.solution.dvgKiprBot.core.models.Resort;
 import bcd.solution.dvgKiprBot.core.models.Stars;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -34,11 +35,12 @@ public class KeyboardService {
     private final String showPhotoButtonText = "🖼️ Показать все фото 🖼️";
     private final String noMatterButtonText = "🤷‍♂️ Не важно 🤷‍♂️";
     private final String homeButtonText = "🏠 На домашнюю страницу 🏠";
-    private final String authButtonText = "🔐 Авторизация 🔐";
+    private final String authButtonText = "🔐 Авторизация для партнеров 🔐";
     private final String activitiesButtonText = "⚽️ Активности ⚽️";
     private final String resortsButtonText = "🏝️ Курорты 🏝️";
     private final String hotelsButtonText = "🏨 Отели 🏨";
     private final String customToursButtonText = "🗺️ Авторские туры 🗺️";
+    private final String goBackButtonText = "⬆️ К списку ⬆️️";
 
     @Autowired
     public KeyboardService(ActivityRepo activityRepo,
@@ -173,7 +175,7 @@ public class KeyboardService {
                 .build();
     }
 
-    public InlineKeyboardMarkup getResortsKeyboard(Integer index, Long resortId, long size) {
+    public InlineKeyboardMarkup getResortCardKeyboard(Integer index, Long resortId, long size) {
 
         List<InlineKeyboardButton> navigation_row = new ArrayList<>();
         if (index > 0) {
@@ -207,6 +209,36 @@ public class KeyboardService {
                                 .callbackData("resorts_media/" + (index) + "/" + (resortId))
                                 .build()
                 ))
+                .keyboardRow(List.of(
+                        InlineKeyboardButton.builder()
+                                .text(goBackButtonText)
+                                .callbackData("resorts")
+                                .build()
+                ))
+                .keyboardRow(List.of(
+                        InlineKeyboardButton.builder()
+                                .text(restartButtonText)
+                                .callbackData("restart")
+                                .build()
+                ))
+                .build();
+    }
+
+    public InlineKeyboardMarkup getResortsKeyboard(List<Resort> resortList) {
+
+        InlineKeyboardMarkup.InlineKeyboardMarkupBuilder builder = InlineKeyboardMarkup.builder();
+
+        for (int i = 0; i < resortList.size(); ++i) {
+            Resort resort = resortList.get(i);
+            builder.keyboardRow(List.of(
+                    InlineKeyboardButton.builder()
+                            .text(resort.name)
+                            .callbackData("resorts_change/" + i)
+                            .build()
+            ));
+        }
+
+        return builder
                 .keyboardRow(List.of(
                         InlineKeyboardButton.builder()
                                 .text(restartButtonText)

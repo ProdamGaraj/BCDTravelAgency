@@ -188,4 +188,10 @@ public class MediaService {
     public InputMedia getAuthMedia(){
         return getStartMedia();
     }
+
+    @SneakyThrows
+    public InputMedia getDefaultResortMedia() {
+//        TODO: add default resort media
+        return getStartMedia();
+    }
 }

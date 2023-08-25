@@ -111,7 +111,7 @@ public class ResortHandler {
                 .chatId(callbackQuery.getFrom().getId())
                 .photo(mediaService.getResortFile(currentResorts.get(index)))
                 .caption(currentResorts.get(index).toString())
-                .replyMarkup(keyboardService.getResortsKeyboard(index, hotelId, currentResorts.size()))
+                .replyMarkup(keyboardService.getResortCardKeyboard(index, hotelId, currentResorts.size()))
                 .build());
         bot.executeAsync(AnswerCallbackQuery.builder()
                 .callbackQueryId(callbackQuery.getId())
@@ -122,20 +122,18 @@ public class ResortHandler {
     @SneakyThrows
     public void defaultHandler(CallbackQuery callbackQuery, DvgKiprBot bot) {
         StateMachine userState = stateMachineService.getByUserId(callbackQuery.getFrom().getId());
-        List<Resort> currentResorts = resortService.getByActivities(userState.activities.stream().toList());
-//        TODO: add getting media of resort
+        List<Resort> currentResorts = resortService.getByActivities(userState.activities);
+
         bot.executeAsync(EditMessageMedia.builder()
                 .chatId(callbackQuery.getMessage().getChatId())
                 .messageId(callbackQuery.getMessage().getMessageId())
-                .media(mediaService.getResortMedia(currentResorts.get(0)))
+                .media(mediaService.getDefaultResortMedia())
                 .build());
         bot.executeAsync(EditMessageCaption.builder()
                 .chatId(callbackQuery.getMessage().getChatId())
                 .messageId(callbackQuery.getMessage().getMessageId())
-                .caption(resortService.toString(currentResorts.get(0)))
-                .replyMarkup(keyboardService.getResortsKeyboard(0,
-                        currentResorts.get(0).getId(),
-                        currentResorts.size()))
+                .caption("Какой курорт Вы хотели бы посмотреть?")
+                .replyMarkup(keyboardService.getResortsKeyboard(currentResorts))
                 .build());
         bot.executeAsync(AnswerCallbackQuery.builder()
                 .callbackQueryId(callbackQuery.getId()).build());
@@ -184,7 +182,7 @@ public class ResortHandler {
                 .chatId(callbackQuery.getMessage().getChatId())
                 .messageId(callbackQuery.getMessage().getMessageId())
                 .caption(resortService.toString(currentResorts.get(index)))
-                .replyMarkup(keyboardService.getResortsKeyboard(index,
+                .replyMarkup(keyboardService.getResortCardKeyboard(index,
                         currentResorts.get(index).getId(),
                         currentResorts.size()))
                 .build());
