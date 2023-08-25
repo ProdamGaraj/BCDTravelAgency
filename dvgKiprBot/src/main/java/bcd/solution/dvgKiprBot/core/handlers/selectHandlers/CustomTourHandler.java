@@ -129,14 +129,14 @@ public class CustomTourHandler {
                 .chatId(callbackQuery.getMessage().getChatId())
                 .messageId(callbackQuery.getMessage().getMessageId())
                 .media(mediaService.getCustomTourMedia(currentTour))
-                .build());
+                .build()).join();
         bot.executeAsync(EditMessageCaption.builder()
                 .chatId(callbackQuery.getMessage().getChatId())
                 .messageId(callbackQuery.getMessage().getMessageId())
                 .caption(cardService.getCustomTourCard(currentTour))
                 .parseMode(ParseMode.MARKDOWN)
                 .replyMarkup(keyboardService.getCustomToursKeyboard(index, currentTour.getId()))
-                .build());
+                .build()).join();
         bot.executeAsync(AnswerCallbackQuery.builder()
                 .callbackQueryId(callbackQuery.getId()).build());
 
@@ -170,14 +170,14 @@ public class CustomTourHandler {
                 .chatId(callbackQuery.getMessage().getChatId())
                 .messageId(callbackQuery.getMessage().getMessageId())
                 .media(mediaService.getCustomTourMedia(currentTour))
-                .build());
+                .build()).join();
         bot.executeAsync(EditMessageCaption.builder()
                 .chatId(callbackQuery.getMessage().getChatId())
                 .messageId(callbackQuery.getMessage().getMessageId())
                 .caption(cardService.getCustomTourCard(currentTour))
                 .parseMode(ParseMode.MARKDOWN)
                 .replyMarkup(keyboardService.getCustomToursKeyboard(0, currentTour.getId()))
-                .build());
+                .build()).join();
         bot.executeAsync(AnswerCallbackQuery.builder()
                 .callbackQueryId(callbackQuery.getId()).build());
     }

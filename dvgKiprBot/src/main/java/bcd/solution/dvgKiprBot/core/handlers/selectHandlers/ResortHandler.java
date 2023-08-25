@@ -129,13 +129,13 @@ public class ResortHandler {
                 .chatId(callbackQuery.getMessage().getChatId())
                 .messageId(callbackQuery.getMessage().getMessageId())
                 .media(mediaService.getDefaultResortMedia())
-                .build());
+                .build()).join();
         bot.executeAsync(EditMessageCaption.builder()
                 .chatId(callbackQuery.getMessage().getChatId())
                 .messageId(callbackQuery.getMessage().getMessageId())
                 .caption("Какой курорт Вы хотели бы посмотреть?")
                 .replyMarkup(keyboardService.getResortsKeyboard(currentResorts))
-                .build());
+                .build()).join();
         bot.executeAsync(AnswerCallbackQuery.builder()
                 .callbackQueryId(callbackQuery.getId()).build());
     }
@@ -173,12 +173,11 @@ public class ResortHandler {
                     .build());
             return;
         }
-//        TODO: add getting media of resort
         bot.executeAsync(EditMessageMedia.builder()
                 .chatId(callbackQuery.getMessage().getChatId())
                 .messageId(callbackQuery.getMessage().getMessageId())
                 .media(mediaService.getResortMedia(currentResorts.get(index)))
-                .build());
+                .build()).join();
         bot.executeAsync(EditMessageCaption.builder()
                 .chatId(callbackQuery.getMessage().getChatId())
                 .messageId(callbackQuery.getMessage().getMessageId())
@@ -187,7 +186,7 @@ public class ResortHandler {
                 .replyMarkup(keyboardService.getResortCardKeyboard(index,
                         currentResorts.get(index).getId(),
                         currentResorts.size()))
-                .build());
+                .build()).join();
         bot.executeAsync(AnswerCallbackQuery.builder()
                 .callbackQueryId(callbackQuery.getId()).build());
     }

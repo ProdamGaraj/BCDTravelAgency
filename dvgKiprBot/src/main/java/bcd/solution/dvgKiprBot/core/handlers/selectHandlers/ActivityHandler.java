@@ -77,13 +77,13 @@ public class ActivityHandler {
                 .chatId(callbackQuery.getMessage().getChatId())
                 .messageId(callbackQuery.getMessage().getMessageId())
                 .media(mediaService.getActivityMedia())
-                .build());
+                .build()).join();
         bot.executeAsync(EditMessageCaption.builder()
                 .chatId(callbackQuery.getMessage().getChatId())
                 .messageId(callbackQuery.getMessage().getMessageId())
                 .caption(caption.toString())
                 .replyMarkup(keyboardService.getActivitiesKeyboard(stateMachine.activities))
-                .build());
+                .build()).join();
         bot.executeAsync(AnswerCallbackQuery.builder()
                 .callbackQueryId(callbackQuery.getId()).build());
     }

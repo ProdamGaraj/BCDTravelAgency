@@ -200,7 +200,7 @@ public class HotelHandler {
                 .chatId(callbackQuery.getMessage().getChatId())
                 .messageId(callbackQuery.getMessage().getMessageId())
                 .media(mediaService.getHotelMedia(currentHotels.get(index)))
-                .build());
+                .build()).join();
         bot.executeAsync(EditMessageCaption.builder()
                 .chatId(callbackQuery.getMessage().getChatId())
                 .messageId(callbackQuery.getMessage().getMessageId())
@@ -210,7 +210,7 @@ public class HotelHandler {
                         index,
                         currentHotels.get(index).getId(),
                         currentHotels.size()))
-                .build());
+                .build()).join();
         bot.executeAsync(AnswerCallbackQuery.builder()
                 .callbackQueryId(callbackQuery.getId()).build());
 

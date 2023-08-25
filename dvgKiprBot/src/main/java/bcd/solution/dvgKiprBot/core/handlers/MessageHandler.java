@@ -18,7 +18,6 @@ import java.util.Optional;
 public class MessageHandler {
 
     private final CommandsHandler commandsHandler;
-
     private final AuthHandler authHandler;
     private final StateMachineService stateMachineService;
 

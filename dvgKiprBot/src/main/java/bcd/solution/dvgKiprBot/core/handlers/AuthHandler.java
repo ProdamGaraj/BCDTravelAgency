@@ -60,15 +60,17 @@ public class AuthHandler {
                 .chatId(callbackQuery.getMessage().getChatId())
                 .messageId(callbackQuery.getMessage().getMessageId())
                 .media(mediaService.getAuthMedia())
-                .build());
+                .build()).join();
         if (authorizationService.isAuthorized(callbackQuery.getFrom().getId())) {
             bot.executeAsync(EditMessageCaption.builder()
                     .chatId(callbackQuery.getMessage().getChatId())
                     .messageId(callbackQuery.getMessage().getMessageId())
                     .caption("Вы уже авторизованы")
                     .replyMarkup(keyboardService.getRestartKeyboard())
-                    .build());
-            bot.executeAsync(UnpinAllChatMessages.builder().chatId(callbackQuery.getMessage().getChatId()).build());
+                    .build()).join();
+            bot.executeAsync(UnpinAllChatMessages.builder()
+                    .chatId(callbackQuery.getMessage().getChatId())
+                    .build()).join();
             bot.executeAsync(PinChatMessage.builder()
                     .chatId(callbackQuery.getMessage().getChatId())
                     .messageId(callbackQuery.getMessage().getMessageId())
@@ -81,7 +83,7 @@ public class AuthHandler {
                 .messageId(callbackQuery.getMessage().getMessageId())
                 .caption("Введите пароль")
                 .replyMarkup(keyboardService.getAuthCancelKeyboard())
-                .build());
+                .build()).join();
 
         stateMachineService.setWaitPasswordByUserId(
                 callbackQuery.getFrom().getId(),
@@ -181,14 +183,14 @@ public class AuthHandler {
             }
 
         } else {
-            bot.execute(EditMessageCaption.builder()
+            bot.executeAsync(EditMessageCaption.builder()
                     .chatId(message.getChatId())
                     .messageId(stateMachine.auth_message_id)
                     .caption("Вы авторизованы!")
                     .replyMarkup(keyboardService.getRestartKeyboard())
-                    .build());
+                    .build()).join();
 
-            bot.execute(PinChatMessage.builder()
+            bot.executeAsync(PinChatMessage.builder()
                     .chatId(message.getChatId())
                     .messageId(stateMachine.auth_message_id)
                     .disableNotification(true)

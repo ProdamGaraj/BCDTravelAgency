@@ -63,14 +63,14 @@ public class FeedbackHandler {
                 .chatId(callbackQuery.getMessage().getChatId())
                 .messageId(callbackQuery.getMessage().getMessageId())
                 .media(mediaService.getFeedbackMedia())
-                .build());
+                .build()).join();
         bot.executeAsync(EditMessageCaption.builder()
                 .chatId(callbackQuery.getMessage().getChatId())
                 .messageId(callbackQuery.getMessage().getMessageId())
                 .caption(userTourCard)
                 .parseMode(ParseMode.MARKDOWN)
                 .replyMarkup(keyboardService.getRestartKeyboard())
-                .build());
+                .build()).join();
         bot.executeAsync(AnswerCallbackQuery.builder()
                 .callbackQueryId(callbackQuery.getId()).build());
     }

@@ -90,13 +90,13 @@ public class CallbackQueryHandler {
                 .chatId(callbackQuery.getMessage().getChatId())
                 .messageId(callbackQuery.getMessage().getMessageId())
                 .media(mediaService.getTourConstructorMedia())
-                .build());
+                .build()).join();
         bot.executeAsync(EditMessageCaption.builder()
                 .chatId(callbackQuery.getMessage().getChatId())
                 .messageId(callbackQuery.getMessage().getMessageId())
                 .caption("От чего Вы хотите отталкиваться при подборе отеля?")
                 .replyMarkup(keyboardService.getTourConstructorKeyboard())
-                .build());
+                .build()).join();
         bot.executeAsync(AnswerCallbackQuery.builder()
                 .callbackQueryId(callbackQuery.getId())
                 .build());
@@ -118,7 +118,7 @@ public class CallbackQueryHandler {
                 .chatId(callbackQuery.getMessage().getChatId())
                 .messageId(callbackQuery.getMessage().getMessageId())
                 .media(mediaService.getStartMedia())
-                .build());
+                .build()).join();
         bot.executeAsync(EditMessageCaption.builder()
                 .chatId(callbackQuery.getMessage().getChatId())
                 .messageId(callbackQuery.getMessage().getMessageId())
@@ -126,7 +126,7 @@ public class CallbackQueryHandler {
                 .replyMarkup(keyboardService.getTourChoosingKeyboard(
                         userService.hasPhoneById(callbackQuery.getFrom().getId()),
                         userService.isAuthorized(callbackQuery.getFrom().getId())))
-                .build());
+                .build()).join();
         bot.executeAsync(AnswerCallbackQuery.builder()
                 .callbackQueryId(callbackQuery.getId()).build());
     }
@@ -139,7 +139,7 @@ public class CallbackQueryHandler {
                     .chatId(callbackQuery.getMessage().getChatId())
                     .messageId(callbackQuery.getMessage().getMessageId())
                     .media(mediaService.getStartMedia())
-                    .build());
+                    .build()).join();
             bot.executeAsync(EditMessageCaption.builder()
                     .chatId(callbackQuery.getMessage().getChatId())
                     .messageId(callbackQuery.getMessage().getMessageId())
@@ -148,7 +148,7 @@ public class CallbackQueryHandler {
                     )
 //                    .caption("Для повышения качесва обслуживания нам неоходим Ваш номер телефона")
                     .replyMarkup(keyboardService.getStarterKeyboard())
-                    .build());
+                    .build()).join();
 
             bot.executeAsync(AnswerCallbackQuery.builder()
                     .callbackQueryId(callbackQuery.getId()).build());
