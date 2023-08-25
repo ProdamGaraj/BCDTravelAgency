@@ -8,6 +8,7 @@ import lombok.SneakyThrows;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.AnswerCallbackQuery;
+import org.telegram.telegrambots.meta.api.methods.ParseMode;
 import org.telegram.telegrambots.meta.api.methods.send.SendMediaGroup;
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.DeleteMessage;
@@ -182,6 +183,7 @@ public class ResortHandler {
                 .chatId(callbackQuery.getMessage().getChatId())
                 .messageId(callbackQuery.getMessage().getMessageId())
                 .caption(cardService.getResortCard(currentResorts.get(index)))
+                .parseMode(ParseMode.MARKDOWN)
                 .replyMarkup(keyboardService.getResortCardKeyboard(index,
                         currentResorts.get(index).getId(),
                         currentResorts.size()))
