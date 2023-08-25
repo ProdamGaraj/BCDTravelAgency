@@ -21,6 +21,7 @@ public class CustomTour {
     private Long id;
     public String name;
     @Nullable
+    @Column(columnDefinition = "TEXT")
     public String description;
     @Nullable
     public String media;

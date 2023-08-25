@@ -20,6 +20,7 @@ public class Resort {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     public String name;
+    @Column(columnDefinition = "TEXT")
     public String description;
     public String geo;
     public String media;

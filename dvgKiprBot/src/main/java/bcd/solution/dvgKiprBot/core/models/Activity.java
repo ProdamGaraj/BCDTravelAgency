@@ -21,6 +21,7 @@ public class Activity {
 
     public String name;
     @Nullable
+    @Column(columnDefinition = "TEXT")
     public String description;
     @Enumerated(EnumType.STRING)
     public ActivityType activityType;
