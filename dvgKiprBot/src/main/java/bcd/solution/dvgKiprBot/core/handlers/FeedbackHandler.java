@@ -52,6 +52,7 @@ public class FeedbackHandler {
         bot.executeAsync(SendMessage.builder()
                 .chatId(this.managerId)
                 .text(managerTourCard)
+                .parseMode(ParseMode.MARKDOWN)
                 .build());
         String userTourCard = cardService.getUserCard(
                 stateMachine,
