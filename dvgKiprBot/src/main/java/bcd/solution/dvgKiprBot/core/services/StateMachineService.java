@@ -111,44 +111,6 @@ public class StateMachineService {
         stateMachineRepo.save(stateMachine);
     }
 
-    private void fillTourInfo(StringBuilder card, StateMachine stateMachine) {
-        if (stateMachine.customTour != null) {
-            card.append("Авторский тур: ").append(stateMachine.customTour.name).append("\n\n");
-        } else {
-            if (stateMachine.resort != null) {
-                card.append("Курорт: ").append(stateMachine.resort.name).append("\n");
-            }
-            card.append("Отель: ").append(stateMachine.hotel.name).append("\n\n");
-        }
-    }
-
-    @Async
-    public String getManagerCardByUserId(Long userId) {
-        StateMachine stateMachine = getOrAddIfNotExists(userId);
-        StringBuilder card = new StringBuilder(
-                "Пользователь подобрал тур\n\n" +
-                        "Тег: @" + stateMachine.user.getLogin() + "\n" +
-                        "Номер телефона: " + stateMachine.user.getPhone() + "\n\n");
-
-        fillTourInfo(card, stateMachine);
-
-        card.append("Вскоре он с Вами свяжется для завершения оформления тура.");
-        return card.toString();
-    }
-
-    @Async
-    public String getUserCardByUserId(Long userId, String managerUsername) {
-        StateMachine stateMachine = getOrAddIfNotExists(userId);
-        StringBuilder card = new StringBuilder("Спасибо, что выбрали нас!\n\nВаш выбор:\n");
-
-        fillTourInfo(card, stateMachine);
-
-        card.append("Обратитесь к менеджеру (@")
-                .append(managerUsername)
-                .append(") для оформления выбранного тура");
-        return card.toString();
-    }
-
     @Async
     public StateMachine setStarsByUserId(Long userId, Stars stars) {
         StateMachine stateMachine = getOrAddIfNotExists(userId);

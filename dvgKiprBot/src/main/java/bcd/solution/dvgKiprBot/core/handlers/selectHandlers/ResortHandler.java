@@ -3,10 +3,7 @@ package bcd.solution.dvgKiprBot.core.handlers.selectHandlers;
 import bcd.solution.dvgKiprBot.DvgKiprBot;
 import bcd.solution.dvgKiprBot.core.models.Resort;
 import bcd.solution.dvgKiprBot.core.models.StateMachine;
-import bcd.solution.dvgKiprBot.core.services.KeyboardService;
-import bcd.solution.dvgKiprBot.core.services.MediaService;
-import bcd.solution.dvgKiprBot.core.services.ResortService;
-import bcd.solution.dvgKiprBot.core.services.StateMachineService;
+import bcd.solution.dvgKiprBot.core.services.*;
 import lombok.SneakyThrows;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
@@ -29,17 +26,20 @@ public class ResortHandler {
     private final MediaService mediaService;
     private final KeyboardService keyboardService;
     private final StateMachineService stateMachineService;
+    private final CardService cardService;
     private final HotelHandler hotelHandler;
 
     public ResortHandler(ResortService resortService,
                          MediaService mediaService,
                          KeyboardService keyboardService,
                          StateMachineService stateMachineService,
+                         CardService cardService,
                          HotelHandler hotelHandler) {
         this.resortService = resortService;
         this.mediaService = mediaService;
         this.keyboardService = keyboardService;
         this.stateMachineService = stateMachineService;
+        this.cardService = cardService;
         this.hotelHandler = hotelHandler;
     }
 
@@ -181,7 +181,7 @@ public class ResortHandler {
         bot.executeAsync(EditMessageCaption.builder()
                 .chatId(callbackQuery.getMessage().getChatId())
                 .messageId(callbackQuery.getMessage().getMessageId())
-                .caption(resortService.toString(currentResorts.get(index)))
+                .caption(cardService.getResortCard(currentResorts.get(index)))
                 .replyMarkup(keyboardService.getResortCardKeyboard(index,
                         currentResorts.get(index).getId(),
                         currentResorts.size()))

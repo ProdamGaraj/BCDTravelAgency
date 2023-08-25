@@ -3,10 +3,7 @@ package bcd.solution.dvgKiprBot.core.handlers.selectHandlers;
 import bcd.solution.dvgKiprBot.DvgKiprBot;
 import bcd.solution.dvgKiprBot.core.handlers.FeedbackHandler;
 import bcd.solution.dvgKiprBot.core.models.CustomTour;
-import bcd.solution.dvgKiprBot.core.services.CustomToursService;
-import bcd.solution.dvgKiprBot.core.services.KeyboardService;
-import bcd.solution.dvgKiprBot.core.services.MediaService;
-import bcd.solution.dvgKiprBot.core.services.StateMachineService;
+import bcd.solution.dvgKiprBot.core.services.*;
 import lombok.SneakyThrows;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
@@ -29,17 +26,20 @@ public class CustomTourHandler {
     private final MediaService mediaService;
     private final CustomToursService customToursService;
     private final StateMachineService stateMachineService;
+    private final CardService cardService;
     private final FeedbackHandler feedbackHandler;
 
     public CustomTourHandler(KeyboardService keyboardService,
                              MediaService mediaService,
                              CustomToursService customToursService,
                              StateMachineService stateMachineService,
+                             CardService cardService,
                              FeedbackHandler feedbackHandler) {
         this.keyboardService = keyboardService;
         this.mediaService = mediaService;
         this.customToursService = customToursService;
         this.stateMachineService = stateMachineService;
+        this.cardService = cardService;
         this.feedbackHandler = feedbackHandler;
     }
 
@@ -132,7 +132,7 @@ public class CustomTourHandler {
         bot.executeAsync(EditMessageCaption.builder()
                 .chatId(callbackQuery.getMessage().getChatId())
                 .messageId(callbackQuery.getMessage().getMessageId())
-                .caption(currentTour.toString())
+                .caption(cardService.getCustomTourCard(currentTour))
                 .replyMarkup(keyboardService.getCustomToursKeyboard(index, currentTour.getId()))
                 .build());
         bot.executeAsync(AnswerCallbackQuery.builder()
@@ -172,7 +172,7 @@ public class CustomTourHandler {
         bot.executeAsync(EditMessageCaption.builder()
                 .chatId(callbackQuery.getMessage().getChatId())
                 .messageId(callbackQuery.getMessage().getMessageId())
-                .caption(currentTour.toString())
+                .caption(cardService.getCustomTourCard(currentTour))
                 .replyMarkup(keyboardService.getCustomToursKeyboard(0, currentTour.getId()))
                 .build());
         bot.executeAsync(AnswerCallbackQuery.builder()

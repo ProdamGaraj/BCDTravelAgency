@@ -1,6 +1,8 @@
 package bcd.solution.dvgKiprBot.core.handlers;
 
 import bcd.solution.dvgKiprBot.DvgKiprBot;
+import bcd.solution.dvgKiprBot.core.models.StateMachine;
+import bcd.solution.dvgKiprBot.core.services.CardService;
 import bcd.solution.dvgKiprBot.core.services.KeyboardService;
 import bcd.solution.dvgKiprBot.core.services.MediaService;
 import bcd.solution.dvgKiprBot.core.services.StateMachineService;
@@ -19,6 +21,7 @@ public class FeedbackHandler {
     private final StateMachineService stateMachineService;
     private final MediaService mediaService;
     private final KeyboardService keyboardService;
+    private final CardService cardService;
 
 
     private final Long managerId;
@@ -27,11 +30,13 @@ public class FeedbackHandler {
     public FeedbackHandler(StateMachineService stateMachineService,
                            MediaService mediaService,
                            KeyboardService keyboardService,
+                           CardService cardService,
                            @Value("${bot.managerId}") Long managerId,
                            @Value("${bot.managerUsername}") String managerUsername) {
         this.stateMachineService = stateMachineService;
         this.mediaService = mediaService;
         this.keyboardService = keyboardService;
+        this.cardService = cardService;
 
         this.managerId = managerId;
         this.managerUsername = managerUsername;
@@ -41,14 +46,14 @@ public class FeedbackHandler {
     @Async
     @SneakyThrows
     public void feedbackHandler(CallbackQuery callbackQuery, DvgKiprBot bot) {
-
-        String managerTourCard = stateMachineService.getManagerCardByUserId(callbackQuery.getFrom().getId());
+        StateMachine stateMachine = stateMachineService.getByUserId(callbackQuery.getFrom().getId());
+        String managerTourCard = cardService.getManagerCard(stateMachine);
         bot.executeAsync(SendMessage.builder()
                 .chatId(this.managerId)
                 .text(managerTourCard)
                 .build());
-        String userTourCard = stateMachineService.getUserCardByUserId(
-                callbackQuery.getFrom().getId(),
+        String userTourCard = cardService.getUserCard(
+                stateMachine,
                 this.managerUsername
         );
         stateMachineService.clearStateByUserId(callbackQuery.getFrom().getId());

@@ -5,10 +5,7 @@ import bcd.solution.dvgKiprBot.core.handlers.FeedbackHandler;
 import bcd.solution.dvgKiprBot.core.models.Hotel;
 import bcd.solution.dvgKiprBot.core.models.Stars;
 import bcd.solution.dvgKiprBot.core.models.StateMachine;
-import bcd.solution.dvgKiprBot.core.services.HotelService;
-import bcd.solution.dvgKiprBot.core.services.KeyboardService;
-import bcd.solution.dvgKiprBot.core.services.MediaService;
-import bcd.solution.dvgKiprBot.core.services.StateMachineService;
+import bcd.solution.dvgKiprBot.core.services.*;
 import lombok.SneakyThrows;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
@@ -31,17 +28,20 @@ public class HotelHandler {
     private final MediaService mediaService;
     private final HotelService hotelService;
     private final StateMachineService stateMachineService;
+    private final CardService cardService;
     private final FeedbackHandler feedbackHandler;
 
     public HotelHandler(KeyboardService keyboardService,
                         MediaService mediaService,
                         HotelService hotelService,
                         StateMachineService stateMachineService,
+                        CardService cardService,
                         FeedbackHandler feedbackHandler) {
         this.keyboardService = keyboardService;
         this.mediaService = mediaService;
         this.hotelService = hotelService;
         this.stateMachineService = stateMachineService;
+        this.cardService = cardService;
         this.feedbackHandler = feedbackHandler;
     }
 
@@ -174,50 +174,12 @@ public class HotelHandler {
                 .build());
     }
 
-//
-//    @Async
-//    @SneakyThrows
-//    public void defaultHandler(CallbackQuery callbackQuery, DvgKiprBot bot) {
-//        StateMachine usersState = stateMachineService.getByUserId(callbackQuery.getFrom().getId());
-//
-//        List<Hotel> currentHotels = hotelService.findByResort(usersState.resort);
-//        if (currentHotels.isEmpty()) {
-//            bot.executeAsync(AnswerCallbackQuery.builder()
-//                    .callbackQueryId(callbackQuery.getId())
-//                    .showAlert(true).text("Отелей не найдено, попробуйте позже")
-//                    .build());
-//            return;
-//        }
-//
-//        bot.executeAsync(EditMessageMedia.builder()
-//                .chatId(callbackQuery.getMessage().getChatId())
-//                .messageId(callbackQuery.getMessage().getMessageId())
-//                .media(mediaService.getHotelMedia(currentHotels.get(0)))
-//                .build());
-//        bot.executeAsync(EditMessageCaption.builder()
-//                .chatId(callbackQuery.getMessage().getChatId())
-//                .messageId(callbackQuery.getMessage().getMessageId())
-//                .caption(currentHotels.get(0).toString())
-//                .replyMarkup(keyboardService.getHotelsKeyboard(
-//                        0,
-//                        currentHotels.get(0).getId(),
-//                        currentHotels.size()))
-//                .build());
-//        bot.executeAsync(AnswerCallbackQuery.builder()
-//                .callbackQueryId(callbackQuery.getId()).build());
-//
-//    }
-
-
 
     @Async
     @SneakyThrows
     protected void changeHandler(CallbackQuery callbackQuery, DvgKiprBot bot) {
         int index = Integer.parseInt(callbackQuery.getData().split("/")[1]);
         StateMachine usersState = stateMachineService.getByUserId(callbackQuery.getFrom().getId());
-
-//        List<Hotel> currentHotels = hotelService.findByResort(usersState.resort);
-
 
         List<Hotel> currentHotels = hotelService.findByResortAndStars(
                 usersState.resort,
@@ -240,7 +202,7 @@ public class HotelHandler {
         bot.executeAsync(EditMessageCaption.builder()
                 .chatId(callbackQuery.getMessage().getChatId())
                 .messageId(callbackQuery.getMessage().getMessageId())
-                .caption(currentHotels.get(index).toString())
+                .caption(cardService.getHotelCard(currentHotels.get(index)))
                 .replyMarkup(keyboardService.getHotelsKeyboard(
                         index,
                         currentHotels.get(index).getId(),

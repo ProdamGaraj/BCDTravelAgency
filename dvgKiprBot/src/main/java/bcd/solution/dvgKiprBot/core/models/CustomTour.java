@@ -27,10 +27,4 @@ public class CustomTour {
     public String media;
     @Column(name = "is_deleted", columnDefinition = "boolean default false")
     public boolean isDeleted = false;
-
-    @Override
-    public String toString() {
-        return this.name + "\n\n" +
-                this.description;
-    }
 }

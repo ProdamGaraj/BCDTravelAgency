@@ -35,18 +35,4 @@ public class ResortService {
         Optional<Resort> resort = resortRepo.findById(resortId);
         return resort;
     }
-
-    @Async
-    public String toString(Resort resort) {
-        StringBuilder activity_list = new StringBuilder();
-        for (Activity activity : resort.activities) {
-            activity_list.append("- ").append(activity.name).append("\n");
-        }
-
-        return resort.name + "\n\n"
-                + resort.description + "\n\n"
-                + resort.geo + "\n\n"
-                + "Доступные активности:\n"
-                + activity_list;
-    }
 }
