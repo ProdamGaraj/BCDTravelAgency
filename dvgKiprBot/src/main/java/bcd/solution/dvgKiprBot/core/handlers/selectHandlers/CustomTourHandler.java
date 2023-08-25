@@ -8,6 +8,7 @@ import lombok.SneakyThrows;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.AnswerCallbackQuery;
+import org.telegram.telegrambots.meta.api.methods.ParseMode;
 import org.telegram.telegrambots.meta.api.methods.send.SendMediaGroup;
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.DeleteMessage;
@@ -133,6 +134,7 @@ public class CustomTourHandler {
                 .chatId(callbackQuery.getMessage().getChatId())
                 .messageId(callbackQuery.getMessage().getMessageId())
                 .caption(cardService.getCustomTourCard(currentTour))
+                .parseMode(ParseMode.MARKDOWN)
                 .replyMarkup(keyboardService.getCustomToursKeyboard(index, currentTour.getId()))
                 .build());
         bot.executeAsync(AnswerCallbackQuery.builder()
@@ -173,6 +175,7 @@ public class CustomTourHandler {
                 .chatId(callbackQuery.getMessage().getChatId())
                 .messageId(callbackQuery.getMessage().getMessageId())
                 .caption(cardService.getCustomTourCard(currentTour))
+                .parseMode(ParseMode.MARKDOWN)
                 .replyMarkup(keyboardService.getCustomToursKeyboard(0, currentTour.getId()))
                 .build());
         bot.executeAsync(AnswerCallbackQuery.builder()
