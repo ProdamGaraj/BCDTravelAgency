@@ -4,6 +4,8 @@ import bcd.solution.dvgKiprBot.core.models.*;
 import lombok.SneakyThrows;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class CardService {
     @SneakyThrows
@@ -61,14 +63,21 @@ public class CardService {
     }
 
     @SneakyThrows
-    public String getUserCard(StateMachine stateMachine, String managerUsername) {
+    public String getUserCard(StateMachine stateMachine,
+                              String managerUsername,
+                              List<String> contactPhones) {
         StringBuilder card = new StringBuilder("Спасибо, что выбрали нас!\n\nВаш выбор:\n");
 
         fillTourInfo(card, stateMachine);
 
         card.append("Обратитесь к менеджеру (@")
                 .append(managerUsername)
-                .append(") для оформления выбранного тура");
+                .append(") для расчёта выбранного тура или свяжитесь с нами по номерам:");
+        if (!contactPhones.isEmpty()) {
+            for (String phone : contactPhones) {
+                card.append("\n- ").append(phone);
+            }
+        }
         return card.toString();
     }
 

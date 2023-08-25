@@ -17,6 +17,8 @@ import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageCa
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageMedia;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 
+import java.util.List;
+
 @Component
 public class FeedbackHandler {
     private final StateMachineService stateMachineService;
@@ -27,13 +29,15 @@ public class FeedbackHandler {
 
     private final Long managerId;
     private final String managerUsername;
+    private final List<String> contactPhones;
 
     public FeedbackHandler(StateMachineService stateMachineService,
                            MediaService mediaService,
                            KeyboardService keyboardService,
                            CardService cardService,
                            @Value("${bot.managerId}") Long managerId,
-                           @Value("${bot.managerUsername}") String managerUsername) {
+                           @Value("${bot.managerUsername}") String managerUsername,
+                           @Value("${bot.contactPhonesList}") List<String> contactPhones) {
         this.stateMachineService = stateMachineService;
         this.mediaService = mediaService;
         this.keyboardService = keyboardService;
@@ -41,6 +45,7 @@ public class FeedbackHandler {
 
         this.managerId = managerId;
         this.managerUsername = managerUsername;
+        this.contactPhones = contactPhones;
     }
 
 
@@ -56,7 +61,8 @@ public class FeedbackHandler {
                 .build());
         String userTourCard = cardService.getUserCard(
                 stateMachine,
-                this.managerUsername
+                this.managerUsername,
+                this.contactPhones
         );
         stateMachineService.clearStateByUserId(callbackQuery.getFrom().getId());
 
