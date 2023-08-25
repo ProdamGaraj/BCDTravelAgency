@@ -26,19 +26,19 @@ public class KeyboardService {
 
     private final String rightArrowText = "Далее ➡️";
     private final String leftArrowText = "⬅️ Назад";
-    private final String restartButtonText = "В начало 🔄";
-    private final String cancelButtonText = "Отмена ❌";
-    private final String phoneButtonText = "Добавить номер телефона ☎️";
-    private final String sendPhoneButtonText = "Отправить номер телефона";
-    private final String confirmButtonText = "Выбрать ✅";
-    private final String showPhotoButtonText = "Показать все фото 🖼️";
-    private final String noMatterButtonText = "Не важно 🤷‍♂️";
-    private final String homeButtonText = "На домашнюю страницу 🏠";
-    private final String authButtonText = "Авторизация 🔐";
-    private final String activitiesButtonText = "Активности ⚽️";
-    private final String resortsButtonText = "Курорты 🏝️";
-    private final String hotelsButtonText = "Отели 🏨";
-    private final String customToursButtonText = "Авторские туры 🗺️";
+    private final String restartButtonText = "🔄 В начало 🔄";
+    private final String cancelButtonText = "❌ Отмена ❌";
+    private final String phoneButtonText = "☎️ Добавить номер телефона ☎️";
+    private final String sendPhoneButtonText = "☎️ Отправить номер телефона ☎️";
+    private final String confirmButtonText = "✅ Выбрать ✅";
+    private final String showPhotoButtonText = "🖼️ Показать все фото 🖼️";
+    private final String noMatterButtonText = "🤷‍♂️ Не важно 🤷‍♂️";
+    private final String homeButtonText = "🏠 На домашнюю страницу 🏠";
+    private final String authButtonText = "🔐 Авторизация 🔐";
+    private final String activitiesButtonText = "⚽️ Активности ⚽️";
+    private final String resortsButtonText = "🏝️ Курорты 🏝️";
+    private final String hotelsButtonText = "🏨 Отели 🏨";
+    private final String customToursButtonText = "🗺️ Авторские туры 🗺️";
 
     @Autowired
     public KeyboardService(ActivityRepo activityRepo,
