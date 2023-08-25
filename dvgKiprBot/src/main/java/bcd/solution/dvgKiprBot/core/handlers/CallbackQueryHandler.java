@@ -69,6 +69,7 @@ public class CallbackQueryHandler {
             case "null" -> nothingHandler(callbackQuery, bot);
             case "restart" -> restartHandler(callbackQuery, bot);
             case "start" -> startHandler(callbackQuery, bot);
+            case "tour" -> tourConstructorHandler(callbackQuery, bot);
             case "auth" -> authHandler.handleCallback(callbackQuery, bot);
             case "resorts" -> resortHandler.handleResortCallback(callbackQuery, bot);
             case "customTours" -> customTourHandler.handleCustomTourCallback(callbackQuery, bot);
@@ -80,6 +81,25 @@ public class CallbackQueryHandler {
                     .showAlert(Boolean.TRUE)
                     .build());
         }
+    }
+
+    @Async
+    @SneakyThrows
+    protected void tourConstructorHandler(CallbackQuery callbackQuery, DvgKiprBot bot) {
+        bot.executeAsync(EditMessageMedia.builder()
+                .chatId(callbackQuery.getMessage().getChatId())
+                .messageId(callbackQuery.getMessage().getMessageId())
+                .media(mediaService.getTourConstructorMedia())
+                .build());
+        bot.executeAsync(EditMessageCaption.builder()
+                .chatId(callbackQuery.getMessage().getChatId())
+                .messageId(callbackQuery.getMessage().getMessageId())
+                .caption("От чего Вы хотите отталкиваться при подборе отеля?")
+                .replyMarkup(keyboardService.getTourConstructorKeyboard())
+                .build());
+        bot.executeAsync(AnswerCallbackQuery.builder()
+                .callbackQueryId(callbackQuery.getId())
+                .build());
     }
 
     @Async

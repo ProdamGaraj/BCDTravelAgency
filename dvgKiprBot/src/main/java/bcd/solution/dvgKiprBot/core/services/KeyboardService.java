@@ -41,6 +41,7 @@ public class KeyboardService {
     private final String hotelsButtonText = "🏨 Отели 🏨";
     private final String customToursButtonText = "🗺️ Авторские туры 🗺️";
     private final String goBackButtonText = "⬆️ К списку ⬆️️";
+    private final String tourConstructorButtonText = "🏨 Подобрать отели 🏨";
 
     @Autowired
     public KeyboardService(ActivityRepo activityRepo,
@@ -108,19 +109,25 @@ public class KeyboardService {
     public InlineKeyboardMarkup getTourChoosingKeyboard(boolean hasPhone, boolean isAuthorized) {
         InlineKeyboardMarkup.InlineKeyboardMarkupBuilder builder = InlineKeyboardMarkup.builder();
 //        if (true) {
+        if (!isAuthorized) {
+            builder.keyboardRow(List.of(InlineKeyboardButton.builder()
+                    .text(authButtonText)
+                    .callbackData("auth")
+                    .build()));
+        }
         if (hasPhone) {
             builder.keyboardRow(List.of(InlineKeyboardButton.builder()
-                            .text(activitiesButtonText)
-                            .callbackData("activities")
+                            .text(tourConstructorButtonText)
+                            .callbackData("tour")
                             .build()))
-                    .keyboardRow(List.of(InlineKeyboardButton.builder()
-                            .text(resortsButtonText)
-                            .callbackData("resorts")
-                            .build()))
-                    .keyboardRow(List.of(InlineKeyboardButton.builder()
-                            .text(hotelsButtonText)
-                            .callbackData("hotels")
-                            .build()))
+//                    .keyboardRow(List.of(InlineKeyboardButton.builder()
+//                            .text(resortsButtonText)
+//                            .callbackData("resorts")
+//                            .build()))
+//                    .keyboardRow(List.of(InlineKeyboardButton.builder()
+//                            .text(hotelsButtonText)
+//                            .callbackData("hotels")
+//                            .build()))
                     .keyboardRow(List.of(InlineKeyboardButton.builder()
                             .text(customToursButtonText)
                             .callbackData("customTours")
@@ -133,14 +140,29 @@ public class KeyboardService {
                     .callbackData("auth_getPhone")
                     .build()));
         }
-        if (!isAuthorized) {
-            builder.keyboardRow(List.of(InlineKeyboardButton.builder()
-                    .text(authButtonText)
-                    .callbackData("auth")
-                    .build()));
-        }
 
         return builder.build();
+    }
+
+    public InlineKeyboardMarkup getTourConstructorKeyboard() {
+        return InlineKeyboardMarkup.builder()
+                .keyboardRow(List.of(InlineKeyboardButton.builder()
+                        .text(activitiesButtonText)
+                        .callbackData("activities")
+                        .build()))
+                .keyboardRow(List.of(InlineKeyboardButton.builder()
+                        .text(resortsButtonText)
+                        .callbackData("resorts")
+                        .build()))
+                .keyboardRow(List.of(InlineKeyboardButton.builder()
+                        .text(hotelsButtonText)
+                        .callbackData("hotels")
+                        .build()))
+                .keyboardRow(List.of(InlineKeyboardButton.builder()
+                                .text(restartButtonText)
+                                .callbackData("restart")
+                        .build()))
+                .build();
     }
 
     public InlineKeyboardMarkup getActivitiesKeyboard(List<Activity> selectedActivities) {

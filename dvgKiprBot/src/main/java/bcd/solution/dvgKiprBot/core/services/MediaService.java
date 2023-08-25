@@ -194,4 +194,10 @@ public class MediaService {
 //        TODO: add default resort media
         return getStartMedia();
     }
+    
+    @SneakyThrows
+    public InputMedia getTourConstructorMedia() {
+//        TODO: add default constructor media
+        return getStartMedia();
+    }
 }
