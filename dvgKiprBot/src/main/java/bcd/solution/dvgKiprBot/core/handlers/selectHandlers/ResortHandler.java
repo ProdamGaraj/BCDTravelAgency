@@ -111,7 +111,7 @@ public class ResortHandler {
         bot.executeAsync(SendPhoto.builder()
                 .chatId(callbackQuery.getFrom().getId())
                 .photo(mediaService.getResortFile(currentResorts.get(index)))
-                .caption(currentResorts.get(index).toString())
+                .caption(cardService.getResortCard(currentResorts.get(index)))
                 .replyMarkup(keyboardService.getResortCardKeyboard(index, hotelId, currentResorts.size()))
                 .build());
         bot.executeAsync(AnswerCallbackQuery.builder()

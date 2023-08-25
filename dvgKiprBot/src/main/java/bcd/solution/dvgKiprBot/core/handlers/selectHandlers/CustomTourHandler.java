@@ -110,7 +110,7 @@ public class CustomTourHandler {
         bot.executeAsync(SendPhoto.builder()
                 .chatId(callbackQuery.getFrom().getId())
                 .photo(mediaService.getCustomTourFile(customTour))
-                .caption(customTour.toString())
+                .caption(cardService.getCustomTourCard(customTour))
                 .replyMarkup(keyboardService.getCustomToursKeyboard(index, customTourId))
                 .build());
         bot.executeAsync(AnswerCallbackQuery.builder()

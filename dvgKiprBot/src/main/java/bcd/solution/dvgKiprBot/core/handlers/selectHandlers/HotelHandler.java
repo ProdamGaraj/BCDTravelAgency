@@ -167,7 +167,7 @@ public class HotelHandler {
         bot.executeAsync(SendPhoto.builder()
                 .chatId(callbackQuery.getFrom().getId())
                 .photo(mediaService.getHotelFile(currentHotels.get(index)))
-                .caption(currentHotels.get(index).toString())
+                .caption(cardService.getHotelCard(currentHotels.get(index)))
                 .replyMarkup(keyboardService.getHotelsKeyboard(index, hotelId, currentHotels.size()))
                 .build());
 
