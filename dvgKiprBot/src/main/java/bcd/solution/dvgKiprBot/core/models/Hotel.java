@@ -36,20 +36,22 @@ public class Hotel {
 
     @Override
     public String toString() {
-        StringBuilder features = new StringBuilder();
-        for (HotelFeature feature : this.features) {
-            features.append("- ").append(feature.name).append("\n");
-        }
-        StringBuilder foods = new StringBuilder();
-        for (Food food : this.food) {
-            foods.append("- ").append(food).append("\n");
-        }
+//        StringBuilder features = new StringBuilder();
+//        for (HotelFeature feature : this.features) {
+//            features.append("- ").append(feature.name).append("\n");
+//        }
+//        StringBuilder foods = new StringBuilder();
+//        for (Food food : this.food) {
+//            foods.append("- ").append(food).append("\n");
+//        }
         return this.name + " " + this.stars.toString() + "\n\n" +
                 "Относиться к курорту " + this.resort.name + "\n\n" +
-                this.description + "\n\n" +
-                "Особенноси:\n" +
-                features + "\n\n" +
-                "Доступные типы питания:\n" +
-                foods;
+                this.description
+//                + "\n\n"
+//                + "Особенноси:\n" +
+//                features + "\n\n" +
+//                "Доступные типы питания:\n" +
+//                foods
+                ;
     }
 }

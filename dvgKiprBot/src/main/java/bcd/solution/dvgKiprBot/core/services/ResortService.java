@@ -46,7 +46,7 @@ public class ResortService {
         return resort.name + "\n\n"
                 + resort.description + "\n\n"
                 + resort.geo + "\n\n"
-                + "Доступные развлечения:\n"
+                + "Доступные активности:\n"
                 + activity_list;
     }
 }
