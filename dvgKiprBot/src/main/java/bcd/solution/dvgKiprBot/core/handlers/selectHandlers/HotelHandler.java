@@ -100,7 +100,7 @@ public class HotelHandler {
         bot.executeAsync(EditMessageCaption.builder()
                 .chatId(callbackQuery.getMessage().getChatId())
                 .messageId(callbackQuery.getMessage().getMessageId())
-                .caption(currentHotels.get(0).toString())
+                .caption(cardService.getHotelCard(currentHotels.get(0)))
                 .parseMode(ParseMode.MARKDOWN)
                 .replyMarkup(keyboardService.getHotelsKeyboard(
                         0,
