@@ -19,7 +19,7 @@ public class CardService {
 //            foods.append("- ").append(food).append("\n");
 //        }
         return hotel.name + " " + hotel.stars.toString() + "\n\n" +
-                "Относиться к курорту " + hotel.resort.name + "\n\n" +
+                "Относится к курорту " + hotel.resort.name + "\n\n" +
                 hotel.description
 //                + "\n\n"
 //                + "Особенноси:\n" +
