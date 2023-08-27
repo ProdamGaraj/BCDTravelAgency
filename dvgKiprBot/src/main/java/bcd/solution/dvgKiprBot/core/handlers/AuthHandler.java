@@ -177,6 +177,7 @@ public class AuthHandler {
                         .chatId(message.getChatId())
                         .messageId(stateMachine.auth_message_id)
                         .caption("Пароль не найден, попробуйте снова")
+                        .replyMarkup(keyboardService.getAuthCancelKeyboard())
                         .build());
             } catch (TelegramApiRequestException ignored) {
 
