@@ -12,6 +12,8 @@ import bcd.solution.dvgKiprBot.core.models.CustomTour;
 import bcd.solution.dvgKiprBot.core.models.Hotel;
 import bcd.solution.dvgKiprBot.core.models.Resort;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
 import java.io.*;
 import java.util.*;
 
@@ -89,8 +91,36 @@ public class MediaService {
         return result;
     }
 
-
     @SneakyThrows
+    private InputMedia getMediaByPath(String path) {
+        Resource[] resources = this.resourcePatternResolver.getResources("classpath:" + path + "*");
+        Optional<Resource> resource = Arrays.stream(resources)
+                .filter(resource1 -> Objects.requireNonNull(resource1.getFilename()).contains("."))
+                .findFirst();
+        if (resource.isEmpty()) {
+            return getNoPhotoMedia();
+        }
+
+        // Load the image from the resource
+        BufferedImage originalImage = ImageIO.read(resource.get().getInputStream());
+
+        // Resize the image to the desired dimensions
+        BufferedImage resizedImage = new BufferedImage(400, 300, BufferedImage.TYPE_INT_ARGB);
+        resizedImage.createGraphics().drawImage(originalImage, 0, 0, 400, 300, null);
+
+        // Convert the resized image to bytes
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        ImageIO.write(resizedImage, "png", outputStream);
+
+        // Create InputMediaPhoto from the resized image
+        InputMediaPhoto media = new InputMediaPhoto();
+        media.setMedia(new ByteArrayInputStream(outputStream.toByteArray()), "photo.png");
+
+        return media;
+    }
+
+
+/*    @SneakyThrows
     private InputMedia getMediaByPath(String path) {
         Resource[] resources = this.resourcePatternResolver.getResources("classpath:" + path + "*");
         Optional<Resource> resource = Arrays.stream(resources)
@@ -102,7 +132,7 @@ public class MediaService {
         InputMedia media = new InputMediaPhoto();
         media.setMedia(resource.get().getInputStream(), resource.get().getFilename());
         return media;
-    }
+    }*/
 
     @SneakyThrows
     public List<List<InputMedia>> getHotelMedias(Hotel hotel) {

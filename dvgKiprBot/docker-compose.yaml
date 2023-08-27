@@ -14,13 +14,13 @@ services:
     image: "postgres:latest"
     env_file: environment.env
     volumes:
-      - db:/var/lib/postgresql/data
+      - /home/BCDTravelAgency/pgdata:/var/lib/postgresql/data
     restart: unless-stopped
     ports:
       - "5432:5432"
     networks:
       - default
 
-volumes:
-  db:
-    driver: local
+#volumes:
+#  db:
+#    driver: local
