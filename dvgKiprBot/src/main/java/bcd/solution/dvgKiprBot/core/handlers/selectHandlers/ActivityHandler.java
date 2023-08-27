@@ -73,11 +73,13 @@ public class ActivityHandler {
         }
 //        Call telegram API
 //        TODO: add getting media
-        bot.executeAsync(EditMessageMedia.builder()
-                .chatId(callbackQuery.getMessage().getChatId())
-                .messageId(callbackQuery.getMessage().getMessageId())
-                .media(mediaService.getActivityMedia())
-                .build()).join();
+        if (stateMachine.activities.isEmpty()) {
+            bot.executeAsync(EditMessageMedia.builder()
+                    .chatId(callbackQuery.getMessage().getChatId())
+                    .messageId(callbackQuery.getMessage().getMessageId())
+                    .media(mediaService.getActivityMedia())
+                    .build()).join();
+        }
         bot.executeAsync(EditMessageCaption.builder()
                 .chatId(callbackQuery.getMessage().getChatId())
                 .messageId(callbackQuery.getMessage().getMessageId())
