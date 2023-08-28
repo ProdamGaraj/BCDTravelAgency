@@ -25,6 +25,8 @@ public class Hotel {
     public List<HotelFeature> features;
     @ManyToOne(fetch = FetchType.EAGER)
     public Resort resort;
+    @ManyToMany(fetch = FetchType.EAGER)
+    public List<Activity> activities;
     @Enumerated(EnumType.STRING)
     public Stars stars;
     @ElementCollection(targetClass = Food.class, fetch = FetchType.EAGER)

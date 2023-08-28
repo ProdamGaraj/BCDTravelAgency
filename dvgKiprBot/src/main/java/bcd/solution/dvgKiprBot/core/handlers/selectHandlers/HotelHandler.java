@@ -82,7 +82,10 @@ public class HotelHandler {
         StateMachine usersState = stateMachineService.setStarsByUserId(callbackQuery.getFrom().getId(), stars);
 
 
-        List<Hotel> currentHotels = hotelService.findByResortAndStars(usersState.resort, stars);
+        List<Hotel> currentHotels = hotelService.findByResortAndActivitiesAndStars(
+                usersState.resort,
+                usersState.activities,
+                stars);
 
         if (currentHotels.isEmpty()) {
             bot.executeAsync(AnswerCallbackQuery.builder()
@@ -120,7 +123,8 @@ public class HotelHandler {
         Long hotelId = Long.parseLong(dataArray[2]);
 
         StateMachine stateMachine = stateMachineService.getByUserId(callbackQuery.getFrom().getId());
-        List<Hotel> currentHotels = hotelService.findByResort(stateMachine.resort);
+        List<Hotel> currentHotels = hotelService.findByResortAndActivitiesAndStars(
+                stateMachine.resort, stateMachine.activities, stateMachine.stars);
         List<List<InputMedia>> allMedias;
         try {
             allMedias = mediaService.getHotelMedias(currentHotels.get(index));
@@ -183,8 +187,9 @@ public class HotelHandler {
         int index = Integer.parseInt(callbackQuery.getData().split("/")[1]);
         StateMachine usersState = stateMachineService.getByUserId(callbackQuery.getFrom().getId());
 
-        List<Hotel> currentHotels = hotelService.findByResortAndStars(
+        List<Hotel> currentHotels = hotelService.findByResortAndActivitiesAndStars(
                 usersState.resort,
+                usersState.activities,
                 usersState.stars);
 
 

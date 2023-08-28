@@ -24,6 +24,8 @@ public class StateMachine {
     public boolean activitiesGot;
     @ManyToOne(fetch = FetchType.EAGER)
     public Resort resort;
+    @Column(columnDefinition = "boolean default false")
+    public boolean resortGot;
     @Enumerated(EnumType.STRING)
     public Stars stars;
     @ManyToOne(fetch = FetchType.EAGER)

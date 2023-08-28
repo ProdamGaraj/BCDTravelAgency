@@ -88,25 +88,33 @@ public class CallbackQueryHandler {
     @Async
     @SneakyThrows
     protected void selectHandler(CallbackQuery callbackQuery, DvgKiprBot bot) {
-        String model = callbackQuery.getData().split("/")[0].split("_")[1];
+        String data = callbackQuery.getData();
+        String model = data.split("/")[0].split("_")[1];
         StateMachine stateMachine;
         switch (model) {
             case "resort" -> {
-                stateMachine = resortHandler.selectHandler(callbackQuery, bot);
+                if (data.endsWith("noMatter")) {
+                    stateMachine = stateMachineService.setResortGotByIdByUserId(callbackQuery.getFrom().getId());
+                } else {
+                    stateMachine = resortHandler.selectHandler(callbackQuery, bot);
+                }
                 if (stateMachine == null) {
                     return;
                 }
-                if (stateMachine.activities == null) {
+                if (!stateMachine.activitiesGot) {
                     activityHandler.defaultHandler(callbackQuery, bot);
                     return;
                 }
             }
             case "activity" -> {
+                if (data.endsWith("noMatter")) {
+                    stateMachine = stateMachineService.clearActivitiesByUserId(callbackQuery.getFrom().getId());
+                }
                 stateMachine = stateMachineService.setActivityGotByIdByUserId(callbackQuery.getFrom().getId());
                 if (stateMachine == null) {
                     return;
                 }
-                if (stateMachine.resort == null) {
+                if (!stateMachine.resortGot) {
                     resortHandler.defaultHandler(callbackQuery, bot);
                     return;
                 }

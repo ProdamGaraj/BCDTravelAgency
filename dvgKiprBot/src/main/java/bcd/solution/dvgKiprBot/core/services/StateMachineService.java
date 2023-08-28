@@ -80,9 +80,25 @@ public class StateMachineService {
     }
 
     @Async
+    public StateMachine clearActivitiesByUserId(Long userId) {
+        StateMachine stateMachine = getOrAddIfNotExists(userId);
+        stateMachine.activities.clear();
+        stateMachineRepo.save(stateMachine);
+        return stateMachine;
+    }
+
+    @Async
     public StateMachine setActivityGotByIdByUserId(Long userId) {
         StateMachine stateMachine = getOrAddIfNotExists(userId);
         stateMachine.activitiesGot = true;
+        stateMachineRepo.save(stateMachine);
+        return stateMachine;
+    }
+
+    @Async
+    public StateMachine setResortGotByIdByUserId(Long userId) {
+        StateMachine stateMachine = getOrAddIfNotExists(userId);
+        stateMachine.resortGot = true;
         stateMachineRepo.save(stateMachine);
         return stateMachine;
     }

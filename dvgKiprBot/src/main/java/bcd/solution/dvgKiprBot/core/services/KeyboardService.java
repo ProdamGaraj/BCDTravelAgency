@@ -184,6 +184,12 @@ public class KeyboardService {
         return builder
                 .keyboardRow(List.of(
                         InlineKeyboardButton.builder()
+                                .text(noMatterButtonText)
+                                .callbackData("select_activity/noMatter")
+                                .build()
+                ))
+                .keyboardRow(List.of(
+                        InlineKeyboardButton.builder()
                                 .text(confirmButtonText)
                                 .callbackData("select_activity")
                                 .build()
@@ -261,6 +267,12 @@ public class KeyboardService {
         }
 
         return builder
+                .keyboardRow(List.of(
+                        InlineKeyboardButton.builder()
+                                .text(noMatterButtonText)
+                                .callbackData("select_resort/noMatter")
+                                .build()
+                ))
                 .keyboardRow(List.of(
                         InlineKeyboardButton.builder()
                                 .text(restartButtonText)
