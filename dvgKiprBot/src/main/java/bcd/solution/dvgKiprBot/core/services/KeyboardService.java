@@ -272,7 +272,7 @@ public class KeyboardService {
 
     public InlineKeyboardMarkup getCustomToursKeyboard(Integer index, Long customTourId) {
 
-        long size = customTourRepo.count();
+        long size = customTourRepo.countByIsDeleted(false);
 
         List<InlineKeyboardButton> navigation_row = new ArrayList<>();
         if (index > 0) {

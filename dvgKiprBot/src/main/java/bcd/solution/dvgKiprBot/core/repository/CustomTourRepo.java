@@ -7,4 +7,6 @@ import java.util.List;
 
 public interface CustomTourRepo extends JpaRepository<CustomTour, Long> {
     List<CustomTour> findAllByIsDeleted(boolean isDeleted);
+
+    long countByIsDeleted(boolean isDeleted);
 }
