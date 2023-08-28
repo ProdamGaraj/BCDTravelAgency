@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.AnswerCallbackQuery;
+import org.telegram.telegrambots.meta.api.methods.updatingmessages.DeleteMessage;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageCaption;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageMedia;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageReplyMarkup;
@@ -70,6 +71,7 @@ public class CallbackQueryHandler {
             case "null" -> nothingHandler(callbackQuery, bot);
             case "restart" -> restartHandler(callbackQuery, bot);
             case "start" -> startHandler(callbackQuery, bot);
+            case "delete" -> deleteHandler(callbackQuery, bot);
             case "tour" -> tourConstructorHandler(callbackQuery, bot);
             case "select" -> selectHandler(callbackQuery, bot);
             case "auth" -> authHandler.handleCallback(callbackQuery, bot);
@@ -87,15 +89,26 @@ public class CallbackQueryHandler {
 
     @Async
     @SneakyThrows
+    protected void deleteHandler(CallbackQuery callbackQuery, DvgKiprBot bot) {
+        bot.executeAsync(DeleteMessage.builder()
+                        .chatId(callbackQuery.getMessage().getChatId())
+                        .messageId(callbackQuery.getMessage().getMessageId())
+                .build());
+        bot.executeAsync(AnswerCallbackQuery.builder()
+                .callbackQueryId(callbackQuery.getId())
+                .build());
+    }
+
+    @Async
+    @SneakyThrows
     protected void selectHandler(CallbackQuery callbackQuery, DvgKiprBot bot) {
         String data = callbackQuery.getData();
         String model = data.split("/")[0].split("_")[1];
         StateMachine stateMachine;
         switch (model) {
             case "resort" -> {
-                if (data.endsWith("noMatter")) {
-                    stateMachine = stateMachineService.setResortGotByIdByUserId(callbackQuery.getFrom().getId());
-                } else {
+                stateMachine = stateMachineService.setResortGotByIdByUserId(callbackQuery.getFrom().getId());
+                if (!data.endsWith("noMatter")) {
                     stateMachine = resortHandler.selectHandler(callbackQuery, bot);
                 }
                 if (stateMachine == null) {
@@ -108,7 +121,7 @@ public class CallbackQueryHandler {
             }
             case "activity" -> {
                 if (data.endsWith("noMatter")) {
-                    stateMachine = stateMachineService.clearActivitiesByUserId(callbackQuery.getFrom().getId());
+                    stateMachineService.clearActivitiesByUserId(callbackQuery.getFrom().getId());
                 }
                 stateMachine = stateMachineService.setActivityGotByIdByUserId(callbackQuery.getFrom().getId());
                 if (stateMachine == null) {

@@ -9,24 +9,33 @@ import java.util.List;
 @Service
 public class CardService {
     @SneakyThrows
-    public String getHotelCard(Hotel hotel) {
-//        StringBuilder features = new StringBuilder();
-//        for (HotelFeature feature : hotel.features) {
-//            features.append("- ").append(feature.name).append("\n");
-//        }
-//        StringBuilder foods = new StringBuilder();
-//        for (Food food : hotel.food) {
-//            foods.append("- ").append(food).append("\n");
-//        }
-        return hotel.name + " " + hotel.stars.toString() + "\n\n" +
+    public String getHotelCard(Hotel hotel, boolean isLong) {
+        StringBuilder card = new StringBuilder(hotel.name + " " + hotel.stars.toString() + "\n\n" +
                 "Относится к курорту " + "*" + hotel.resort.name + "*" + "\n\n" +
-                hotel.description
-//                + "\n\n"
-//                + "Особенноси:\n" +
-//                features + "\n\n" +
-//                "Доступные типы питания:\n" +
-//                foods
-                ;
+                hotel.description);
+
+        if (isLong) {
+            card.append("\n\n_Активности_:\n");
+            for (Activity activity : hotel.activities) {
+                card.append("- ").append(activity.name).append("\n");
+            }
+            card.append("\n_Особенности_:\n");
+            for (HotelFeature feature : hotel.features) {
+                card.append("- ").append(feature.name).append("\n");
+            }
+            card.append("\n_Питание_:");
+            for (Food food : hotel.food) {
+                card.append("- ").append(food).append("\n");
+            }
+        } else {
+            if (card.length() > 950) {
+                card.setLength(950);
+                card.append("...");
+            }
+            card.append("\n\n_Подробнее по кнопке_");
+        }
+
+        return card.toString();
     }
 
     @SneakyThrows

@@ -40,8 +40,10 @@ public class KeyboardService {
     private final String resortsButtonText = "🏝️ Курорты 🏝️";
     private final String hotelsButtonText = "🏨 Отели 🏨";
     private final String customToursButtonText = "🗺️ Авторские туры 🗺️";
-    private final String goBackButtonText = "⬆️ К списку ⬆️️";
+    private final String toListButtonText = "⬆️ К списку ⬆️️";
+    private final String goBackButtonText = "↪️ Назад ↩️";
     private final String tourConstructorButtonText = "🏨 Подобрать отели 🏨";
+    private final String detailsButtonText = "📝 Подробнее 📝";
 
     @Autowired
     public KeyboardService(ActivityRepo activityRepo,
@@ -239,7 +241,7 @@ public class KeyboardService {
                 ))
                 .keyboardRow(List.of(
                         InlineKeyboardButton.builder()
-                                .text(goBackButtonText)
+                                .text(toListButtonText)
                                 .callbackData("resorts")
                                 .build()
                 ))
@@ -351,6 +353,12 @@ public class KeyboardService {
                 .keyboardRow(navigation_row)
                 .keyboardRow(List.of(
                         InlineKeyboardButton.builder()
+                                .text(detailsButtonText)
+                                .callbackData("hotels_card/" + (hotelId))
+                                .build()
+                ))
+                .keyboardRow(List.of(
+                        InlineKeyboardButton.builder()
                                 .text(confirmButtonText)
                                 .callbackData("hotels_select/" + (hotelId))
                                 .build()
@@ -395,6 +403,15 @@ public class KeyboardService {
                                                 .text(sendPhoneButtonText)
                                                 .requestContact(true)
                                                 .build())))
+                .build();
+    }
+
+    public InlineKeyboardMarkup getDeleteKeyboard() {
+        return InlineKeyboardMarkup.builder()
+                .keyboardRow(List.of(InlineKeyboardButton.builder()
+                                .callbackData("delete")
+                                .text(goBackButtonText)
+                        .build()))
                 .build();
     }
 
