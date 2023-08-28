@@ -19,7 +19,7 @@ public class CardService {
 //            foods.append("- ").append(food).append("\n");
 //        }
         return hotel.name + " " + hotel.stars.toString() + "\n\n" +
-                "Относится к курорту " + hotel.resort.name + "\n\n" +
+                "Относится к курорту " + "*" + hotel.resort.name + "*" + "\n\n" +
                 hotel.description
 //                + "\n\n"
 //                + "Особенноси:\n" +
@@ -36,9 +36,9 @@ public class CardService {
             activity_list.append("- ").append(activity.name).append("\n");
         }
 
-        return resort.name + "\n\n"
+        return "*" + resort.name + "*" + "\n\n"
                 + resort.description + "\n\n"
-                + resort.geo + "\n\n"
+                //+ resort.geo + "\n\n"
                 + "Доступные активности:\n"
                 + activity_list;
     }
