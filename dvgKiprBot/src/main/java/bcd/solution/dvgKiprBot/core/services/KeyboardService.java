@@ -185,7 +185,7 @@ public class KeyboardService {
                 .keyboardRow(List.of(
                         InlineKeyboardButton.builder()
                                 .text(confirmButtonText)
-                                .callbackData("activities_select")
+                                .callbackData("select_activity")
                                 .build()
                 ))
                 .keyboardRow(List.of(
@@ -222,7 +222,7 @@ public class KeyboardService {
                 .keyboardRow(List.of(
                         InlineKeyboardButton.builder()
                                 .text(confirmButtonText)
-                                .callbackData("resorts_select/" + (resortId))
+                                .callbackData("select_resort/" + (resortId))
                                 .build()
                 ))
                 .keyboardRow(List.of(

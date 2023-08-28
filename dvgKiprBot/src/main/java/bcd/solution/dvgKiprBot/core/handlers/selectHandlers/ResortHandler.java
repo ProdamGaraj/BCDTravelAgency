@@ -142,7 +142,7 @@ public class ResortHandler {
 
     @Async
     @SneakyThrows
-    protected void selectHandler(CallbackQuery callbackQuery, DvgKiprBot bot) {
+    public StateMachine selectHandler(CallbackQuery callbackQuery, DvgKiprBot bot) {
         Long resortId = Long.parseLong(callbackQuery.getData().split("/")[1]);
 
         Optional<Resort> selectedResort = resortService.getById(resortId);
@@ -151,12 +151,12 @@ public class ResortHandler {
                             .callbackQueryId(callbackQuery.getId())
                             .showAlert(true).text("Курорт не найден, попробуйте позже")
                     .build());
-            return;
+            return null;
         }
 
-        stateMachineService.setResortByUserId(selectedResort.get(), callbackQuery.getFrom().getId());
+        return stateMachineService.setResortByUserId(selectedResort.get(), callbackQuery.getFrom().getId());
 
-        hotelHandler.defaultHandler(callbackQuery, bot);
+//        hotelHandler.defaultHandler(callbackQuery, bot);
     }
 
     @Async

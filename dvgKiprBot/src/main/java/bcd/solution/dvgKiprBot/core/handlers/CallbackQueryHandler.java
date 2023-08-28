@@ -1,6 +1,7 @@
 package bcd.solution.dvgKiprBot.core.handlers;
 
 import bcd.solution.dvgKiprBot.DvgKiprBot;
+import bcd.solution.dvgKiprBot.core.models.StateMachine;
 import bcd.solution.dvgKiprBot.core.services.*;
 import bcd.solution.dvgKiprBot.core.handlers.selectHandlers.ActivityHandler;
 import bcd.solution.dvgKiprBot.core.handlers.selectHandlers.CustomTourHandler;
@@ -70,6 +71,7 @@ public class CallbackQueryHandler {
             case "restart" -> restartHandler(callbackQuery, bot);
             case "start" -> startHandler(callbackQuery, bot);
             case "tour" -> tourConstructorHandler(callbackQuery, bot);
+            case "select" -> selectHandler(callbackQuery, bot);
             case "auth" -> authHandler.handleCallback(callbackQuery, bot);
             case "resorts" -> resortHandler.handleResortCallback(callbackQuery, bot);
             case "customTours" -> customTourHandler.handleCustomTourCallback(callbackQuery, bot);
@@ -81,6 +83,36 @@ public class CallbackQueryHandler {
                     .showAlert(Boolean.TRUE)
                     .build());
         }
+    }
+
+    @Async
+    @SneakyThrows
+    protected void selectHandler(CallbackQuery callbackQuery, DvgKiprBot bot) {
+        String model = callbackQuery.getData().split("/")[0].split("_")[1];
+        StateMachine stateMachine;
+        switch (model) {
+            case "resort" -> {
+                stateMachine = resortHandler.selectHandler(callbackQuery, bot);
+                if (stateMachine == null) {
+                    return;
+                }
+                if (stateMachine.activities == null) {
+                    activityHandler.defaultHandler(callbackQuery, bot);
+                    return;
+                }
+            }
+            case "activity" -> {
+                stateMachine = stateMachineService.setActivityGotByIdByUserId(callbackQuery.getFrom().getId());
+                if (stateMachine == null) {
+                    return;
+                }
+                if (stateMachine.resort == null) {
+                    resortHandler.defaultHandler(callbackQuery, bot);
+                    return;
+                }
+            }
+        }
+        hotelHandler.defaultHandler(callbackQuery, bot);
     }
 
     @Async

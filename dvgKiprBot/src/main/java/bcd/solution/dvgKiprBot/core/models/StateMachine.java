@@ -1,10 +1,8 @@
-package bcd.solution.dvgKiprBot.core.models;;
+package bcd.solution.dvgKiprBot.core.models;
 
 import lombok.*;
 
-import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 
@@ -21,7 +19,9 @@ public class StateMachine {
     @OneToOne(fetch = FetchType.EAGER)
     public User user;
     @ManyToMany(fetch = FetchType.EAGER)
-    public List<Activity> activities = new ArrayList<>();
+    public List<Activity> activities;
+    @Column(columnDefinition = "boolean default false")
+    public boolean activitiesGot;
     @ManyToOne(fetch = FetchType.EAGER)
     public Resort resort;
     @Enumerated(EnumType.STRING)

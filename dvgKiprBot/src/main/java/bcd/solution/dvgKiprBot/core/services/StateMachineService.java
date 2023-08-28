@@ -72,9 +72,19 @@ public class StateMachineService {
         Activity activity = activityRepo.getReferenceById(activityId);
         StateMachine stateMachine = getOrAddIfNotExists(userId);
 
+        if (stateMachine.activities == null) {
+            stateMachine.activities = new ArrayList<>();
+        }
         stateMachine.activities.add(activity);
         stateMachineRepo.save(stateMachine);
+    }
 
+    @Async
+    public StateMachine setActivityGotByIdByUserId(Long userId) {
+        StateMachine stateMachine = getOrAddIfNotExists(userId);
+        stateMachine.activitiesGot = true;
+        stateMachineRepo.save(stateMachine);
+        return stateMachine;
     }
 
     @Async
@@ -84,10 +94,14 @@ public class StateMachineService {
     }
 
     @Async
-    public void setResortByUserId(Resort resort, Long userId) {
+    public StateMachine setResortByUserId(Resort resort, Long userId) {
         StateMachine userState = getByUserId(userId);
         userState.resort = resort;
         stateMachineRepo.save(userState);
+        if (!userState.activitiesGot) {
+            userState.activities = null;
+        }
+        return userState;
     }
 
     @Async
@@ -119,4 +133,5 @@ public class StateMachineService {
 
         return stateMachine;
     }
+
 }

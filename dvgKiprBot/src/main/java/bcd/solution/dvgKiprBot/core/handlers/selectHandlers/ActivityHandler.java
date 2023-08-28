@@ -42,7 +42,6 @@ public class ActivityHandler {
         String action = callbackQuery.getData().split("/")[0];
         switch (action) {
             case "activities" -> defaultHandler(callbackQuery, bot);
-            case "activities_select" -> selectHandler(callbackQuery, bot);
             case "activities_add" -> addHandler(callbackQuery, bot);
             case "activities_delete" -> deleteHandler(callbackQuery, bot);
         }
@@ -98,12 +97,5 @@ public class ActivityHandler {
         stateMachineService.addActivityByIdByUserId(callbackQuery.getFrom().getId(), activity_id);
 //        Answer callback
         defaultHandler(callbackQuery, bot);
-    }
-
-
-    @Async
-    @SneakyThrows
-    protected void selectHandler(CallbackQuery callbackQuery, DvgKiprBot bot) {
-        resortHandler.defaultHandler(callbackQuery, bot);
     }
 }
