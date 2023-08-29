@@ -1,6 +1,7 @@
 package bcd.solution.dvgKiprBot.core.handlers.selectHandlers;
 
 import bcd.solution.dvgKiprBot.DvgKiprBot;
+import bcd.solution.dvgKiprBot.core.models.Hotel;
 import bcd.solution.dvgKiprBot.core.models.Resort;
 import bcd.solution.dvgKiprBot.core.models.StateMachine;
 import bcd.solution.dvgKiprBot.core.services.*;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.AnswerCallbackQuery;
 import org.telegram.telegrambots.meta.api.methods.ParseMode;
 import org.telegram.telegrambots.meta.api.methods.send.SendMediaGroup;
+import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.DeleteMessage;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageCaption;
@@ -29,6 +31,7 @@ public class ResortHandler {
     private final StateMachineService stateMachineService;
     private final CardService cardService;
     private final HotelHandler hotelHandler;
+    private String noResortText = "Курортов по вашим параметрам не найдено.";
 
     public ResortHandler(ResortService resortService,
                          MediaService mediaService,
@@ -111,13 +114,36 @@ public class ResortHandler {
         bot.executeAsync(SendPhoto.builder()
                 .chatId(callbackQuery.getFrom().getId())
                 .photo(mediaService.getResortFile(currentResorts.get(index)))
-                .caption(cardService.getResortCard(currentResorts.get(index)))
+                .caption(cardService.getResortCard(currentResorts.get(index), false))//TODO: may be bug
                 .replyMarkup(keyboardService.getResortCardKeyboard(index, hotelId, currentResorts.size()))
                 .build());
         bot.executeAsync(AnswerCallbackQuery.builder()
                 .callbackQueryId(callbackQuery.getId())
                 .build());
     }
+
+    @Async
+    @SneakyThrows
+    protected void cardHandler(CallbackQuery callbackQuery, DvgKiprBot bot) {
+        Long resortId = Long.parseLong(callbackQuery.getData().split("/")[1]);
+        Optional<Resort> selectedResort = resortService.getById(resortId);
+        if (selectedResort.isEmpty()) {
+            bot.executeAsync(AnswerCallbackQuery.builder()
+                    .callbackQueryId(callbackQuery.getId())
+                    .showAlert(true).text(noResortText)
+                    .build());
+            return;
+        }
+
+        bot.executeAsync(SendMessage.builder()
+                .chatId(callbackQuery.getMessage().getChatId())
+                .text(cardService.getResortCard(selectedResort.get(), true))
+                .parseMode(ParseMode.MARKDOWN)
+                .replyMarkup(keyboardService.getDeleteKeyboard())
+                .build());
+
+    }
+
 
     @Async
     @SneakyThrows
@@ -181,7 +207,7 @@ public class ResortHandler {
         bot.executeAsync(EditMessageCaption.builder()
                 .chatId(callbackQuery.getMessage().getChatId())
                 .messageId(callbackQuery.getMessage().getMessageId())
-                .caption(cardService.getResortCard(currentResorts.get(index)))
+                .caption(cardService.getResortCard(currentResorts.get(index), false))//TODO: debug
                 .parseMode(ParseMode.MARKDOWN)
                 .replyMarkup(keyboardService.getResortCardKeyboard(index,
                         currentResorts.get(index).getId(),

@@ -39,17 +39,34 @@ public class CardService {
     }
 
     @SneakyThrows
-    public String getResortCard(Resort resort) {
+    public String getResortCard(Resort resort, boolean isLong) {
         StringBuilder activity_list = new StringBuilder();
         for (Activity activity : resort.activities) {
             activity_list.append("- ").append(activity.name).append("\n");
         }
 
-        return "*" + resort.name + "*" + "\n\n"
+        StringBuilder card = new StringBuilder(
+                resort.name + "*" + "\n\n"
                 + resort.description + "\n\n"
-                //+ resort.geo + "\n\n"
+                + resort.geo + "\n\n"
                 + "Доступные активности:\n"
-                + activity_list;
+                + activity_list);
+
+
+        if (isLong) {
+            card.append("\n_Название_:\n");
+            card.append("- ").append(resort.name).append("\n");
+            card.append("- ").append(resort.geo).append("\n");
+
+        } else {
+            if (card.length() > 950) {
+                card.setLength(950);
+                card.append("...");
+            }
+            card.append("\n\n_Подробнее по кнопке_");
+        }
+
+        return card.toString();
     }
 
     @SneakyThrows

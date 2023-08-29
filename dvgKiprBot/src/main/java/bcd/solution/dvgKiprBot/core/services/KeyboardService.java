@@ -229,6 +229,12 @@ public class KeyboardService {
                 .keyboardRow(navigation_row)
                 .keyboardRow(List.of(
                         InlineKeyboardButton.builder()
+                                .text(detailsButtonText)
+                                .callbackData("hotels_card/" + (resortId))
+                                .build()
+                ))
+                .keyboardRow(List.of(
+                        InlineKeyboardButton.builder()
                                 .text(confirmButtonText)
                                 .callbackData("select_resort/" + (resortId))
                                 .build()
