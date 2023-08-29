@@ -46,17 +46,12 @@ public class CardService {
         }
 
         StringBuilder card = new StringBuilder(
-                resort.name + "*" + "\n\n"
-                + resort.description + "\n\n"
-                + resort.geo + "\n\n"
-                + "Доступные активности:\n"
-                + activity_list);
-
+              "*" +  resort.name + "*" + "\n\n");
+            card.append(resort.description).append("\n");
 
         if (isLong) {
-            card.append("\n_Название_:\n");
-            card.append("- ").append(resort.name).append("\n");
-            card.append("- ").append(resort.geo).append("\n");
+            card.append("\n\n_Адрес_: ").append(resort.geo).append("\n");
+            card.append("\n\n_Доступные активности_:\n" ).append(activity_list).append("\n");
 
         } else {
             if (card.length() > 950) {

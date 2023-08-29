@@ -1,7 +1,6 @@
 package bcd.solution.dvgKiprBot.core.handlers.selectHandlers;
 
 import bcd.solution.dvgKiprBot.DvgKiprBot;
-import bcd.solution.dvgKiprBot.core.models.Hotel;
 import bcd.solution.dvgKiprBot.core.models.Resort;
 import bcd.solution.dvgKiprBot.core.models.StateMachine;
 import bcd.solution.dvgKiprBot.core.services.*;
@@ -54,6 +53,7 @@ public class ResortHandler {
         String action = callbackQuery.getData().split("/")[0];
         switch (action) {
             case "resorts" -> defaultHandler(callbackQuery, bot);
+            case "resorts_card" -> cardHandler(callbackQuery, bot);
             case "resorts_select" -> selectHandler(callbackQuery, bot);
             case "resorts_change" -> changeHandler(callbackQuery, bot);
             case "resorts_media" -> mediaHandler(callbackQuery, bot);
@@ -114,7 +114,7 @@ public class ResortHandler {
         bot.executeAsync(SendPhoto.builder()
                 .chatId(callbackQuery.getFrom().getId())
                 .photo(mediaService.getResortFile(currentResorts.get(index)))
-                .caption(cardService.getResortCard(currentResorts.get(index), false))//TODO: may be bug
+                .caption(cardService.getResortCard(currentResorts.get(index), false))
                 .replyMarkup(keyboardService.getResortCardKeyboard(index, hotelId, currentResorts.size()))
                 .build());
         bot.executeAsync(AnswerCallbackQuery.builder()
@@ -141,7 +141,9 @@ public class ResortHandler {
                 .parseMode(ParseMode.MARKDOWN)
                 .replyMarkup(keyboardService.getDeleteKeyboard())
                 .build());
-
+        bot.executeAsync(AnswerCallbackQuery.builder()
+                .callbackQueryId(callbackQuery.getId())
+                .build());
     }
 
 
@@ -175,7 +177,7 @@ public class ResortHandler {
         if (selectedResort.isEmpty()) {
             bot.executeAsync(AnswerCallbackQuery.builder()
                             .callbackQueryId(callbackQuery.getId())
-                            .showAlert(true).text("Курорт не найден, попробуйте позже")
+                            .showAlert(true).text(noResortText)
                     .build());
             return null;
         }
@@ -195,7 +197,7 @@ public class ResortHandler {
         if (currentResorts.isEmpty()) {
             bot.executeAsync(AnswerCallbackQuery.builder()
                     .callbackQueryId(callbackQuery.getId())
-                    .showAlert(true).text("Курортов не найдено, попробуйте позже")
+                    .showAlert(true).text(noResortText)
                     .build());
             return;
         }
@@ -207,7 +209,7 @@ public class ResortHandler {
         bot.executeAsync(EditMessageCaption.builder()
                 .chatId(callbackQuery.getMessage().getChatId())
                 .messageId(callbackQuery.getMessage().getMessageId())
-                .caption(cardService.getResortCard(currentResorts.get(index), false))//TODO: debug
+                .caption(cardService.getResortCard(currentResorts.get(index), false))
                 .parseMode(ParseMode.MARKDOWN)
                 .replyMarkup(keyboardService.getResortCardKeyboard(index,
                         currentResorts.get(index).getId(),

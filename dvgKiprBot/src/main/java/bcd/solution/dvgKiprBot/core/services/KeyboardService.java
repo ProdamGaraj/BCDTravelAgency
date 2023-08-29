@@ -230,7 +230,7 @@ public class KeyboardService {
                 .keyboardRow(List.of(
                         InlineKeyboardButton.builder()
                                 .text(detailsButtonText)
-                                .callbackData("hotels_card/" + (resortId))
+                                .callbackData("resorts_card/" + (resortId))
                                 .build()
                 ))
                 .keyboardRow(List.of(

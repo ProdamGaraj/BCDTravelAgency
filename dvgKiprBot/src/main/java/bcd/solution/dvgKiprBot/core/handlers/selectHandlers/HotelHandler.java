@@ -94,6 +94,9 @@ public class HotelHandler {
                         .parseMode(ParseMode.MARKDOWN)
                         .replyMarkup(keyboardService.getDeleteKeyboard())
                 .build());
+        bot.executeAsync(AnswerCallbackQuery.builder()
+                .callbackQueryId(callbackQuery.getId())
+                .build());
 
     }
 
