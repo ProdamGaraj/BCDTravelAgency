@@ -37,7 +37,6 @@ public class DvgKiprBot extends TelegramLongPollingBot {
 
         this.messageHandler = messageHandler;
         this.callbackQueryHandler = callbackQueryHandler;
-
         TelegramBotsApi telegramBotsApi = new TelegramBotsApi(DefaultBotSession.class);
         telegramBotsApi.registerBot(this);
 
@@ -57,7 +56,7 @@ public class DvgKiprBot extends TelegramLongPollingBot {
 
         if (update.hasMessage() && update.getMessage() != null) {
             Message message = update.getMessage();
-            //log.debug(message.getText());
+            log.debug(message.getText());
 
             // Create a new thread to handle the message asynchronously
 //            Thread messageHandlerThread = new Thread(() -> {
