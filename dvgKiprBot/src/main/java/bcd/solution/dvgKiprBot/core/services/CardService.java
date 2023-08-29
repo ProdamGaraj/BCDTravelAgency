@@ -28,8 +28,8 @@ public class CardService {
                 card.append("- ").append(food).append("\n");
             }
         } else {
-            if (card.length() > 950) {
-                card.setLength(950);
+            if (card.length() > 450) {
+                card.setLength(450);
                 card.append("...");
             }
             card.append("\n\n_Подробнее по кнопке_");
@@ -54,8 +54,8 @@ public class CardService {
             card.append("\n\n_Доступные активности_:\n" ).append(activity_list).append("\n");
 
         } else {
-            if (card.length() > 950) {
-                card.setLength(950);
+            if (card.length() > 450) {
+                card.setLength(450);
                 card.append("...");
             }
             card.append("\n\n_Подробнее по кнопке_");

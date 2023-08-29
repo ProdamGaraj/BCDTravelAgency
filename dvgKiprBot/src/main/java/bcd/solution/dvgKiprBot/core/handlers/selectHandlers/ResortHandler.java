@@ -29,21 +29,19 @@ public class ResortHandler {
     private final KeyboardService keyboardService;
     private final StateMachineService stateMachineService;
     private final CardService cardService;
-    private final HotelHandler hotelHandler;
-    private String noResortText = "Курортов по вашим параметрам не найдено.";
+    private final String noResortText = "Курортов по вашим параметрам не найдено.";
 
     public ResortHandler(ResortService resortService,
                          MediaService mediaService,
                          KeyboardService keyboardService,
                          StateMachineService stateMachineService,
-                         CardService cardService,
-                         HotelHandler hotelHandler) {
+                         CardService cardService) {
         this.resortService = resortService;
         this.mediaService = mediaService;
         this.keyboardService = keyboardService;
         this.stateMachineService = stateMachineService;
         this.cardService = cardService;
-        this.hotelHandler = hotelHandler;
+
     }
 
     @Async
@@ -89,7 +87,13 @@ public class ResortHandler {
                     .build());
             return;
         }
-
+        bot.executeAsync(
+                SendMessage.builder()
+                        .chatId(callbackQuery.getFrom().getId())
+                        .text("_Курорт_ "+currentResorts.get(index).name)
+                        .parseMode(ParseMode.MARKDOWN)
+                        .build()
+        );
         for (List<InputMedia> medias : allMedias) {
             if (medias.size() > 1) {
                 bot.executeAsync(SendMediaGroup.builder()
