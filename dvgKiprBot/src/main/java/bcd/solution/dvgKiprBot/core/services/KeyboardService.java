@@ -32,7 +32,7 @@ public class KeyboardService {
     private final String phoneButtonText = "☎️ Добавить номер телефона ☎️";
     private final String sendPhoneButtonText = "☎️ Отправить номер телефона ☎️";
     private final String confirmButtonText = "✅ Выбрать ✅";
-    private final String showPhotoButtonText = "🖼️ Показать все фото 🖼️";
+    private final String showPhotoButtonText = "🖼️ Фотографии";
     private final String noMatterButtonText = "🤷‍♂️ Не важно 🤷‍♂️";
     private final String homeButtonText = "🏠 На домашнюю страницу 🏠";
     private final String authButtonText = "🔐 Авторизация для партнеров 🔐";
@@ -43,7 +43,7 @@ public class KeyboardService {
     private final String toListButtonText = "⬆️ К списку ⬆️️";
     private final String goBackButtonText = "↪️ Назад ↩️";
     private final String tourConstructorButtonText = "🏨 Подобрать отели 🏨";
-    private final String detailsButtonText = "📝 Подробнее 📝";
+    private final String detailsButtonText = "📝 Подробнее";
 
     @Autowired
     public KeyboardService(ActivityRepo activityRepo,
@@ -232,6 +232,10 @@ public class KeyboardService {
                         InlineKeyboardButton.builder()
                                 .text(detailsButtonText)
                                 .callbackData("resorts_card/" + (resortId))
+                                .build(),
+                        InlineKeyboardButton.builder()
+                                .text(showPhotoButtonText)
+                                .callbackData("resorts_media/" + (index) + "/" + (resortId))
                                 .build()
                 ))
                 .keyboardRow(List.of(
@@ -242,23 +246,14 @@ public class KeyboardService {
                 ))
                 .keyboardRow(List.of(
                         InlineKeyboardButton.builder()
-                                .text(showPhotoButtonText)
-                                .callbackData("resorts_media/" + (index) + "/" + (resortId))
-                                .build()
-                ))
-                .keyboardRow(List.of(
-                        InlineKeyboardButton.builder()
                                 .text(toListButtonText)
                                 .callbackData("resorts")
-                                .build()
-                ))
-                .keyboardRow(List.of(
+                                .build(),
                         InlineKeyboardButton.builder()
                                 .text(restartButtonText)
                                 .callbackData("restart")
                                 .build()
-                ))
-                .build();
+                )).build();
     }
 
     public InlineKeyboardMarkup getResortsKeyboard(List<Resort> resortList) {
@@ -362,18 +357,16 @@ public class KeyboardService {
                         InlineKeyboardButton.builder()
                                 .text(detailsButtonText)
                                 .callbackData("hotels_card/" + (hotelId))
+                                .build(),
+                        InlineKeyboardButton.builder()
+                                .text(showPhotoButtonText)
+                                .callbackData("hotels_media/" + (index) + "/" + (hotelId))
                                 .build()
                 ))
                 .keyboardRow(List.of(
                         InlineKeyboardButton.builder()
                                 .text(confirmButtonText)
                                 .callbackData("hotels_select/" + (hotelId))
-                                .build()
-                ))
-                .keyboardRow(List.of(
-                        InlineKeyboardButton.builder()
-                                .text(showPhotoButtonText)
-                                .callbackData("hotels_media/" + (index) + "/" + (hotelId))
                                 .build()
                 ))
                 .keyboardRow(List.of(

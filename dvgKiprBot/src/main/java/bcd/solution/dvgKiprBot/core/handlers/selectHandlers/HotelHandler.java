@@ -89,10 +89,10 @@ public class HotelHandler {
         }
 
         bot.executeAsync(SendMessage.builder()
-                        .chatId(callbackQuery.getMessage().getChatId())
-                        .text(cardService.getHotelCard(selectedHotel.get(), true))
-                        .parseMode(ParseMode.MARKDOWN)
-                        .replyMarkup(keyboardService.getDeleteKeyboard())
+                .chatId(callbackQuery.getMessage().getChatId())
+                .text(cardService.getHotelCard(selectedHotel.get(), true))
+                .parseMode(ParseMode.MARKDOWN)
+                .replyMarkup(keyboardService.getDeleteKeyboard())
                 .build());
         bot.executeAsync(AnswerCallbackQuery.builder()
                 .callbackQueryId(callbackQuery.getId())
@@ -173,6 +173,13 @@ public class HotelHandler {
             return;
         }
 
+        bot.executeAsync(
+                SendMessage.builder()
+                        .chatId(callbackQuery.getFrom().getId())
+                        .text("_Отель_ "+currentHotels.get(index).name+" "+currentHotels.get(index).stars)
+                        .parseMode(ParseMode.MARKDOWN)
+                        .build()
+        );
         for (List<InputMedia> medias : allMedias) {
             if (medias.size() > 1) {
                 bot.executeAsync(SendMediaGroup.builder()
@@ -199,6 +206,7 @@ public class HotelHandler {
                 .chatId(callbackQuery.getFrom().getId())
                 .photo(mediaService.getHotelFile(currentHotels.get(index)))
                 .caption(cardService.getHotelCard(currentHotels.get(index), false))
+                        .parseMode(ParseMode.MARKDOWN)
                 .replyMarkup(keyboardService.getHotelsKeyboard(index, hotelId, currentHotels.size()))
                 .build());
 
