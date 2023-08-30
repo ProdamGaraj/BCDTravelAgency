@@ -50,7 +50,7 @@ public class CardService {
             card.append(resort.description).append("\n");
 
         if (isLong) {
-            card.append("\n\n_Адрес_: ").append(resort.geo).append("\n");
+//            card.append("\n\n_Адрес_: ").append(resort.geo).append("\n");
 //            card.append("\n\n_Доступные активности_:\n" ).append(activity_list).append("\n");
 
         } else {
