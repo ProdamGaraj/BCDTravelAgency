@@ -401,6 +401,7 @@ public class KeyboardService {
     public ReplyKeyboardMarkup getPhoneKeyboard() {
         return ReplyKeyboardMarkup.builder()
                 .resizeKeyboard(true)
+                .isPersistent(true)
                 .keyboardRow(
                         new KeyboardRow(
                                 List.of(
