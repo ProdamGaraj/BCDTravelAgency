@@ -40,10 +40,10 @@ public class CardService {
 
     @SneakyThrows
     public String getResortCard(Resort resort, boolean isLong) {
-        StringBuilder activity_list = new StringBuilder();
-        for (Activity activity : resort.activities) {
-            activity_list.append("- ").append(activity.name).append("\n");
-        }
+//        StringBuilder activity_list = new StringBuilder();
+//        for (Activity activity : resort.activities) {
+//            activity_list.append("- ").append(activity.name).append("\n");
+//        }
 
         StringBuilder card = new StringBuilder(
               "*" +  resort.name + "*" + "\n\n");
@@ -51,7 +51,7 @@ public class CardService {
 
         if (isLong) {
             card.append("\n\n_Адрес_: ").append(resort.geo).append("\n");
-            card.append("\n\n_Доступные активности_:\n" ).append(activity_list).append("\n");
+//            card.append("\n\n_Доступные активности_:\n" ).append(activity_list).append("\n");
 
         } else {
             if (card.length() > 450) {
@@ -65,9 +65,19 @@ public class CardService {
     }
 
     @SneakyThrows
-    public String getCustomTourCard(CustomTour customTour) {
-        return customTour.name + "\n\n" +
-                customTour.description;
+    public String getCustomTourCard(CustomTour customTour, boolean isLong) {
+        StringBuilder card = new StringBuilder(customTour.name + "\n\n" +
+                customTour.description);
+
+        if (!isLong) {
+            if (card.length() > 450) {
+                card.setLength(450);
+                card.append("...");
+            }
+            card.append("\n\n_Подробнее по кнопке_");
+        }
+
+        return card.toString();
     }
 
     @SneakyThrows

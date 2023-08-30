@@ -304,17 +304,21 @@ public class KeyboardService {
         }
 
         return InlineKeyboardMarkup.builder()
+                .keyboardRow(List.of(
+                        InlineKeyboardButton.builder()
+                                .text(detailsButtonText)
+                                .callbackData("customTours_card/" + (customTourId))
+                                .build(),
+                        InlineKeyboardButton.builder()
+                                .text(showPhotoButtonText)
+                                .callbackData("customTours_media/" + (index) + "/" + (customTourId))
+                                .build()
+                ))
                 .keyboardRow(navigation_row)
                 .keyboardRow(List.of(
                         InlineKeyboardButton.builder()
                                 .text(confirmButtonText)
                                 .callbackData("customTours_select/" + (customTourId))
-                                .build()
-                ))
-                .keyboardRow(List.of(
-                        InlineKeyboardButton.builder()
-                                .text(showPhotoButtonText)
-                                .callbackData("customTours_media/" + (index) + "/" + (customTourId))
                                 .build()
                 ))
                 .keyboardRow(List.of(
