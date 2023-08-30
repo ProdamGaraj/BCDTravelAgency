@@ -104,7 +104,12 @@ public class HotelHandler {
     @SneakyThrows
     protected void starsHandler(CallbackQuery callbackQuery, DvgKiprBot bot) {
 
-        Stars stars = Stars.valueOf(callbackQuery.getData().split("/")[1]);
+        Stars stars;
+        if (callbackQuery.getData().endsWith("noMatter")) {
+            stars = null;
+        } else {
+            stars = Stars.valueOf(callbackQuery.getData().split("/")[1]);
+        }
 
         StateMachine usersState = stateMachineService.setStarsByUserId(callbackQuery.getFrom().getId(), stars);
 

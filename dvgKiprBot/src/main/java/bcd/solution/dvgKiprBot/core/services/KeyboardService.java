@@ -41,6 +41,7 @@ public class KeyboardService {
     private final String hotelsButtonText = "🏨 Отели 🏨";
     private final String customToursButtonText = "🗺️ Авторские туры 🗺️";
     private final String toListButtonText = "⬆️ К списку ⬆️️";
+    private final String toStarsButtonText = "⭐️ К звездам ⭐️";
     private final String goBackButtonText = "↪️ Назад ↩️";
     private final String tourConstructorButtonText = "🏨 Подобрать отели 🏨";
     private final String detailsButtonText = "📝 Подробнее";
@@ -70,7 +71,7 @@ public class KeyboardService {
                 .keyboardRow(List.of(
                         InlineKeyboardButton.builder()
                                 .text(noMatterButtonText)
-                                .callbackData("hotels_change/" + 0)
+                                .callbackData("hotels_stars/noMatter")
                                 .build()))
                 .keyboardRow(List.of(
                         InlineKeyboardButton.builder()
@@ -373,6 +374,10 @@ public class KeyboardService {
                         InlineKeyboardButton.builder()
                                 .text(restartButtonText)
                                 .callbackData("restart")
+                                .build(),
+                        InlineKeyboardButton.builder()
+                                .text(toStarsButtonText)
+                                .callbackData("hotels")
                                 .build()
                 ))
                 .build();
