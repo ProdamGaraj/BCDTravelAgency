@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
-import bcd.solution.dvgKiprBot.core.repository.ActivityRepo;
 import bcd.solution.dvgKiprBot.core.repository.CustomTourRepo;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardButton;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
@@ -20,9 +19,6 @@ import java.util.Set;
 
 @Service
 public class KeyboardService {
-
-    private final ActivityRepo activityRepo;
-
     private final CustomTourRepo customTourRepo;
 
     private final String rightArrowText = "Далее ➡️";
@@ -47,9 +43,7 @@ public class KeyboardService {
     private final String detailsButtonText = "📝 Подробнее";
 
     @Autowired
-    public KeyboardService(ActivityRepo activityRepo,
-                           CustomTourRepo customTourRepo) {
-        this.activityRepo = activityRepo;
+    public KeyboardService(CustomTourRepo customTourRepo) {
         this.customTourRepo = customTourRepo;
     }
 
