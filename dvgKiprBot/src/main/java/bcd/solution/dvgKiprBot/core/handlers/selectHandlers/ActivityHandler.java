@@ -67,7 +67,7 @@ public class ActivityHandler {
 //        Get user's state for current list of activities
 //        and get current activity
         StateMachine stateMachine = stateMachineService.getByUserId(callbackQuery.getFrom().getId());
-        List<Activity> activityList = stateMachine.resortGot
+        List<Activity> activityList = stateMachine.resort != null
                 ? stateMachine.resort.activities
                 : activityService.findAll();
 
