@@ -41,6 +41,7 @@ public class KeyboardService {
     private final String goBackButtonText = "↪️ Назад ↩️";
     private final String tourConstructorButtonText = "🏨 Подобрать отели 🏨";
     private final String detailsButtonText = "📝 Подробнее";
+    private final String chooseTourButtonText = "🗺️ Подобрать тур 🗺️";
 
     @Autowired
     public KeyboardService(CustomTourRepo customTourRepo) {
@@ -105,14 +106,14 @@ public class KeyboardService {
 
     public InlineKeyboardMarkup getTourChoosingKeyboard(boolean hasPhone, boolean isAuthorized) {
         InlineKeyboardMarkup.InlineKeyboardMarkupBuilder builder = InlineKeyboardMarkup.builder();
-//        if (true) {
         if (!isAuthorized) {
             builder.keyboardRow(List.of(InlineKeyboardButton.builder()
                     .text(authButtonText)
                     .callbackData("auth")
                     .build()));
         }
-        if (hasPhone) {
+//        if (hasPhone) {
+        if (true) {
             builder.keyboardRow(List.of(InlineKeyboardButton.builder()
                             .text(tourConstructorButtonText)
                             .callbackData("tour")
@@ -331,7 +332,6 @@ public class KeyboardService {
     }
 
     public InlineKeyboardMarkup getHotelsKeyboard(Integer index, Long hotelId, long size) {
-
         List<InlineKeyboardButton> navigation_row = new ArrayList<>();
         if (index > 0) {
             navigation_row.add(InlineKeyboardButton.builder()
@@ -351,7 +351,6 @@ public class KeyboardService {
         }
 
         return InlineKeyboardMarkup.builder()
-
                 .keyboardRow(List.of(
                         InlineKeyboardButton.builder()
                                 .text(detailsButtonText)
@@ -388,12 +387,12 @@ public class KeyboardService {
                         InlineKeyboardButton.builder()
                                 .text(phoneButtonText)
                                 .callbackData("auth_getPhone")
-                                .build()
-//                        InlineKeyboardButton.builder()
-//                                .text("Подобрать тур")
-//                                .callbackData("restart")
-//                                .build()
-                ))
+                                .build()))
+                .keyboardRow(List.of(
+                        InlineKeyboardButton.builder()
+                                .text(chooseTourButtonText)
+                                .callbackData("restart")
+                                .build()))
                 .build();
     }
 

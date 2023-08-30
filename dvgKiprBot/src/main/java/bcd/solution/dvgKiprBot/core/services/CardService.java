@@ -84,8 +84,10 @@ public class CardService {
     public String getManagerCard(StateMachine stateMachine) {
         StringBuilder card = new StringBuilder(
                 "Пользователь подобрал тур\n\n" +
-                        "Тег: @" + stateMachine.user.getLogin() + "\n" +
-                        "Номер телефона: " + stateMachine.user.getPhone() + "\n\n");
+                        "Тег: @" + stateMachine.user.getLogin() + "\n");
+        if (stateMachine.user.getPhone() != null) {
+            card.append("Номер телефона: ").append(stateMachine.user.getPhone()).append("\n\n");
+        }
 
         fillTourInfo(card, stateMachine);
 
