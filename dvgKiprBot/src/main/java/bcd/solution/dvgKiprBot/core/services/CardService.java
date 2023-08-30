@@ -11,11 +11,11 @@ public class CardService {
     @SneakyThrows
     public String getHotelCard(Hotel hotel, boolean isLong) {
         StringBuilder card = new StringBuilder(hotel.name + " " + hotel.stars.toString() + "\n\n" +
-                "Относится к курорту " + "*" + hotel.resort.name + "*" + "\n\n" +
+                "*" + "Курорт: " +  hotel.resort.name + "*" + "\n\n" +
                 hotel.description);
 
         if (isLong) {
-            card.append("\n\n_Активности_:\n");
+/*            card.append("\n\n_Активности_:\n");
             for (Activity activity : hotel.activities) {
                 card.append("- ").append(activity.name).append("\n");
             }
@@ -26,7 +26,7 @@ public class CardService {
             card.append("\n_Питание_:");
             for (Food food : hotel.food) {
                 card.append("- ").append(food).append("\n");
-            }
+            }*/
         } else {
             if (card.length() > 450) {
                 card.setLength(450);
