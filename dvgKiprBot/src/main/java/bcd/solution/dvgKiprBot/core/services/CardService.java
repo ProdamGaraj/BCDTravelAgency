@@ -15,21 +15,24 @@ public class CardService {
                 hotel.description);
 
         if (isLong) {
-/*            card.append("\n\n_Активности_:\n");
-            for (Activity activity : hotel.activities) {
-                card.append("- ").append(activity.name).append("\n");
-            }
-            card.append("\n_Особенности_:\n");
-            for (HotelFeature feature : hotel.features) {
-                card.append("- ").append(feature.name).append("\n");
-            }
-            card.append("\n_Питание_:");
-            for (Food food : hotel.food) {
-                card.append("- ").append(food).append("\n");
-            }*/
+//            TODO: find solution
+//            card.append("\n\n_/*Активности_:\n");
+//            for (Activity activity : hotel.activities) {
+//                card.append("- ").append(activity.name).append("\n");
+//            }
+//            card.append("\n_Особенности_:\n");
+//            for (HotelFeature feature : hotel.features) {
+//                card.append("- ").append(feature.name).append("\n");
+//            }
+//            card.append("\n_Питание_:");
+//            for (Food food : hotel.food) {
+//                card.append("- ").append(food).append("\n");
+//            }
         } else {
             if (card.length() > 450) {
                 card.setLength(450);
+                int index = card.lastIndexOf("\n");
+                card.setLength(index + 1);
                 card.append("...");
             }
             card.append("\n\n_Подробнее по кнопке_");

@@ -131,7 +131,7 @@ public class HotelHandler {
                 .chatId(callbackQuery.getMessage().getChatId())
                 .messageId(callbackQuery.getMessage().getMessageId())
                 .media(mediaService.getHotelMedia(currentHotels.get(0)))
-                .build());
+                .build()).join();
         bot.executeAsync(EditMessageCaption.builder()
                 .chatId(callbackQuery.getMessage().getChatId())
                 .messageId(callbackQuery.getMessage().getMessageId())
