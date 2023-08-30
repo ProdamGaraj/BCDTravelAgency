@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class ActivityService {
     private final ActivityRepo activityRepo;
@@ -23,5 +25,10 @@ public class ActivityService {
     @Async
     public Activity getById(Long activityId) {
         return activityRepo.getReferenceById(activityId);
+    }
+
+    @Async
+    public List<Activity> findAll() {
+        return activityRepo.findAll();
     }
 }

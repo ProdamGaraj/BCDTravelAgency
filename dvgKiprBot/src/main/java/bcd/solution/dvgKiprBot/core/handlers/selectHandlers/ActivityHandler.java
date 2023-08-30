@@ -16,6 +16,8 @@ import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageCa
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageMedia;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 
+import java.util.List;
+
 @Component
 public class ActivityHandler {
     private final StateMachineService stateMachineService;
@@ -65,6 +67,10 @@ public class ActivityHandler {
 //        Get user's state for current list of activities
 //        and get current activity
         StateMachine stateMachine = stateMachineService.getByUserId(callbackQuery.getFrom().getId());
+        List<Activity> activityList = stateMachine.resortGot
+                ? stateMachine.resort.activities
+                : activityService.findAll();
+
 //        Build activity card with selected activities
         StringBuilder caption = new StringBuilder("Выбранные активности: \n");
         for (Activity chousen_activity : stateMachine.activities) {
@@ -83,7 +89,8 @@ public class ActivityHandler {
                 .chatId(callbackQuery.getMessage().getChatId())
                 .messageId(callbackQuery.getMessage().getMessageId())
                 .caption(caption.toString())
-                .replyMarkup(keyboardService.getActivitiesKeyboard(stateMachine.activities))
+                .replyMarkup(keyboardService.getActivitiesKeyboard(
+                        stateMachine.activities, activityList))
                 .build()).join();
         bot.executeAsync(AnswerCallbackQuery.builder()
                 .callbackQueryId(callbackQuery.getId()).build());

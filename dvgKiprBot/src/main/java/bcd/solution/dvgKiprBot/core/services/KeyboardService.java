@@ -167,8 +167,9 @@ public class KeyboardService {
                 .build();
     }
 
-    public InlineKeyboardMarkup getActivitiesKeyboard(List<Activity> selectedActivities) {
-        List<Activity> allActivities = activityRepo.findAll();
+    public InlineKeyboardMarkup getActivitiesKeyboard(List<Activity> selectedActivities,
+                                                      List<Activity> allActivities) {
+//        List<Activity> allActivities = activityRepo.findAll();
         Set<Activity> activitySet = new HashSet<>(selectedActivities);
 
         InlineKeyboardMarkup.InlineKeyboardMarkupBuilder builder = InlineKeyboardMarkup.builder();
