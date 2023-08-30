@@ -228,7 +228,6 @@ public class KeyboardService {
         }
 
         return InlineKeyboardMarkup.builder()
-                .keyboardRow(navigation_row)
                 .keyboardRow(List.of(
                         InlineKeyboardButton.builder()
                                 .text(detailsButtonText)
@@ -239,6 +238,7 @@ public class KeyboardService {
                                 .callbackData("resorts_media/" + (index) + "/" + (resortId))
                                 .build()
                 ))
+                .keyboardRow(navigation_row)
                 .keyboardRow(List.of(
                         InlineKeyboardButton.builder()
                                 .text(confirmButtonText)
@@ -353,7 +353,7 @@ public class KeyboardService {
         }
 
         return InlineKeyboardMarkup.builder()
-                .keyboardRow(navigation_row)
+
                 .keyboardRow(List.of(
                         InlineKeyboardButton.builder()
                                 .text(detailsButtonText)
@@ -364,6 +364,7 @@ public class KeyboardService {
                                 .callbackData("hotels_media/" + (index) + "/" + (hotelId))
                                 .build()
                 ))
+                .keyboardRow(navigation_row)
                 .keyboardRow(List.of(
                         InlineKeyboardButton.builder()
                                 .text(confirmButtonText)

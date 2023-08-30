@@ -96,7 +96,7 @@ public class CardService {
                 .append(") для расчёта выбранного тура или свяжитесь с нами по номерам:");
         if (!contactPhones.isEmpty()) {
             for (String phone : contactPhones) {
-                card.append("\n- ").append(phone);
+                card.append("\n ").append(phone);
             }
         }
         return card.toString();
