@@ -22,9 +22,9 @@ services:
       context: .
     env_file: environment.env
     volumes:
-      - /home/testprod/dvgKiprBot/pgdata:/var/lib/postgresql/data
+      - /home/BCDTravelAgency/pgdata:/var/lib/postgresql/data
     restart: unless-stopped
     ports:
-      - "5433:5432"
+      - "5432:5432"
     networks:
       - default
