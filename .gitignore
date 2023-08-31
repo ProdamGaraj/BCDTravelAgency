@@ -5,6 +5,7 @@ target/
 !**/src/test/**/target/
 *.env
 */application.properties
+/backups/*
 
 ### STS ###
 .apt_generated
