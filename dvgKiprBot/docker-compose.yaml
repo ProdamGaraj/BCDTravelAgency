@@ -11,7 +11,7 @@ services:
     env_file: environment.env
   db:
     container_name: PostgreSQL
-    image: "postgres:latest"
+    image: postgres:14-alpine
     env_file: environment.env
     volumes:
       - /home/BCDTravelAgency/pgdata:/var/lib/postgresql/data
