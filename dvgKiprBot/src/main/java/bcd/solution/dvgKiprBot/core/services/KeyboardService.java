@@ -38,7 +38,7 @@ public class KeyboardService {
     private final String customToursButtonText = "🗺️ Авторские туры 🗺️";
     private final String toListButtonText = "⬆️ К списку ⬆️️";
     private final String toStarsButtonText = "⭐️ К звездам ⭐️";
-    private final String goBackButtonText = "↪️ Назад ↩️";
+    private final String goBackButtonText = "↪️ Скрыть подробную информацию ↩️";
     private final String tourConstructorButtonText = "🏨 Подобрать отели 🏨";
     private final String detailsButtonText = "📝 Подробнее";
     private final String chooseTourButtonText = "🗺️ Подобрать тур 🗺️";
