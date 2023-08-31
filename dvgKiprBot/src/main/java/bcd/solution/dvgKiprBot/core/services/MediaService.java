@@ -8,11 +8,12 @@ import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.objects.InputFile;
 import org.telegram.telegrambots.meta.api.objects.media.InputMedia;
 import org.telegram.telegrambots.meta.api.objects.media.InputMediaPhoto;
-import bcd.solution.dvgKiprBot.core.models.Activity;
 import bcd.solution.dvgKiprBot.core.models.CustomTour;
 import bcd.solution.dvgKiprBot.core.models.Hotel;
 import bcd.solution.dvgKiprBot.core.models.Resort;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
 import java.io.*;
 import java.util.*;
 
@@ -26,7 +27,7 @@ public class MediaService {
 
     //TODO: absolute path is piece of shit has to be rewrote quickly!
     @SneakyThrows
-    public InputMedia updateMediaForStart(){
+    public InputMedia getStartMedia(){
         InputMedia file = new InputMediaPhoto();
         file.setMedia((new ClassPathResource("images/kiprstart.jpg")).getInputStream(), "kiprstart.jpg");
         //TODO logic
@@ -90,8 +91,36 @@ public class MediaService {
         return result;
     }
 
-
     @SneakyThrows
+    private InputMedia getMediaByPath(String path) {
+        Resource[] resources = this.resourcePatternResolver.getResources("classpath:" + path + "*");
+        Optional<Resource> resource = Arrays.stream(resources)
+                .filter(resource1 -> Objects.requireNonNull(resource1.getFilename()).contains("."))
+                .findFirst();
+        if (resource.isEmpty()) {
+            return getNoPhotoMedia();
+        }
+
+        // Load the image from the resource
+        BufferedImage originalImage = ImageIO.read(resource.get().getInputStream());
+
+        // Resize the image to the desired dimensions
+        BufferedImage resizedImage = new BufferedImage(400, 300, BufferedImage.TYPE_INT_ARGB);
+        resizedImage.createGraphics().drawImage(originalImage, 0, 0, 400, 300, null);
+
+        // Convert the resized image to bytes
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        ImageIO.write(resizedImage, "png", outputStream);
+
+        // Create InputMediaPhoto from the resized image
+        InputMediaPhoto media = new InputMediaPhoto();
+        media.setMedia(new ByteArrayInputStream(outputStream.toByteArray()), "photo.png");
+
+        return media;
+    }
+
+
+/*    @SneakyThrows
     private InputMedia getMediaByPath(String path) {
         Resource[] resources = this.resourcePatternResolver.getResources("classpath:" + path + "*");
         Optional<Resource> resource = Arrays.stream(resources)
@@ -103,7 +132,7 @@ public class MediaService {
         InputMedia media = new InputMediaPhoto();
         media.setMedia(resource.get().getInputStream(), resource.get().getFilename());
         return media;
-    }
+    }*/
 
     @SneakyThrows
     public List<List<InputMedia>> getHotelMedias(Hotel hotel) {
@@ -119,8 +148,10 @@ public class MediaService {
     }
 
     @SneakyThrows
-    public InputMedia getActivityMedia(Activity activity) {
-        return getMediaByPath(activity.media);
+    public InputMedia getActivityMedia() {
+        InputMedia file = new InputMediaPhoto();
+        file.setMedia((new ClassPathResource("images/00.jpg")).getInputStream(), "activity.png");
+        return file;
     }
 
     @SneakyThrows
@@ -136,7 +167,7 @@ public class MediaService {
     @SneakyThrows
     public InputMedia getCustomTourMedia(CustomTour customTour) {
         if (customTour.media == null) {
-            return updateMediaForStart();
+            return getStartMedia();
         }
         return getMediaByPath(customTour.media);
     }
@@ -179,7 +210,24 @@ public class MediaService {
     }
 
     @SneakyThrows
-    public InputFile getAuthMedia(){
+    public InputFile getAuthFile(){
         return getStartMessageMedia();
+    }
+
+    @SneakyThrows
+    public InputMedia getAuthMedia(){
+        return getStartMedia();
+    }
+
+    @SneakyThrows
+    public InputMedia getDefaultResortMedia() {
+//        TODO: add default resort media
+        return getStartMedia();
+    }
+    
+    @SneakyThrows
+    public InputMedia getTourConstructorMedia() {
+//        TODO: add default constructor media
+        return getStartMedia();
     }
 }

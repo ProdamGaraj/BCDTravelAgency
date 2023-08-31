@@ -3,15 +3,15 @@ package bcd.solution.dvgKiprBot.core.handlers.selectHandlers;
 import bcd.solution.dvgKiprBot.DvgKiprBot;
 import bcd.solution.dvgKiprBot.core.handlers.FeedbackHandler;
 import bcd.solution.dvgKiprBot.core.models.CustomTour;
-import bcd.solution.dvgKiprBot.core.services.CustomToursService;
-import bcd.solution.dvgKiprBot.core.services.KeyboardService;
-import bcd.solution.dvgKiprBot.core.services.MediaService;
-import bcd.solution.dvgKiprBot.core.services.StateMachineService;
+import bcd.solution.dvgKiprBot.core.models.Resort;
+import bcd.solution.dvgKiprBot.core.services.*;
 import lombok.SneakyThrows;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.AnswerCallbackQuery;
+import org.telegram.telegrambots.meta.api.methods.ParseMode;
 import org.telegram.telegrambots.meta.api.methods.send.SendMediaGroup;
+import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.DeleteMessage;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageCaption;
@@ -29,17 +29,22 @@ public class CustomTourHandler {
     private final MediaService mediaService;
     private final CustomToursService customToursService;
     private final StateMachineService stateMachineService;
+    private final CardService cardService;
     private final FeedbackHandler feedbackHandler;
+
+    private final String noTourText = "Авторский тур не найден 🥲, пожалуйста, попрубойте позже!";
 
     public CustomTourHandler(KeyboardService keyboardService,
                              MediaService mediaService,
                              CustomToursService customToursService,
                              StateMachineService stateMachineService,
+                             CardService cardService,
                              FeedbackHandler feedbackHandler) {
         this.keyboardService = keyboardService;
         this.mediaService = mediaService;
         this.customToursService = customToursService;
         this.stateMachineService = stateMachineService;
+        this.cardService = cardService;
         this.feedbackHandler = feedbackHandler;
     }
 
@@ -51,9 +56,34 @@ public class CustomTourHandler {
         switch (action) {
             case "customTours" -> defaultHandler(callbackQuery, bot);
             case "customTours_select" -> selectHandler(callbackQuery, bot);
+            case "customTours_card" -> cardHandler(callbackQuery, bot);
             case "customTours_change" -> changeHandler(callbackQuery, bot);
             case "customTours_media" -> mediaHandler(callbackQuery, bot);
         }
+    }
+
+    @Async
+    @SneakyThrows
+    protected void cardHandler(CallbackQuery callbackQuery, DvgKiprBot bot) {
+        Long customTourId = Long.parseLong(callbackQuery.getData().split("/")[1]);
+        Optional<CustomTour> selectedTour = customToursService.getById(customTourId);
+        if (selectedTour.isEmpty()) {
+            bot.executeAsync(AnswerCallbackQuery.builder()
+                    .callbackQueryId(callbackQuery.getId())
+                    .showAlert(true).text(noTourText)
+                    .build());
+            return;
+        }
+
+        bot.executeAsync(SendMessage.builder()
+                .chatId(callbackQuery.getMessage().getChatId())
+                .text(cardService.getCustomTourCard(selectedTour.get(), true))
+                .parseMode(ParseMode.MARKDOWN)
+                .replyMarkup(keyboardService.getDeleteKeyboard())
+                .build());
+        bot.executeAsync(AnswerCallbackQuery.builder()
+                .callbackQueryId(callbackQuery.getId())
+                .build());
     }
 
     @Async
@@ -109,7 +139,7 @@ public class CustomTourHandler {
         bot.executeAsync(SendPhoto.builder()
                 .chatId(callbackQuery.getFrom().getId())
                 .photo(mediaService.getCustomTourFile(customTour))
-                .caption(customTour.toString())
+                .caption(cardService.getCustomTourCard(customTour, false))
                 .replyMarkup(keyboardService.getCustomToursKeyboard(index, customTourId))
                 .build());
         bot.executeAsync(AnswerCallbackQuery.builder()
@@ -128,13 +158,14 @@ public class CustomTourHandler {
                 .chatId(callbackQuery.getMessage().getChatId())
                 .messageId(callbackQuery.getMessage().getMessageId())
                 .media(mediaService.getCustomTourMedia(currentTour))
-                .build());
+                .build()).join();
         bot.executeAsync(EditMessageCaption.builder()
                 .chatId(callbackQuery.getMessage().getChatId())
                 .messageId(callbackQuery.getMessage().getMessageId())
-                .caption(currentTour.toString())
+                .caption(cardService.getCustomTourCard(currentTour, false))
+                .parseMode(ParseMode.MARKDOWN)
                 .replyMarkup(keyboardService.getCustomToursKeyboard(index, currentTour.getId()))
-                .build());
+                .build()).join();
         bot.executeAsync(AnswerCallbackQuery.builder()
                 .callbackQueryId(callbackQuery.getId()).build());
 
@@ -168,13 +199,14 @@ public class CustomTourHandler {
                 .chatId(callbackQuery.getMessage().getChatId())
                 .messageId(callbackQuery.getMessage().getMessageId())
                 .media(mediaService.getCustomTourMedia(currentTour))
-                .build());
+                .build()).join();
         bot.executeAsync(EditMessageCaption.builder()
                 .chatId(callbackQuery.getMessage().getChatId())
                 .messageId(callbackQuery.getMessage().getMessageId())
-                .caption(currentTour.toString())
+                .caption(cardService.getCustomTourCard(currentTour, false))
+                .parseMode(ParseMode.MARKDOWN)
                 .replyMarkup(keyboardService.getCustomToursKeyboard(0, currentTour.getId()))
-                .build());
+                .build()).join();
         bot.executeAsync(AnswerCallbackQuery.builder()
                 .callbackQueryId(callbackQuery.getId()).build());
     }

@@ -1,6 +1,7 @@
 package bcd.solution.dvgKiprBot.core.handlers;
 
 import bcd.solution.dvgKiprBot.DvgKiprBot;
+import bcd.solution.dvgKiprBot.core.models.StateMachine;
 import bcd.solution.dvgKiprBot.core.services.*;
 import bcd.solution.dvgKiprBot.core.handlers.selectHandlers.ActivityHandler;
 import bcd.solution.dvgKiprBot.core.handlers.selectHandlers.CustomTourHandler;
@@ -11,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.AnswerCallbackQuery;
+import org.telegram.telegrambots.meta.api.methods.updatingmessages.DeleteMessage;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageCaption;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageMedia;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageReplyMarkup;
@@ -66,8 +68,12 @@ public class CallbackQueryHandler {
         String callback_action = callbackQuery.getData().split("_")[0];
 
         switch (callback_action) {
+            case "null" -> nothingHandler(callbackQuery, bot);
             case "restart" -> restartHandler(callbackQuery, bot);
             case "start" -> startHandler(callbackQuery, bot);
+            case "delete" -> deleteHandler(callbackQuery, bot);
+            case "tour" -> tourConstructorHandler(callbackQuery, bot);
+            case "select" -> selectHandler(callbackQuery, bot);
             case "auth" -> authHandler.handleCallback(callbackQuery, bot);
             case "resorts" -> resortHandler.handleResortCallback(callbackQuery, bot);
             case "customTours" -> customTourHandler.handleCustomTourCallback(callbackQuery, bot);
@@ -83,21 +89,97 @@ public class CallbackQueryHandler {
 
     @Async
     @SneakyThrows
+    protected void deleteHandler(CallbackQuery callbackQuery, DvgKiprBot bot) {
+        bot.executeAsync(DeleteMessage.builder()
+                        .chatId(callbackQuery.getMessage().getChatId())
+                        .messageId(callbackQuery.getMessage().getMessageId())
+                .build());
+        bot.executeAsync(AnswerCallbackQuery.builder()
+                .callbackQueryId(callbackQuery.getId())
+                .build());
+    }
+
+    @Async
+    @SneakyThrows
+    protected void selectHandler(CallbackQuery callbackQuery, DvgKiprBot bot) {
+        String data = callbackQuery.getData();
+        String model = data.split("/")[0].split("_")[1];
+        StateMachine stateMachine;
+        switch (model) {
+            case "resort" -> {
+                stateMachine = stateMachineService.setResortGotByIdByUserId(callbackQuery.getFrom().getId());
+                if (!data.endsWith("noMatter")) {
+                    stateMachine = resortHandler.selectHandler(callbackQuery, bot);
+                }
+                if (stateMachine == null) {
+                    return;
+                }
+                if (!stateMachine.activitiesGot) {
+                    activityHandler.defaultHandler(callbackQuery, bot);
+                    return;
+                }
+            }
+            case "activity" -> {
+                if (data.endsWith("noMatter")) {
+                    stateMachineService.clearActivitiesByUserId(callbackQuery.getFrom().getId());
+                }
+                stateMachine = stateMachineService.setActivityGotByIdByUserId(callbackQuery.getFrom().getId());
+                if (stateMachine == null) {
+                    return;
+                }
+                if (!stateMachine.resortGot) {
+                    resortHandler.defaultHandler(callbackQuery, bot);
+                    return;
+                }
+            }
+        }
+        hotelHandler.defaultHandler(callbackQuery, bot);
+    }
+
+    @Async
+    @SneakyThrows
+    protected void tourConstructorHandler(CallbackQuery callbackQuery, DvgKiprBot bot) {
+        bot.executeAsync(EditMessageMedia.builder()
+                .chatId(callbackQuery.getMessage().getChatId())
+                .messageId(callbackQuery.getMessage().getMessageId())
+                .media(mediaService.getTourConstructorMedia())
+                .build()).join();
+        bot.executeAsync(EditMessageCaption.builder()
+                .chatId(callbackQuery.getMessage().getChatId())
+                .messageId(callbackQuery.getMessage().getMessageId())
+                .caption("От чего Вы хотите отталкиваться при подборе отеля?")
+                .replyMarkup(keyboardService.getTourConstructorKeyboard())
+                .build()).join();
+        bot.executeAsync(AnswerCallbackQuery.builder()
+                .callbackQueryId(callbackQuery.getId())
+                .build());
+    }
+
+    @Async
+    @SneakyThrows
+    protected void nothingHandler(CallbackQuery callbackQuery, DvgKiprBot bot) {
+        bot.executeAsync(AnswerCallbackQuery.builder()
+                .callbackQueryId(callbackQuery.getId()).build());
+    }
+
+    @Async
+    @SneakyThrows
     protected void restartHandler(CallbackQuery callbackQuery, DvgKiprBot bot) {
         stateMachineService.clearStateByUserId(callbackQuery.getFrom().getId());
 
         bot.executeAsync(EditMessageMedia.builder()
                 .chatId(callbackQuery.getMessage().getChatId())
                 .messageId(callbackQuery.getMessage().getMessageId())
-                .media(mediaService.updateMediaForStart())
-                .build());
+                .media(mediaService.getStartMedia())
+                .build()).join();
         bot.executeAsync(EditMessageCaption.builder()
                 .chatId(callbackQuery.getMessage().getChatId())
                 .messageId(callbackQuery.getMessage().getMessageId())
                 .caption(commandsHandler.inviteString)
                 .replyMarkup(keyboardService.getTourChoosingKeyboard(
-                        userService.hasPhoneById(callbackQuery.getFrom().getId())))
-                .build());
+                        userService.hasPhoneById(callbackQuery.getFrom().getId()),
+                        userService.isAuthorized(callbackQuery.getFrom().getId())))
+                .build()).join();
         bot.executeAsync(AnswerCallbackQuery.builder()
                 .callbackQueryId(callbackQuery.getId()).build());
     }
@@ -105,17 +187,36 @@ public class CallbackQueryHandler {
     @Async
     @SneakyThrows
     protected void startHandler(CallbackQuery callbackQuery, DvgKiprBot bot) {
+        if (!userService.hasPhoneById(callbackQuery.getFrom().getId())) {
+            bot.executeAsync(EditMessageMedia.builder()
+                    .chatId(callbackQuery.getMessage().getChatId())
+                    .messageId(callbackQuery.getMessage().getMessageId())
+                    .media(mediaService.getStartMedia())
+                    .build()).join();
+            bot.executeAsync(EditMessageCaption.builder()
+                    .chatId(callbackQuery.getMessage().getChatId())
+                    .messageId(callbackQuery.getMessage().getMessageId())
+                    .caption("Для доступа к полному функционалу бота необходимо указать номер телефона."
+//                        + " Но Вы все равно можете выбрать один из авторских туров"
+                    )
+//                    .caption("Для повышения качесва обслуживания нам неоходим Ваш номер телефона")
+                    .replyMarkup(keyboardService.getStarterKeyboard())
+                    .build()).join();
+
+            bot.executeAsync(AnswerCallbackQuery.builder()
+                    .callbackQueryId(callbackQuery.getId()).build());
+            return;
+        }
+
         commandsHandler.choosingMessageSender(
                 callbackQuery.getMessage().getChatId(),
                 bot,
-                userService.hasPhoneById(callbackQuery.getFrom().getId()));
+                userService.hasPhoneById(callbackQuery.getFrom().getId()),
+                userService.isAuthorized(callbackQuery.getFrom().getId()));
         bot.executeAsync(EditMessageReplyMarkup.builder()
-                        .chatId(callbackQuery.getMessage().getChatId())
-                        .messageId(callbackQuery.getMessage().getMessageId())
-                        .replyMarkup(null)
+                .chatId(callbackQuery.getMessage().getChatId())
+                .messageId(callbackQuery.getMessage().getMessageId())
+                .replyMarkup(null)
                 .build());
-
-        bot.executeAsync(AnswerCallbackQuery.builder()
-                .callbackQueryId(callbackQuery.getId()).build());
     }
 }

@@ -72,9 +72,35 @@ public class StateMachineService {
         Activity activity = activityRepo.getReferenceById(activityId);
         StateMachine stateMachine = getOrAddIfNotExists(userId);
 
+        if (stateMachine.activities == null) {
+            stateMachine.activities = new ArrayList<>();
+        }
         stateMachine.activities.add(activity);
         stateMachineRepo.save(stateMachine);
+    }
 
+    @Async
+    public StateMachine clearActivitiesByUserId(Long userId) {
+        StateMachine stateMachine = getOrAddIfNotExists(userId);
+        stateMachine.activities.clear();
+        stateMachineRepo.save(stateMachine);
+        return stateMachine;
+    }
+
+    @Async
+    public StateMachine setActivityGotByIdByUserId(Long userId) {
+        StateMachine stateMachine = getOrAddIfNotExists(userId);
+        stateMachine.activitiesGot = true;
+        stateMachineRepo.save(stateMachine);
+        return stateMachine;
+    }
+
+    @Async
+    public StateMachine setResortGotByIdByUserId(Long userId) {
+        StateMachine stateMachine = getOrAddIfNotExists(userId);
+        stateMachine.resortGot = true;
+        stateMachineRepo.save(stateMachine);
+        return stateMachine;
     }
 
     @Async
@@ -84,10 +110,14 @@ public class StateMachineService {
     }
 
     @Async
-    public void setResortByUserId(Resort resort, Long userId) {
+    public StateMachine setResortByUserId(Resort resort, Long userId) {
         StateMachine userState = getByUserId(userId);
         userState.resort = resort;
         stateMachineRepo.save(userState);
+        if (!userState.activitiesGot) {
+            userState.activities = null;
+        }
+        return userState;
     }
 
     @Async
@@ -111,41 +141,6 @@ public class StateMachineService {
         stateMachineRepo.save(stateMachine);
     }
 
-    private void fillTourInfo(StringBuilder card, StateMachine stateMachine) {
-        if (stateMachine.customTour != null) {
-            card.append("Авторский тур: ").append(stateMachine.customTour.name).append("\n\n");
-        } else {
-            if (stateMachine.resort != null) {
-                card.append("Курорт: ").append(stateMachine.resort.name).append("\n");
-            }
-            card.append("Отель: ").append(stateMachine.hotel.name).append("\n\n");
-        }
-    }
-
-    @Async
-    public String getManagerCardByUserId(Long userId) {
-        StateMachine stateMachine = getOrAddIfNotExists(userId);
-        StringBuilder card = new StringBuilder("Пользователь @" + stateMachine.user.getLogin() + " подобрал тур:\n\n");
-
-        fillTourInfo(card, stateMachine);
-
-        card.append("Вскоре он с Вами свяжется для завершения оформления тура.");
-        return card.toString();
-    }
-
-    @Async
-    public String getUserCardByUserId(Long userId, String managerUsername) {
-        StateMachine stateMachine = getOrAddIfNotExists(userId);
-        StringBuilder card = new StringBuilder("Спасибо, что выбрали нас!\n\nВаш выбор:\n");
-
-        fillTourInfo(card, stateMachine);
-
-        card.append("Обратитесь к менеджеру (@")
-                .append(managerUsername)
-                .append(") для оформления выбранного тура");
-        return card.toString();
-    }
-
     @Async
     public StateMachine setStarsByUserId(Long userId, Stars stars) {
         StateMachine stateMachine = getOrAddIfNotExists(userId);
@@ -154,4 +149,5 @@ public class StateMachineService {
 
         return stateMachine;
     }
+
 }

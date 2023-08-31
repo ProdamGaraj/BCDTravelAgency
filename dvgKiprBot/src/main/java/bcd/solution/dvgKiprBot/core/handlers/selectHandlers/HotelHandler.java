@@ -5,15 +5,14 @@ import bcd.solution.dvgKiprBot.core.handlers.FeedbackHandler;
 import bcd.solution.dvgKiprBot.core.models.Hotel;
 import bcd.solution.dvgKiprBot.core.models.Stars;
 import bcd.solution.dvgKiprBot.core.models.StateMachine;
-import bcd.solution.dvgKiprBot.core.services.HotelService;
-import bcd.solution.dvgKiprBot.core.services.KeyboardService;
-import bcd.solution.dvgKiprBot.core.services.MediaService;
-import bcd.solution.dvgKiprBot.core.services.StateMachineService;
+import bcd.solution.dvgKiprBot.core.services.*;
 import lombok.SneakyThrows;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.AnswerCallbackQuery;
+import org.telegram.telegrambots.meta.api.methods.ParseMode;
 import org.telegram.telegrambots.meta.api.methods.send.SendMediaGroup;
+import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.DeleteMessage;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageCaption;
@@ -31,17 +30,21 @@ public class HotelHandler {
     private final MediaService mediaService;
     private final HotelService hotelService;
     private final StateMachineService stateMachineService;
+    private final CardService cardService;
     private final FeedbackHandler feedbackHandler;
+    private final String noHotelText = "По Вашим параметрам ничего не найдено 🥲";
 
     public HotelHandler(KeyboardService keyboardService,
                         MediaService mediaService,
                         HotelService hotelService,
                         StateMachineService stateMachineService,
+                        CardService cardService,
                         FeedbackHandler feedbackHandler) {
         this.keyboardService = keyboardService;
         this.mediaService = mediaService;
         this.hotelService = hotelService;
         this.stateMachineService = stateMachineService;
+        this.cardService = cardService;
         this.feedbackHandler = feedbackHandler;
     }
 
@@ -52,6 +55,7 @@ public class HotelHandler {
         String action = callbackQuery.getData().split("/")[0];
         switch (action) {
             case "hotels" -> defaultHandler(callbackQuery, bot);
+            case "hotels_card" -> cardHandler(callbackQuery, bot);
             case "hotels_stars" -> starsHandler(callbackQuery, bot);
             case "hotels_select" -> selectHandler(callbackQuery, bot);
             case "hotels_change" -> changeHandler(callbackQuery, bot);
@@ -71,22 +75,54 @@ public class HotelHandler {
                 .build());
     }
 
+    @Async
+    @SneakyThrows
+    protected void cardHandler(CallbackQuery callbackQuery, DvgKiprBot bot) {
+        Long hotelId = Long.parseLong(callbackQuery.getData().split("/")[1]);
+        Optional<Hotel> selectedHotel = hotelService.getById(hotelId);
+        if (selectedHotel.isEmpty()) {
+            bot.executeAsync(AnswerCallbackQuery.builder()
+                    .callbackQueryId(callbackQuery.getId())
+                    .showAlert(true).text(noHotelText)
+                    .build());
+            return;
+        }
+
+        bot.executeAsync(SendMessage.builder()
+                .chatId(callbackQuery.getMessage().getChatId())
+                .text(cardService.getHotelCard(selectedHotel.get(), true))
+                .parseMode(ParseMode.MARKDOWN)
+                .replyMarkup(keyboardService.getDeleteKeyboard())
+                .build());
+        bot.executeAsync(AnswerCallbackQuery.builder()
+                .callbackQueryId(callbackQuery.getId())
+                .build());
+
+    }
 
     @Async
     @SneakyThrows
-    public void starsHandler(CallbackQuery callbackQuery, DvgKiprBot bot) {
+    protected void starsHandler(CallbackQuery callbackQuery, DvgKiprBot bot) {
 
-        Stars stars = Stars.valueOf(callbackQuery.getData().split("/")[1]);
+        Stars stars;
+        if (callbackQuery.getData().endsWith("noMatter")) {
+            stars = null;
+        } else {
+            stars = Stars.valueOf(callbackQuery.getData().split("/")[1]);
+        }
 
         StateMachine usersState = stateMachineService.setStarsByUserId(callbackQuery.getFrom().getId(), stars);
 
 
-        List<Hotel> currentHotels = hotelService.findByResortAndStars(usersState.resort, stars);
+        List<Hotel> currentHotels = hotelService.findByResortAndActivitiesAndStars(
+                usersState.resort,
+                usersState.activities,
+                stars);
 
         if (currentHotels.isEmpty()) {
             bot.executeAsync(AnswerCallbackQuery.builder()
                     .callbackQueryId(callbackQuery.getId())
-                    .showAlert(true).text("Отелей не найдено, попробуйте позже")
+                    .showAlert(true).text(noHotelText)
                     .build());
             return;
         }
@@ -95,11 +131,12 @@ public class HotelHandler {
                 .chatId(callbackQuery.getMessage().getChatId())
                 .messageId(callbackQuery.getMessage().getMessageId())
                 .media(mediaService.getHotelMedia(currentHotels.get(0)))
-                .build());
+                .build()).join();
         bot.executeAsync(EditMessageCaption.builder()
                 .chatId(callbackQuery.getMessage().getChatId())
                 .messageId(callbackQuery.getMessage().getMessageId())
-                .caption(currentHotels.get(0).toString())
+                .caption(cardService.getHotelCard(currentHotels.get(0), false))
+                .parseMode(ParseMode.MARKDOWN)
                 .replyMarkup(keyboardService.getHotelsKeyboard(
                         0,
                         currentHotels.get(0).getId(),
@@ -118,7 +155,8 @@ public class HotelHandler {
         Long hotelId = Long.parseLong(dataArray[2]);
 
         StateMachine stateMachine = stateMachineService.getByUserId(callbackQuery.getFrom().getId());
-        List<Hotel> currentHotels = hotelService.findByResort(stateMachine.resort);
+        List<Hotel> currentHotels = hotelService.findByResortAndActivitiesAndStars(
+                stateMachine.resort, stateMachine.activities, stateMachine.stars);
         List<List<InputMedia>> allMedias;
         try {
             allMedias = mediaService.getHotelMedias(currentHotels.get(index));
@@ -140,6 +178,13 @@ public class HotelHandler {
             return;
         }
 
+        bot.executeAsync(
+                SendMessage.builder()
+                        .chatId(callbackQuery.getFrom().getId())
+                        .text("_Отель_ "+currentHotels.get(index).name+" "+currentHotels.get(index).stars)
+                        .parseMode(ParseMode.MARKDOWN)
+                        .build()
+        );
         for (List<InputMedia> medias : allMedias) {
             if (medias.size() > 1) {
                 bot.executeAsync(SendMediaGroup.builder()
@@ -165,7 +210,8 @@ public class HotelHandler {
         bot.executeAsync(SendPhoto.builder()
                 .chatId(callbackQuery.getFrom().getId())
                 .photo(mediaService.getHotelFile(currentHotels.get(index)))
-                .caption(currentHotels.get(index).toString())
+                .caption(cardService.getHotelCard(currentHotels.get(index), false))
+                        .parseMode(ParseMode.MARKDOWN)
                 .replyMarkup(keyboardService.getHotelsKeyboard(index, hotelId, currentHotels.size()))
                 .build());
 
@@ -174,41 +220,6 @@ public class HotelHandler {
                 .build());
     }
 
-//
-//    @Async
-//    @SneakyThrows
-//    public void defaultHandler(CallbackQuery callbackQuery, DvgKiprBot bot) {
-//        StateMachine usersState = stateMachineService.getByUserId(callbackQuery.getFrom().getId());
-//
-//        List<Hotel> currentHotels = hotelService.findByResort(usersState.resort);
-//        if (currentHotels.isEmpty()) {
-//            bot.executeAsync(AnswerCallbackQuery.builder()
-//                    .callbackQueryId(callbackQuery.getId())
-//                    .showAlert(true).text("Отелей не найдено, попробуйте позже")
-//                    .build());
-//            return;
-//        }
-//
-//        bot.executeAsync(EditMessageMedia.builder()
-//                .chatId(callbackQuery.getMessage().getChatId())
-//                .messageId(callbackQuery.getMessage().getMessageId())
-//                .media(mediaService.getHotelMedia(currentHotels.get(0)))
-//                .build());
-//        bot.executeAsync(EditMessageCaption.builder()
-//                .chatId(callbackQuery.getMessage().getChatId())
-//                .messageId(callbackQuery.getMessage().getMessageId())
-//                .caption(currentHotels.get(0).toString())
-//                .replyMarkup(keyboardService.getHotelsKeyboard(
-//                        0,
-//                        currentHotels.get(0).getId(),
-//                        currentHotels.size()))
-//                .build());
-//        bot.executeAsync(AnswerCallbackQuery.builder()
-//                .callbackQueryId(callbackQuery.getId()).build());
-//
-//    }
-
-
 
     @Async
     @SneakyThrows
@@ -216,18 +227,16 @@ public class HotelHandler {
         int index = Integer.parseInt(callbackQuery.getData().split("/")[1]);
         StateMachine usersState = stateMachineService.getByUserId(callbackQuery.getFrom().getId());
 
-//        List<Hotel> currentHotels = hotelService.findByResort(usersState.resort);
-
-
-        List<Hotel> currentHotels = hotelService.findByResortAndStars(
+        List<Hotel> currentHotels = hotelService.findByResortAndActivitiesAndStars(
                 usersState.resort,
+                usersState.activities,
                 usersState.stars);
 
 
         if (currentHotels.isEmpty()) {
             bot.executeAsync(AnswerCallbackQuery.builder()
                     .callbackQueryId(callbackQuery.getId())
-                    .showAlert(true).text("Отелей не найдено, попробуйте позже")
+                    .showAlert(true).text(noHotelText)
                     .build());
             return;
         }
@@ -236,16 +245,17 @@ public class HotelHandler {
                 .chatId(callbackQuery.getMessage().getChatId())
                 .messageId(callbackQuery.getMessage().getMessageId())
                 .media(mediaService.getHotelMedia(currentHotels.get(index)))
-                .build());
+                .build()).join();
         bot.executeAsync(EditMessageCaption.builder()
                 .chatId(callbackQuery.getMessage().getChatId())
                 .messageId(callbackQuery.getMessage().getMessageId())
-                .caption(currentHotels.get(index).toString())
+                .caption(cardService.getHotelCard(currentHotels.get(index), false))
+                .parseMode(ParseMode.MARKDOWN)
                 .replyMarkup(keyboardService.getHotelsKeyboard(
                         index,
                         currentHotels.get(index).getId(),
                         currentHotels.size()))
-                .build());
+                .build()).join();
         bot.executeAsync(AnswerCallbackQuery.builder()
                 .callbackQueryId(callbackQuery.getId()).build());
 
@@ -260,7 +270,7 @@ public class HotelHandler {
         if (selectedHotel.isEmpty()) {
             bot.executeAsync(AnswerCallbackQuery.builder()
                     .callbackQueryId(callbackQuery.getId())
-                    .showAlert(true).text("Отель не найден, попробуйте позже")
+                    .showAlert(true).text(noHotelText)
                     .build());
             return;
         }

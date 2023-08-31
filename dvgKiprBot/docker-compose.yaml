@@ -1,0 +1,22 @@
+version: '3.8'
+
+services:
+  app:
+    image: 'dvg-kipr-bot:latest'
+    build:
+      context: .
+    container_name: app
+    depends_on:
+      - db
+    env_file: environment.env
+  db:
+    container_name: PostgreSQL
+    image: "postgres:latest"
+    env_file: environment.env
+    volumes:
+      - /home/BCDTravelAgency/pgdata:/var/lib/postgresql/data
+    restart: unless-stopped
+    ports:
+      - "5432:5432"
+    networks:
+      - default

@@ -18,7 +18,6 @@ import java.util.Optional;
 public class MessageHandler {
 
     private final CommandsHandler commandsHandler;
-
     private final AuthHandler authHandler;
     private final StateMachineService stateMachineService;
 
@@ -60,9 +59,7 @@ public class MessageHandler {
                     commandEntity.get().getOffset(),
                     commandEntity.get().getLength());
             switch (command) {
-                case "/start" -> commandsHandler.startHandler(message, bot);
-                case "/authorization" -> authHandler.authCommandHandler(message, bot);
-                case "/media" -> commandsHandler.mediaHandler(message, bot);
+                case "/start" -> commandsHandler.startHandler(bot, message.getFrom().getId(), message.getChatId());
                 default -> bot.executeAsync(SendMessage.builder()
                         .text("Команда не найдена")
                         .chatId(message.getChatId())

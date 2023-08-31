@@ -10,14 +10,12 @@ import org.telegram.telegrambots.meta.api.methods.AnswerCallbackQuery;
 import org.telegram.telegrambots.meta.api.methods.pinnedmessages.PinChatMessage;
 import org.telegram.telegrambots.meta.api.methods.pinnedmessages.UnpinAllChatMessages;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
-import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.*;
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardRemove;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiRequestException;
 
-import java.util.concurrent.CompletableFuture;
 
 @Component
 public class AuthHandler {
@@ -48,10 +46,49 @@ public class AuthHandler {
     public void handleCallback(CallbackQuery callbackQuery, DvgKiprBot bot) {
         String action = callbackQuery.getData().split("/")[0];
         switch (action) {
+            case "auth" -> authHandler(callbackQuery, bot);
             case "auth_cancel" -> cancelHandler(callbackQuery, bot);
             case "auth_getPhone" -> getPhoneHandler(callbackQuery, bot);
             case "auth_phoneCancel" -> phoneCancelHandler(callbackQuery, bot);
         }
+    }
+
+    @Async
+    @SneakyThrows
+    protected void authHandler(CallbackQuery callbackQuery, DvgKiprBot bot) {
+        bot.executeAsync(EditMessageMedia.builder()
+                .chatId(callbackQuery.getMessage().getChatId())
+                .messageId(callbackQuery.getMessage().getMessageId())
+                .media(mediaService.getAuthMedia())
+                .build()).join();
+        if (authorizationService.isAuthorized(callbackQuery.getFrom().getId())) {
+            bot.executeAsync(EditMessageCaption.builder()
+                    .chatId(callbackQuery.getMessage().getChatId())
+                    .messageId(callbackQuery.getMessage().getMessageId())
+                    .caption("Вы уже авторизованы")
+                    .replyMarkup(keyboardService.getRestartKeyboard())
+                    .build()).join();
+            bot.executeAsync(UnpinAllChatMessages.builder()
+                    .chatId(callbackQuery.getMessage().getChatId())
+                    .build()).join();
+            bot.executeAsync(PinChatMessage.builder()
+                    .chatId(callbackQuery.getMessage().getChatId())
+                    .messageId(callbackQuery.getMessage().getMessageId())
+                    .build());
+            return;
+        }
+
+        bot.executeAsync(EditMessageCaption.builder()
+                .chatId(callbackQuery.getMessage().getChatId())
+                .messageId(callbackQuery.getMessage().getMessageId())
+                .caption("Введите пароль")
+                .replyMarkup(keyboardService.getAuthCancelKeyboard())
+                .build()).join();
+
+        stateMachineService.setWaitPasswordByUserId(
+                callbackQuery.getFrom().getId(),
+                true,
+                callbackQuery.getMessage().getMessageId());
     }
 
     @Async
@@ -63,13 +100,13 @@ public class AuthHandler {
                 .build());
         bot.executeAsync(SendMessage.builder()
                 .chatId(callbackQuery.getMessage().getChatId())
-                .text("Хорошо, но Вы всегда сможете его нам его отправить")
+                .text("Хорошо, но Вы можете ввести его позже")
                 .replyMarkup(new ReplyKeyboardRemove(true))
                 .build());
-        commandsHandler.choosingMessageSender(
-                callbackQuery.getMessage().getChatId(),
-                bot,
-                userService.hasPhoneById(callbackQuery.getFrom().getId()));
+
+        commandsHandler.startHandler(bot,
+                callbackQuery.getFrom().getId(),
+                callbackQuery.getMessage().getChatId());
     }
 
     @Async
@@ -98,7 +135,7 @@ public class AuthHandler {
         stateMachineService.setWaitPhoneByUserId(
                 message.getFrom().getId(),
                 false, 0);
-        commandsHandler.startHandler(message, bot);
+        commandsHandler.startHandler(bot, message.getFrom().getId(), message.getChatId());
     }
 
     @Async
@@ -131,39 +168,6 @@ public class AuthHandler {
 
     @Async
     @SneakyThrows
-    public void authCommandHandler(Message message, DvgKiprBot bot) {
-//        TODO: add message text
-
-        if (authorizationService.isAuthorized(message.getFrom().getId())) {
-            CompletableFuture<Message> auth_message = bot.executeAsync(SendPhoto.builder()
-                    .chatId(message.getChatId())
-                    .photo(mediaService.getAuthMedia())
-                    .caption("Вы уже авторизованы")
-                    .replyMarkup(keyboardService.getRestartKeyboard())
-                    .build());
-            bot.executeAsync(UnpinAllChatMessages.builder().chatId(message.getChatId()).build());
-            bot.executeAsync(PinChatMessage.builder()
-                    .chatId(message.getChatId())
-                    .messageId(auth_message.join().getMessageId())
-                    .build());
-            return;
-        }
-
-        CompletableFuture<Message> auth_message = bot.executeAsync(SendPhoto.builder() //executeAsync
-                .chatId(message.getChatId())
-                .photo(mediaService.getAuthMedia())
-                .caption("Введите пароль")
-                .replyMarkup(keyboardService.getAuthCancelKeyboard())
-                .build());
-
-        stateMachineService.setWaitPasswordByUserId(
-                message.getFrom().getId(),
-                true,
-                auth_message.join().getMessageId());
-    }
-
-    @Async
-    @SneakyThrows
     public void passwordHandler(Message message, DvgKiprBot bot, StateMachine stateMachine) {
         String password = message.getText();
 
@@ -173,20 +177,21 @@ public class AuthHandler {
                         .chatId(message.getChatId())
                         .messageId(stateMachine.auth_message_id)
                         .caption("Пароль не найден, попробуйте снова")
+                        .replyMarkup(keyboardService.getAuthCancelKeyboard())
                         .build());
             } catch (TelegramApiRequestException ignored) {
 
             }
 
         } else {
-            bot.execute(EditMessageCaption.builder()
+            bot.executeAsync(EditMessageCaption.builder()
                     .chatId(message.getChatId())
                     .messageId(stateMachine.auth_message_id)
-                    .caption("Пароль получен: " + password)
+                    .caption("Вы авторизованы!")
                     .replyMarkup(keyboardService.getRestartKeyboard())
-                    .build());
+                    .build()).join();
 
-            bot.execute(PinChatMessage.builder()
+            bot.executeAsync(PinChatMessage.builder()
                     .chatId(message.getChatId())
                     .messageId(stateMachine.auth_message_id)
                     .disableNotification(true)
@@ -205,15 +210,18 @@ public class AuthHandler {
     @Async
     @SneakyThrows
     protected void cancelHandler(CallbackQuery callbackQuery, DvgKiprBot bot) {
-        bot.executeAsync(EditMessageCaption.builder()
+        bot.executeAsync(DeleteMessage.builder()
                 .chatId(callbackQuery.getMessage().getChatId())
                 .messageId(callbackQuery.getMessage().getMessageId())
-                .caption("Ввод пароля отменен")
-                .replyMarkup(keyboardService.getRestartKeyboard())
                 .build());
+
         stateMachineService.setWaitPasswordByUserId(callbackQuery.getFrom().getId(), false, 0);
+        commandsHandler.startHandler(bot,
+                callbackQuery.getFrom().getId(),
+                callbackQuery.getMessage().getChatId());
         bot.executeAsync(AnswerCallbackQuery.builder()
                 .callbackQueryId(callbackQuery.getId())
+                .text("Ввод пароля отменен")
                 .build());
     }
 

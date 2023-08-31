@@ -21,13 +21,10 @@ public class CustomTour {
     private Long id;
     public String name;
     @Nullable
+    @Column(columnDefinition = "TEXT")
     public String description;
     @Nullable
     public String media;
-
-    @Override
-    public String toString() {
-        return this.name + "\n\n" +
-                this.description;
-    }
+    @Column(name = "is_deleted", columnDefinition = "boolean default false")
+    public boolean isDeleted = false;
 }

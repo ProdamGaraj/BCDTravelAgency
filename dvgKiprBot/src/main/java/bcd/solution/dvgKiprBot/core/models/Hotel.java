@@ -1,11 +1,10 @@
-package bcd.solution.dvgKiprBot.core.models;;
+package bcd.solution.dvgKiprBot.core.models;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import java.util.List;
 
@@ -26,29 +25,14 @@ public class Hotel {
     public List<HotelFeature> features;
     @ManyToOne(fetch = FetchType.EAGER)
     public Resort resort;
+    @ManyToMany(fetch = FetchType.EAGER)
+    public List<Activity> activities;
     @Enumerated(EnumType.STRING)
     public Stars stars;
     @ElementCollection(targetClass = Food.class, fetch = FetchType.EAGER)
     @Enumerated(EnumType.STRING)
     public List<Food> food;
     public String media;
-
-    @Override
-    public String toString() {
-        StringBuilder features = new StringBuilder();
-        for (HotelFeature feature : this.features) {
-            features.append("- ").append(feature.name).append("\n");
-        }
-        StringBuilder foods = new StringBuilder();
-        for (Food food : this.food) {
-            foods.append("- ").append(food).append("\n");
-        }
-        return this.name + " " + this.stars.toString() + "\n\n" +
-                "Относиться к курорту " + this.resort.name + "\n\n" +
-                this.description + "\n\n" +
-                "Особенноси:\n" +
-                features + "\n\n" +
-                "Доступные типы питания:\n" +
-                foods;
-    }
+    @Column(name = "is_deleted", columnDefinition = "boolean default false")
+    public boolean isDeleted = false;
 }
