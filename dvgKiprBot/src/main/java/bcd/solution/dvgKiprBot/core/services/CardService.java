@@ -16,6 +16,7 @@ public class CardService {
 
         if (isLong) {
 //            TODO: find solution
+
 //            card.append("\n\n_/*Активности_:\n");
 //            for (Activity activity : hotel.activities) {
 //                card.append("- ").append(activity.name).append("\n");
