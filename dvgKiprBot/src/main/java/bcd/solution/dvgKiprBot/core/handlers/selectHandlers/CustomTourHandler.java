@@ -141,6 +141,7 @@ public class CustomTourHandler {
                 .photo(mediaService.getCustomTourFile(customTour))
                 .caption(cardService.getCustomTourCard(customTour, false))
                 .replyMarkup(keyboardService.getCustomToursKeyboard(index, customTourId))
+                .parseMode(ParseMode.MARKDOWN)
                 .build());
         bot.executeAsync(AnswerCallbackQuery.builder()
                 .callbackQueryId(callbackQuery.getId())

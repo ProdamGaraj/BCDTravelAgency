@@ -42,12 +42,14 @@ public class KeyboardService {
     private final String tourConstructorButtonText = "🏨 Подобрать отели 🏨";
     private final String detailsButtonText = "📝 Подробнее";
     private final String chooseTourButtonText = "🗺️ Подобрать тур 🗺️";
+    private final String addToFavorites = "\uD83D\uDCBE Сохранить";
+
+
 
     @Autowired
     public KeyboardService(CustomTourRepo customTourRepo) {
         this.customTourRepo = customTourRepo;
     }
-
     public InlineKeyboardMarkup getHotelsStarsKeyboard() {
         InlineKeyboardMarkup.InlineKeyboardMarkupBuilder builder = InlineKeyboardMarkup.builder();
 
@@ -231,6 +233,10 @@ public class KeyboardService {
                         InlineKeyboardButton.builder()
                                 .text(showPhotoButtonText)
                                 .callbackData("resorts_media/" + (index) + "/" + (resortId))
+                                .build(),
+                        InlineKeyboardButton.builder()
+                                .text(addToFavorites)
+                                .callbackData("favorite_add/"  + (index) + "/" + (resortId)+"/"+"resort")
                                 .build()
                 ))
                 .keyboardRow(navigation_row)
@@ -313,6 +319,10 @@ public class KeyboardService {
                         InlineKeyboardButton.builder()
                                 .text(showPhotoButtonText)
                                 .callbackData("customTours_media/" + (index) + "/" + (customTourId))
+                                .build(),
+                        InlineKeyboardButton.builder()
+                                .text(addToFavorites)
+                                .callbackData("favorite_add/"  + (index) + "/" + (customTourId)+"/"+"customTour")
                                 .build()
                 ))
                 .keyboardRow(navigation_row)
@@ -359,6 +369,10 @@ public class KeyboardService {
                         InlineKeyboardButton.builder()
                                 .text(showPhotoButtonText)
                                 .callbackData("hotels_media/" + (index) + "/" + (hotelId))
+                                .build(),
+                        InlineKeyboardButton.builder()
+                                .text(addToFavorites)
+                                .callbackData("favorite_add/"  + (index) + "/" + (hotelId)+"/"+"hotel")
                                 .build()
                 ))
                 .keyboardRow(navigation_row)

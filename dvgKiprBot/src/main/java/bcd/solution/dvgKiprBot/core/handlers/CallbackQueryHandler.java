@@ -1,6 +1,7 @@
 package bcd.solution.dvgKiprBot.core.handlers;
 
 import bcd.solution.dvgKiprBot.DvgKiprBot;
+import bcd.solution.dvgKiprBot.core.handlers.extensionsHandlers.FavoritesHandler;
 import bcd.solution.dvgKiprBot.core.models.StateMachine;
 import bcd.solution.dvgKiprBot.core.services.*;
 import bcd.solution.dvgKiprBot.core.handlers.selectHandlers.ActivityHandler;
@@ -8,6 +9,8 @@ import bcd.solution.dvgKiprBot.core.handlers.selectHandlers.CustomTourHandler;
 import bcd.solution.dvgKiprBot.core.handlers.selectHandlers.HotelHandler;
 import bcd.solution.dvgKiprBot.core.handlers.selectHandlers.ResortHandler;
 import lombok.SneakyThrows;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
@@ -20,6 +23,7 @@ import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 
 @Component
 public class CallbackQueryHandler {
+    private final Logger logger;
     //Services
     private final KeyboardService keyboardService;
     private final MediaService mediaService;
@@ -32,6 +36,7 @@ public class CallbackQueryHandler {
     private final HotelHandler hotelHandler;
     private final ResortHandler resortHandler;
     private final CommandsHandler commandsHandler;
+    private final FavoritesHandler favoritesHandler;
 
     @Autowired
     public CallbackQueryHandler(KeyboardService keyboardService,
@@ -44,7 +49,8 @@ public class CallbackQueryHandler {
                                 CustomTourHandler customTourHandler,
                                 HotelHandler hotelHandler,
                                 ResortHandler resortHandler,
-                                CommandsHandler commandsHandler) {
+                                CommandsHandler commandsHandler, FavoritesHandler favoritesHandler) {
+        this.logger = LoggerFactory.getLogger(FavoritesHandler.class);
         this.keyboardService = keyboardService;
         this.mediaService = mediaService;
         this.stateMachineService = stateMachineService;
@@ -56,6 +62,7 @@ public class CallbackQueryHandler {
         this.hotelHandler = hotelHandler;
         this.resortHandler = resortHandler;
         this.commandsHandler = commandsHandler;
+        this.favoritesHandler = favoritesHandler;
     }
 
 
@@ -66,7 +73,7 @@ public class CallbackQueryHandler {
 //        {action group}[_{action}(optional)]/{current index (by default 0)}[/{current entity id}(optional)]
 
         String callback_action = callbackQuery.getData().split("_")[0];
-
+        logger.info("callback action is:"+ callback_action);
         switch (callback_action) {
             case "null" -> nothingHandler(callbackQuery, bot);
             case "restart" -> restartHandler(callbackQuery, bot);
@@ -79,9 +86,10 @@ public class CallbackQueryHandler {
             case "customTours" -> customTourHandler.handleCustomTourCallback(callbackQuery, bot);
             case "activities" -> activityHandler.handleActivityCallback(callbackQuery, bot);
             case "hotels" -> hotelHandler.handleHotelCallback(callbackQuery, bot);
+            case "favorite" -> favoritesHandler.defaultHandler(callbackQuery, bot);
             default -> bot.executeAsync(AnswerCallbackQuery.builder()
                     .callbackQueryId(callbackQuery.getId())
-                    .text("Здесь пока что ничего нет, но очень скоро появится")
+                    .text("Здесь пока что ничего нет, но очень скоро появится" + callbackQuery.getData())
                     .showAlert(Boolean.TRUE)
                     .build());
         }

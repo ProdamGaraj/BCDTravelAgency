@@ -2,6 +2,7 @@ package bcd.solution.dvgKiprBot.core.handlers.selectHandlers;
 
 import bcd.solution.dvgKiprBot.DvgKiprBot;
 import bcd.solution.dvgKiprBot.core.handlers.FeedbackHandler;
+import bcd.solution.dvgKiprBot.core.handlers.extensionsHandlers.FavoritesHandler;
 import bcd.solution.dvgKiprBot.core.models.Hotel;
 import bcd.solution.dvgKiprBot.core.models.Stars;
 import bcd.solution.dvgKiprBot.core.models.StateMachine;
@@ -20,12 +21,14 @@ import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageMe
 import org.telegram.telegrambots.meta.api.objects.CallbackQuery;
 import org.telegram.telegrambots.meta.api.objects.InputFile;
 import org.telegram.telegrambots.meta.api.objects.media.InputMedia;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.util.List;
 import java.util.Optional;
 
 @Component
 public class HotelHandler {
+    private final Logger logger;
     private final KeyboardService keyboardService;
     private final MediaService mediaService;
     private final HotelService hotelService;
@@ -40,6 +43,7 @@ public class HotelHandler {
                         StateMachineService stateMachineService,
                         CardService cardService,
                         FeedbackHandler feedbackHandler) {
+        this.logger = LoggerFactory.getLogger(FavoritesHandler.class);
         this.keyboardService = keyboardService;
         this.mediaService = mediaService;
         this.hotelService = hotelService;
@@ -211,7 +215,7 @@ public class HotelHandler {
                 .chatId(callbackQuery.getFrom().getId())
                 .photo(mediaService.getHotelFile(currentHotels.get(index)))
                 .caption(cardService.getHotelCard(currentHotels.get(index), false))
-                        .parseMode(ParseMode.MARKDOWN)
+                .parseMode(ParseMode.MARKDOWN)
                 .replyMarkup(keyboardService.getHotelsKeyboard(index, hotelId, currentHotels.size()))
                 .build());
 

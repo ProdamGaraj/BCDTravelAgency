@@ -120,6 +120,7 @@ public class ResortHandler {
                 .photo(mediaService.getResortFile(currentResorts.get(index)))
                 .caption(cardService.getResortCard(currentResorts.get(index), false))
                 .replyMarkup(keyboardService.getResortCardKeyboard(index, hotelId, currentResorts.size()))
+                .parseMode(ParseMode.MARKDOWN)
                 .build());
         bot.executeAsync(AnswerCallbackQuery.builder()
                 .callbackQueryId(callbackQuery.getId())

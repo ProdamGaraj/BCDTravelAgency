@@ -8,6 +8,16 @@ import java.util.List;
 
 @Service
 public class CardService {
+
+    public String getFavoriteCard(Hotel hotel){
+        return  getHotelCard(hotel, true);
+    };
+    public String getFavoriteCard(Resort resort){
+        return  getResortCard(resort, true);
+    };
+    public String getFavoriteCard(CustomTour customTour){
+        return  getCustomTourCard(customTour, true);
+    };
     @SneakyThrows
     public String getHotelCard(Hotel hotel, boolean isLong) {
         StringBuilder card = new StringBuilder(hotel.name + " " + hotel.stars.toString() + "\n\n" +
@@ -128,4 +138,6 @@ public class CardService {
             card.append("Отель: ").append(stateMachine.hotel.name).append("\n\n");
         }
     }
+
+
 }
