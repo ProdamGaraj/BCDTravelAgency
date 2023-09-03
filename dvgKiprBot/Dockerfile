@@ -5,6 +5,6 @@ RUN mvn -f /home/app/pom.xml clean package
 
 
 FROM eclipse-temurin
-COPY --from=build /home/app/target/dvgKiprBot-0.0.1-SNAPSHOT.jar /usr/local/lib/dvgKiprBot.jar
+COPY --from=build /home/app/target/cyprusbot-alfa.jar /usr/local/lib/cyprusbot.jar
 EXPOSE 80
-ENTRYPOINT ["java","-jar","/usr/local/lib/dvgKiprBot.jar"]
+ENTRYPOINT ["java","-jar","/usr/local/lib/cyprusbot.jar"]

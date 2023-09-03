@@ -2,7 +2,8 @@ package bcd.solution.dvgKiprBot;
 
 import bcd.solution.dvgKiprBot.core.handlers.CallbackQueryHandler;
 import bcd.solution.dvgKiprBot.core.handlers.MessageHandler;
-import lombok.extern.log4j.Log4j;
+import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
@@ -16,14 +17,13 @@ import org.telegram.telegrambots.meta.api.objects.commands.BotCommand;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 
-
-@Log4j
 @Component
 public class DvgKiprBot extends TelegramLongPollingBot {
 
+
+    private final Logger logger;
     private final MessageHandler messageHandler;
     private final CallbackQueryHandler callbackQueryHandler;
-
     private final String botName;
     private final String botToken;
 
@@ -46,6 +46,8 @@ public class DvgKiprBot extends TelegramLongPollingBot {
                                 .description("Запуск бота")
                                 .build())
                 .build());
+        this.logger = LogManager.getLogger(DvgKiprBot.class);
+        logger.debug(this.botName+" instance created!");
     }
 
     @Async
@@ -54,9 +56,9 @@ public class DvgKiprBot extends TelegramLongPollingBot {
 
         //TODO check some issues with locks
 
+        logger.debug(update.getUpdateId());
         if (update.hasMessage() && update.getMessage() != null) {
             Message message = update.getMessage();
-            log.debug(message.getText());
 
             // Create a new thread to handle the message asynchronously
 //            Thread messageHandlerThread = new Thread(() -> {
