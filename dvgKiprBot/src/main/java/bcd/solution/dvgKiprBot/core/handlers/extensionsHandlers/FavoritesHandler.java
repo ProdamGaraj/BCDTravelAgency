@@ -73,31 +73,35 @@ public class FavoritesHandler {
         Resort currentResort;
 
         String type = callbackQuery.getData().split("/")[3];
-        logger.info("All objects initialized");
-              try {
-                  switch (type) {
-                      case "hotel" -> {
-                          logger.info("hotel");
-                          currentHotel = hotelService.getById(someId).get();
-                          currentHotels = hotelService.findByResortAndActivitiesAndStars(
-                                  stateMachine.resort, stateMachine.activities, stateMachine.stars);
-                          addHotelToFavorites(callbackQuery, bot, currentHotels, currentHotel, someId, index);
-                      }
-                      case "resort" -> {
-                          logger.info("resort");
-                          currentResort = resortService.getById(someId).get();
-                          currentResorts = resortService.getByActivities(stateMachine.activities);
-                          addResortToFavorites(callbackQuery, bot, currentResorts, currentResort, someId, index);
-                      }
-                      case "customTour" -> {
-                          logger.info("customTour");
-                          currentCustomTour = customToursService.getById(someId).get();
-                          addCustomTourToFavorites(callbackQuery, bot, currentCustomTour, someId, index);
-                      }
-                  }
-              } catch (Exception e){
-                  logger.info(e.getMessage());
-              }
+        try {
+            switch (type) {
+                case "hotel" -> {
+                    currentHotel = hotelService.getById(someId).get();
+                    currentHotels = hotelService.findByResortAndActivitiesAndStars(
+                            stateMachine.resort, stateMachine.activities, stateMachine.stars);
+                    addHotelToFavorites(callbackQuery, bot, currentHotels, currentHotel, someId, index);
+                    logger.info("USER: "+stateMachine.user.getLogin()+" added HOTEL: "+currentHotel.name+"to favorites");
+                }
+                case "resort" -> {
+                    currentResort = resortService.getById(someId).get();
+                    currentResorts = resortService.getByActivities(stateMachine.activities);
+                    addResortToFavorites(callbackQuery, bot, currentResorts, currentResort, someId, index);
+                    logger.info("USER: "+stateMachine.user.getLogin()+" added RESORT: "+currentResort.name+"to favorites");
+                }
+                case "customTour" -> {
+                    currentCustomTour = customToursService.getById(someId).get();
+                    addCustomTourToFavorites(callbackQuery, bot, currentCustomTour, someId, index);
+                    logger.info("USER: "+stateMachine.user.getLogin()+" added CUSTOM TOUR: "+currentCustomTour.name+"to favorites");
+                }
+            }
+
+        } catch (Exception e) {
+            logger.error(
+                    "Message: " + e.getMessage() + "\n" +
+                            "Cause : " + e.getCause() + "\n" +
+                            "Stack Trace" + e.fillInStackTrace() + "\n"
+            );
+        }
 
     }
 
@@ -132,14 +136,20 @@ public class FavoritesHandler {
                                 .build());
                     }
                 }
+                logger.info("All photos for HOTEL: "+ currentHotel.name+"were sent to user");
             } else {
                 bot.executeAsync(SendPhoto.builder()
                         .chatId(callbackQuery.getFrom().getId())
-                        .photo(mediaService.getHotelFile(currentHotel))
+                        .photo(mediaService. getHotelFile(currentHotel))
                         .build());
+                logger.info("No additional photos for HOTEL: "+ currentHotel.name+" main photo sended");
             }
-        }  catch (Exception e) {
-            logger.error("Unhandled exception in addHotelToFavorites " + e.getMessage());
+        } catch (Exception e) {
+            logger.error(
+                    "Message: " + e.getMessage() + "\n" +
+                            "Cause : " + e.getCause() + "\n" +
+                            "Stack Trace" + e.fillInStackTrace() + "\n"
+            );
         }
 
         bot.executeAsync(
@@ -203,9 +213,14 @@ public class FavoritesHandler {
                         .chatId(callbackQuery.getFrom().getId())
                         .photo(mediaService.getResortFile(currentResort))
                         .build());
+                logger.info("No additional photos for RESORT:"+ currentResort.name+" main photo sended");
             }
         } catch (Exception e) {
-            logger.error("Unhandled exception in addResortToFavorites " + e.getMessage());
+            logger.error(
+                    "Message: "+e.getMessage()+"\n"+
+                            "Cause : "+e.getCause() +"\n"+
+                            "Stack Trace"+e.fillInStackTrace() + "\n"
+            );
         }
 
         bot.executeAsync(SendMessage.builder()
@@ -267,9 +282,14 @@ public class FavoritesHandler {
                         .chatId(callbackQuery.getFrom().getId())
                         .photo(mediaService.getCustomTourFile(currentCustomTour))
                         .build());
+                logger.info("No additional photos for CUSTOM TOUR: "+ currentCustomTour.name+" main photo sended");
             }
-        }catch (Exception e) {
-            logger.error("Unhandled exception in addCustomTourToFavorites " + e.getMessage());
+        } catch (Exception e) {
+            logger.error(
+                    "Message: "+e.getMessage()+"\n"+
+                            "Cause : "+e.getCause() +"\n"+
+                            "Stack Trace"+e.fillInStackTrace() + "\n"
+            );
         }
 
         bot.executeAsync(SendMessage.builder()
