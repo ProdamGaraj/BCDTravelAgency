@@ -7,5 +7,5 @@ import lombok.Data;
 @AllArgsConstructor
 public class TelegramDataDTO {
     private String username;
-    private String userId;
+    private String telegramId;
 }
