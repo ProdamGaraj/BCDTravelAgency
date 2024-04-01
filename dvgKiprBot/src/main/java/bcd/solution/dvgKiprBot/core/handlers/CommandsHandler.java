@@ -1,12 +1,18 @@
 package bcd.solution.dvgKiprBot.core.handlers;
 
 import bcd.solution.dvgKiprBot.DvgKiprBot;
+import bcd.solution.dvgKiprBot.core.api.TelegramDataDTO;
 import bcd.solution.dvgKiprBot.core.services.KeyboardService;
 import bcd.solution.dvgKiprBot.core.services.MediaService;
 import bcd.solution.dvgKiprBot.core.services.UserService;
 import lombok.SneakyThrows;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestTemplate;
+import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
 
 
@@ -20,6 +26,9 @@ public class CommandsHandler {
 
             Доступные комманды:
             /start""";
+
+    @Value("${backend.baseurl}")
+    public String backendUrl;
 
     public CommandsHandler(UserService userService,
                            MediaService mediaService,
@@ -41,9 +50,27 @@ public class CommandsHandler {
                 .build());
     }
 
+    public boolean sendTelegramData(String username, Long userId) {
+        RestTemplate template = new RestTemplate();
+
+        String url = backendUrl + "/profile/telegram/connect/set_id";
+        TelegramDataDTO data = new TelegramDataDTO(username, userId.toString());
+        ResponseEntity<String> response = template.postForEntity(url, data, String.class);
+        return response.getStatusCode() == HttpStatus.OK;
+    }
+
     @Async
     @SneakyThrows
-    public void startHandler(DvgKiprBot bot, Long userId, Long chatId) {
+    public void startHandler(DvgKiprBot bot, Long userId, Long chatId, String message) {
+        if (message.split(" ").length == 2) {
+            if (sendTelegramData(message.split(" ")[1], userId)) {
+                bot.executeAsync(SendMessage.builder()
+                        .chatId(userId)
+                        .text("Телеграм успешно прикреплен")
+                        .build());
+            }
+        }
+
         if (!userService.hasPhoneById(userId)) {
             bot.executeAsync(SendPhoto.builder()
                     .chatId(chatId)

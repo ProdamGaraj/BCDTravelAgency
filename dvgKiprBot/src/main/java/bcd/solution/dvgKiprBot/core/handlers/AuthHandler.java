@@ -106,7 +106,7 @@ public class AuthHandler {
 
         commandsHandler.startHandler(bot,
                 callbackQuery.getFrom().getId(),
-                callbackQuery.getMessage().getChatId());
+                callbackQuery.getMessage().getChatId(), "");
     }
 
     @Async
@@ -135,7 +135,7 @@ public class AuthHandler {
         stateMachineService.setWaitPhoneByUserId(
                 message.getFrom().getId(),
                 false, 0);
-        commandsHandler.startHandler(bot, message.getFrom().getId(), message.getChatId());
+        commandsHandler.startHandler(bot, message.getFrom().getId(), message.getChatId(), "");
     }
 
     @Async
@@ -218,7 +218,7 @@ public class AuthHandler {
         stateMachineService.setWaitPasswordByUserId(callbackQuery.getFrom().getId(), false, 0);
         commandsHandler.startHandler(bot,
                 callbackQuery.getFrom().getId(),
-                callbackQuery.getMessage().getChatId());
+                callbackQuery.getMessage().getChatId(), "");
         bot.executeAsync(AnswerCallbackQuery.builder()
                 .callbackQueryId(callbackQuery.getId())
                 .text("Ввод пароля отменен")

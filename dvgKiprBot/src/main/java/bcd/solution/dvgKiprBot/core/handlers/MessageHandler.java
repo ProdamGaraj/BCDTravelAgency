@@ -59,7 +59,7 @@ public class MessageHandler {
                     commandEntity.get().getOffset(),
                     commandEntity.get().getLength());
             switch (command) {
-                case "/start" -> commandsHandler.startHandler(bot, message.getFrom().getId(), message.getChatId());
+                case "/start" -> commandsHandler.startHandler(bot, message.getFrom().getId(), message.getChatId(), message.getText());
                 default -> bot.executeAsync(SendMessage.builder()
                         .text("Команда не найдена")
                         .chatId(message.getChatId())
