@@ -8,6 +8,6 @@ cd dvgKiprBot || return
 docker compose down
 docker system prune -a
 
-docker compose up
+docker compose up -d
 
 cd ..
