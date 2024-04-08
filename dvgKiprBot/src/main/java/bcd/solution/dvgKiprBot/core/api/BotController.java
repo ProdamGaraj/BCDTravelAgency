@@ -13,9 +13,14 @@ import java.util.List;
 public class BotController {
     private final BotService service;
 
-    @PostMapping("/send")
-    public ResponseEntity<String> sendNotifications(@RequestBody List<Long> agents) {
-        service.sendNotifications(agents);
+    @PostMapping("/send/tour")
+    public ResponseEntity<String> sendTourNotifications(@RequestBody List<Long> agents) {
+        service.sendTourNotifications(agents);
+        return ResponseEntity.ok("Notifications were sent");
+    }
+    @PostMapping("/send/call")
+    public ResponseEntity<String> sendCallNotifications(@RequestBody List<Long> agents) {
+        service.sendCallNotifications(agents);
         return ResponseEntity.ok("Notifications were sent");
     }
 }
